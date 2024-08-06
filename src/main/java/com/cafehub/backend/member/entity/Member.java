@@ -34,5 +34,4 @@ public class Member extends BaseEntity {
 
     @Embedded
     private Image profileImg;
-
 }

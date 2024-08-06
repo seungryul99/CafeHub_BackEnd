@@ -18,6 +18,7 @@ public class Menu extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @Column(nullable = false, unique = true)
@@ -26,7 +27,7 @@ public class Menu extends BaseEntity {
     @Column(nullable = false)
     private Integer price;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false)
     private Boolean isBest;
 
     @ManyToOne

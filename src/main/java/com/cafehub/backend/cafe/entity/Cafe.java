@@ -21,6 +21,7 @@ public class Cafe extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Theme theme;
 
     @Column(nullable = false, unique = true)
@@ -32,15 +33,15 @@ public class Cafe extends BaseEntity {
     @Column(nullable = false)
     private String operationHours;
 
-    @Column(columnDefinition = "varchar(100) default '휴무일 없음'")
+    @Column(nullable = false)
     private String closeDays;
 
     @Embedded
     private Image img;
 
-    @Column(nullable = false, columnDefinition = "double default 0")
+    @Column(nullable = false)
     private Double rating;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(nullable = false)
     private Integer reviewCnt;
 }

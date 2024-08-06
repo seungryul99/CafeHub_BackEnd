@@ -27,13 +27,13 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(nullable = false)
     private Integer rating;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(nullable = false)
     private Integer likeCnt;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(nullable = false)
     private Integer commentCnt;
 
     @Column(nullable = false)
