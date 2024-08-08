@@ -1,10 +1,13 @@
 package com.cafehub.backend.member.entity;
 
 
+import com.cafehub.backend.comment.entity.Comment;
 import com.cafehub.backend.common.entity.BaseEntity;
 import com.cafehub.backend.common.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 /**
@@ -34,4 +37,5 @@ public class Member extends BaseEntity {
 
     @Embedded
     private Image profileImg;
+
 }

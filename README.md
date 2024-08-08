@@ -10,3 +10,5 @@
 ## 개발 로그
 
 - <a href="https://backend-newbie.tistory.com/24" target="_blank" class="button">프로젝트 설계 & 기획</a>
+
+- <a href="https://backend-newbie.tistory.com/25" target="_blank" class="button">엔티티 매핑</a>
