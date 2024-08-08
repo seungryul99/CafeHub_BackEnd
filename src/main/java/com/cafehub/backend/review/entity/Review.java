@@ -14,6 +14,8 @@ import java.util.List;
  *   DB에 직접 저장 해서 사용
  */
 
+
+
 @Entity
 @Getter
 @Builder

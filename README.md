@@ -12,3 +12,5 @@
 - <a href="https://backend-newbie.tistory.com/24" target="_blank" class="button">프로젝트 설계 & 기획</a>
 
 - <a href="https://backend-newbie.tistory.com/25" target="_blank" class="button">엔티티 매핑</a>
+
+- <a href="https://backend-newbie.tistory.com/26" target="_blank" class="button">공통 응답 통일</a>
