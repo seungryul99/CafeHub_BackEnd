@@ -1,11 +1,13 @@
 package com.cafehub.backend.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonPropertyOrder({"success", "data", "errorCode"})
 public class ResponseDTO <T>{
 
     private Boolean success;
@@ -24,3 +26,5 @@ public class ResponseDTO <T>{
         return new ResponseDTO<>(false,null,errorCode);
     }
 }
+
+
