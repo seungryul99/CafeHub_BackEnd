@@ -1,6 +1,6 @@
 package com.cafehub.backend.reviewLike.entity;
 
-import com.cafehub.backend.common.BaseEntity;
+import com.cafehub.backend.common.entity.BaseEntity;
 import com.cafehub.backend.member.entity.Member;
 import com.cafehub.backend.review.entity.Review;
 import jakarta.persistence.*;

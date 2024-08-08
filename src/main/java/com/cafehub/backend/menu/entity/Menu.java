@@ -1,7 +1,7 @@
 package com.cafehub.backend.menu.entity;
 
 import com.cafehub.backend.cafe.entity.Cafe;
-import com.cafehub.backend.common.BaseEntity;
+import com.cafehub.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

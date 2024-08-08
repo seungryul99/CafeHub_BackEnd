@@ -1,4 +1,4 @@
-package com.cafehub.backend.common;
+package com.cafehub.backend.common.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

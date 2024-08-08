@@ -1,4 +1,4 @@
-package com.cafehub.backend.common;
+package com.cafehub.backend.common.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

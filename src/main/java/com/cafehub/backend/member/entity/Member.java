@@ -1,8 +1,8 @@
 package com.cafehub.backend.member.entity;
 
 
-import com.cafehub.backend.common.BaseEntity;
-import com.cafehub.backend.common.Image;
+import com.cafehub.backend.common.entity.BaseEntity;
+import com.cafehub.backend.common.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
 
