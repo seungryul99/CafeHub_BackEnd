@@ -5,6 +5,10 @@ import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import com.cafehub.backend.domain.cafe.service.CafeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class CafeController {
+public class CafeController implements CafeControllerSpec{
 
     private final CafeService cafeService;
 
