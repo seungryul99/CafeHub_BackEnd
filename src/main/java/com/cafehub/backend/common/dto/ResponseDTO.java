@@ -9,14 +9,14 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@JsonPropertyOrder({"success", "code", "message", "data"})
+@JsonPropertyOrder({"success", "code", "errorMessage", "data"})
 public class ResponseDTO<T> {
 
     private final Boolean success;
 
     private final String code;
 
-    private final String ErrorMessage;
+    private final String errorMessage;
 
     private final T data;
 
