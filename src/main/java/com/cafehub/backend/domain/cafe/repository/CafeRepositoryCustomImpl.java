@@ -75,7 +75,7 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
             case "reviewNum_a" -> cafe.reviewCnt.asc();
             case "name" -> cafe.name.asc();
             case "name_d" -> cafe.name.desc();
-            default ->null;
+            default -> cafe.name.asc();
         };
     }
 
