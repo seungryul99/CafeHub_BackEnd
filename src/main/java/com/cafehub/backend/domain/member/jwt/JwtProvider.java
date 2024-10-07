@@ -1,7 +1,6 @@
 package com.cafehub.backend.domain.member.jwt;
 
 
-import com.cafehub.backend.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
