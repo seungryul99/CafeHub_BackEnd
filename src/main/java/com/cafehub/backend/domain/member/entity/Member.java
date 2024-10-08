@@ -18,9 +18,6 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false)
@@ -28,4 +25,6 @@ public class Member extends BaseTimeEntity {
 
     @Embedded
     private Image profileImg;
+
+    private String appId;
 }

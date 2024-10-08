@@ -11,8 +11,9 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Image {
 
+    @Column(name = "image_url")
     private String url;
 
-    @Column(name = "S3_key")
+    @Column(name = "s3_key")
     private String key;
 }
