@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new JwtCheckFilter(jwtValidator,jwtPayloadReader));
         filterRegistrationBean.setOrder(1);
-        filterRegistrationBean.addUrlPatterns("/api/auth/*");
+        filterRegistrationBean.addUrlPatterns("/api/auth/*", "/api/cafe/*");
         return filterRegistrationBean;
     }
 
@@ -37,7 +37,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 // 노트북 React 실행 시 , 프론트 배포된 서버에서 요청날아올 시 ,
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://localhost:3000", "https://main.d3fr2u7nicdqc9.amplifyapp.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

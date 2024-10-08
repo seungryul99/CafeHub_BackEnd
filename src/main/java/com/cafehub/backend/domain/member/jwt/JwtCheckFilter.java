@@ -16,10 +16,6 @@ public class JwtCheckFilter implements Filter {
     private final JwtValidator jwtValidator;
     private final JwtPayloadReader jwtPayloadReader;
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("JWT 필터 Init");
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -27,8 +23,6 @@ public class JwtCheckFilter implements Filter {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-
-
 
 
         // Axios 사용시 preflight OPTIONS 요청에 대한 처리를 추가
