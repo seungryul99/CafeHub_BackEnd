@@ -14,7 +14,6 @@ public class CafeListResponseDTO {
 
     @Getter
     @Setter
-    @Builder
     public static class CafeDetails {
 
         private Long cafeId;
@@ -31,6 +30,7 @@ public class CafeListResponseDTO {
 
 
         @QueryProjection
+        @Builder
         public CafeDetails(Long cafeId, String cafePhotoUrl, String cafeName, Theme cafeTheme, Double cafeRating, Integer cafeReviewNum) {
             this.cafeId = cafeId;
             this.cafePhotoUrl = cafePhotoUrl;

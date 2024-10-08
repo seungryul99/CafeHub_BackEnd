@@ -4,8 +4,12 @@ package com.cafehub.backend.domain.review.entity;
 import com.cafehub.backend.domain.cafe.entity.Cafe;
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.domain.member.entity.Member;
+import com.cafehub.backend.domain.reviewPhotos.entity.ReviewPhoto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -44,4 +48,7 @@ public class Review extends BaseTimeEntity {
     @ManyToOne (fetch = LAZY)
     @JoinColumn(name = "cafe_id")
     private Cafe cafe;
+
+    @OneToMany(mappedBy = "review")
+    private List<ReviewPhoto> reviewPhotos = new ArrayList<>();
 }

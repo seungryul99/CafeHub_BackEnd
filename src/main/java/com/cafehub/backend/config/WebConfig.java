@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new JwtCheckFilter(jwtValidator,jwtPayloadReader));
         filterRegistrationBean.setOrder(1);
-        filterRegistrationBean.addUrlPatterns("/api/auth/*", "/api/cafe/*");
+        filterRegistrationBean.addUrlPatterns("/api/auth/*");
         return filterRegistrationBean;
     }
 

@@ -1,6 +1,7 @@
 package com.cafehub.backend.domain.cafe.repository;
 
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
+import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.QCafeListResponseDTO_CafeDetails;
 import com.cafehub.backend.domain.cafe.entity.Theme;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.cafehub.backend.domain.cafe.entity.QCafe.cafe;
+import static com.cafehub.backend.domain.menu.entity.QMenu.menu;
 
 
 
@@ -78,5 +80,6 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
             default -> null;
         };
     }
+
 
 }
