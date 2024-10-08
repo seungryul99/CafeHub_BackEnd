@@ -25,7 +25,7 @@ public interface CafeControllerSpec {
             },
             parameters = {
                     @Parameter(name = "theme", description = "Date | Meet | Dessert | Study | All", example = "Date"),
-                    @Parameter(name = "sortedByType", description = "name | reviewNum | rating", example = "name"),
+                    @Parameter(name = "sortedByType", description = "name | name_d | reviewNum | reviewNum_a | rating | rating_a", example = "name"),
                     @Parameter(name = "currentPage", description = "0 이상의 정수", example = "1")
             })
 

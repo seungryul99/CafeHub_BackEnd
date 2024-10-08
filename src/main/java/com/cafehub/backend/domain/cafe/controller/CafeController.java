@@ -27,9 +27,9 @@ public class CafeController implements CafeControllerSpec{
     private final CafeService cafeService;
 
 
-    @GetMapping("/cafeList/{theme}/{sortedByType}/{currentPage}")
+    @GetMapping("/cafeList/{theme}/{sortedType}/{currentPage}")
     public ResponseEntity<ResponseDTO<CafeListResponseDTO>> getCafeList(@PathVariable("theme") String theme,
-                                                                        @PathVariable("sortedByType") String sortType,
+                                                                        @PathVariable("sortedType") String sortType,
                                                                         @PathVariable("currentPage") int currentPage){
 
 
