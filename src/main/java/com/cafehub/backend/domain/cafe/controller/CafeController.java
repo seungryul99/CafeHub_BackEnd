@@ -2,27 +2,21 @@ package com.cafehub.backend.domain.cafe.controller;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
+import com.cafehub.backend.domain.cafe.dto.request.CafeInfoRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
+import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import com.cafehub.backend.domain.cafe.service.CafeService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class CafeController implements CafeControllerSpec{
+public class CafeController implements CafeControllerDocs {
 
     private final CafeService cafeService;
 
@@ -41,8 +35,22 @@ public class CafeController implements CafeControllerSpec{
                 .build();
 
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(cafeService.getCafesByThemeAndSort(requestDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(cafeService.getCafesByThemeAndSort(requestDTO));
     }
 
+
+
+
+    @GetMapping("/cafe/{cafeId}")
+    public ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@PathVariable("cafeId") Long cafeId,
+                                                                        @RequestHeader(value = "Authorization", required = false) String accessToken
+                                                                        ){
+
+        CafeInfoRequestDTO requestDTO = CafeInfoRequestDTO.builder()
+                .cafeId(cafeId)
+                .jwtAccessToken(accessToken)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(cafeService.getCafeInfo(requestDTO));
+    }
 }
