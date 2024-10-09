@@ -1,9 +1,8 @@
 package com.cafehub.backend.domain.cafe.repository;
 
+import com.cafehub.backend.domain.cafe.dto.CafeDetails;
+import com.cafehub.backend.domain.cafe.dto.QCafeDetails;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
-import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
-import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
-import com.cafehub.backend.domain.cafe.dto.response.QCafeListResponseDTO_CafeDetails;
 import com.cafehub.backend.domain.cafe.entity.Theme;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.cafehub.backend.domain.cafe.entity.QCafe.cafe;
-import static com.cafehub.backend.domain.menu.entity.QMenu.menu;
 
 
 
@@ -36,13 +34,13 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
 
 
     @Override
-    public Slice<CafeListResponseDTO.CafeDetails> findCafesBySlice(CafeListRequestDTO requestDTO) {
+    public Slice<CafeDetails> findCafesBySlice(CafeListRequestDTO requestDTO) {
 
         int page = requestDTO.getCurrentPage();
 
 
-        List<CafeListResponseDTO.CafeDetails> cafeList = jpaQueryFactory
-                .select(new QCafeListResponseDTO_CafeDetails(
+        List<CafeDetails> cafeList = jpaQueryFactory
+                .select(new QCafeDetails(
                         cafe.id,
                         cafe.cafeImg.url,
                         cafe.name,
