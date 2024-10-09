@@ -12,4 +12,5 @@ public interface CafeRepositoryCustom {
 
     Slice<CafeDetails> findCafesBySlice (CafeListRequestDTO requestDTO);
 
+    List<CafeDetails> findCafesByBookmarkList(List<Long> cafeIds);
 }

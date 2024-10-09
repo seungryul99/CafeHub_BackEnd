@@ -61,7 +61,6 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
         return new SliceImpl<>(cafeList, PageRequest.of(page, PAGE_SIZE), hasNext);
     }
 
-
     private BooleanExpression themeEq(String theme) {
         if (theme.equals("All")) return null;
         return cafe.theme.eq(Theme.valueOf(theme));
@@ -77,6 +76,27 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
             case "name_d" -> cafe.name.desc();
             default -> null;
         };
+    }
+
+
+    @Override
+    public List<CafeDetails> findCafesByBookmarkList(List<Long> cafeIds) {
+
+        List<CafeDetails> cafeList = jpaQueryFactory
+                .select(new QCafeDetails(
+                        cafe.id,
+                        cafe.cafeImg.url,
+                        cafe.name,
+                        cafe.theme,
+                        cafe.rating,
+                        cafe.reviewCnt))
+                .from(cafe)
+                .where(cafe.id.in(cafeIds))
+                .fetch();
+
+
+
+        return cafeList;
     }
 
 
