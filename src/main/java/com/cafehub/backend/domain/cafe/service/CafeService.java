@@ -3,6 +3,7 @@ package com.cafehub.backend.domain.cafe.service;
 
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.domain.bookmark.repository.BookmarkRepository;
+import com.cafehub.backend.domain.cafe.dto.CafeDetails;
 import com.cafehub.backend.domain.cafe.dto.request.CafeInfoRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
@@ -61,7 +62,7 @@ public class CafeService {
     @Transactional(readOnly = true)
     public ResponseDTO<CafeListResponseDTO> getCafesByThemeAndSort(CafeListRequestDTO requestDTO) {
 
-        Slice<CafeListResponseDTO.CafeDetails> cafeDetails =cafeRepository.findCafesBySlice(requestDTO);
+        Slice<CafeDetails> cafeDetails =cafeRepository.findCafesBySlice(requestDTO);
 
 
         return ResponseDTO.success(CafeListResponseDTO.builder()

@@ -3,6 +3,7 @@ package com.cafehub.backend.domain.bookmark.controller;
 
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.domain.bookmark.dto.request.BookmarkRequestDTO;
+import com.cafehub.backend.domain.bookmark.dto.response.BookmarkListResponseDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkResponseDTO;
 import com.cafehub.backend.domain.bookmark.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,16 @@ public class BookmarkController implements BookmarkControllerDocs{
 
         if (requestDTO.getBookmarkChecked()) return ResponseEntity.ok(bookmarkService.bookmark(requestDTO));
         else return ResponseEntity.ok(bookmarkService.deleteBookmark(requestDTO));
+    }
+
+
+
+    @GetMapping("/bookmarks")
+    public ResponseEntity<ResponseDTO<BookmarkListResponseDTO>> getBookmarkList(@RequestHeader(value = "Authorization", required = false) String jwtAccessToken){
+
+        log.info("사용자의 북마크 불러오기 요청 발생");
+
+        return ResponseEntity.ok(bookmarkService.getBookmarkList(jwtAccessToken));
     }
 
 
