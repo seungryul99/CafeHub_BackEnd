@@ -2,8 +2,11 @@ package com.cafehub.backend.domain.member.entity;
 
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;
+import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
 import jakarta.persistence.*;
 import lombok.*;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -26,5 +29,7 @@ public class Member extends BaseTimeEntity {
     @Embedded
     private Image profileImg;
 
-    private String appId;
+    @OneToOne (fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn (name = "auth_info_id", unique = true)
+    private AuthInfo authInfo;
 }
