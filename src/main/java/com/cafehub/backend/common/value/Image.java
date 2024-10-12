@@ -6,9 +6,8 @@ import lombok.*;
 
 @Embeddable
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
 
     @Column(name = "image_url")
@@ -16,4 +15,11 @@ public class Image {
 
     @Column(name = "s3_key")
     private String key;
+
+
+
+    public Image(String url){
+        
+        this.url = url;
+    }
 }
