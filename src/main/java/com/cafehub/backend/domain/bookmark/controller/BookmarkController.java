@@ -24,8 +24,7 @@ public class BookmarkController implements BookmarkControllerDocs{
 
     @PostMapping("/bookmark")
     public ResponseEntity<ResponseDTO<BookmarkResponseDTO>> bookmarkManage(@RequestBody BookmarkRequestDTO requestDTO,
-                                                                           @RequestHeader(value = "Authorization", required = false) String jwtAccessToken){
-
+                                                                           @RequestHeader(value = "Authorization") String jwtAccessToken){
 
         log.info("북마크 하기 요청 발생");
         log.info("북마크 체크 여부 : " + requestDTO.getBookmarkChecked());
@@ -39,7 +38,7 @@ public class BookmarkController implements BookmarkControllerDocs{
 
 
     @GetMapping("/bookmarks")
-    public ResponseEntity<ResponseDTO<BookmarkListResponseDTO>> getBookmarkList(@RequestHeader(value = "Authorization", required = false) String jwtAccessToken){
+    public ResponseEntity<ResponseDTO<BookmarkListResponseDTO>> getBookmarkList(@RequestHeader(value = "Authorization") String jwtAccessToken){
 
         log.info("사용자의 북마크 불러오기 요청 발생");
 

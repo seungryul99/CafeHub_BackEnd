@@ -20,7 +20,13 @@ public class CafeController implements CafeControllerDocs {
 
     private final CafeService cafeService;
 
-
+    @CrossOrigin(
+            origins = "http://localhost:3000",
+            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS},
+            allowedHeaders = "*",
+            allowCredentials = "true",
+            maxAge = 10000
+    )
     @GetMapping("/cafeList/{theme}/{sortedType}/{currentPage}")
     public ResponseEntity<ResponseDTO<CafeListResponseDTO>> getCafeList(@PathVariable("theme") String theme,
                                                                         @PathVariable("sortedType") String sortType,

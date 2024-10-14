@@ -1,5 +1,7 @@
-package com.cafehub.backend.domain.member.jwt;
+package com.cafehub.backend.common.filter;
 
+import com.cafehub.backend.domain.member.jwt.JwtPayloadReader;
+import com.cafehub.backend.domain.member.jwt.JwtValidator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,32 +18,27 @@ public class JwtCheckFilter implements Filter {
     private final JwtValidator jwtValidator;
     private final JwtPayloadReader jwtPayloadReader;
 
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("JWT CHECK FILTER 초기화");
+    }
+
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
 
-        // Axios 사용시 preflight OPTIONS 요청에 대한 처리를 추가
-        if ("OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
-            log.info("here");
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-            chain.doFilter(request, response);
-        }
-
-        log.info("인증이 필요한 reqeust에 대해서 JWT 유효성 검사중");
-
-
+        log.info("JWT Check Filter 에서 인증이 필요한 reqeust에 대해서 JWT 유효성 검사 시작");
+        
         // Authorization 헤더에서 JWT Access 토큰 추출
         String authorizationHeader = "Bearer " + httpServletRequest.getHeader("Authorization");
-        log.info("헤더에서 추출한 토큰 : "+authorizationHeader);
+        log.info("헤더에서 추출한 토큰 : " + authorizationHeader);
         String jwtAccessToken;
 
 
-        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
+        if (authorizationHeader != null) {
             jwtAccessToken = authorizationHeader.substring(7); // "Bearer "의 길이는 7
 
             log.info("추출한 accessToken: {}", jwtAccessToken);
