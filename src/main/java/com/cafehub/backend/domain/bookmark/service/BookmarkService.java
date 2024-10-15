@@ -94,7 +94,6 @@ public class BookmarkService {
                 .toList();
 
 
-
         // 해당 memberId를 통해서 In으로 한번에 카페에서 조회
         return ResponseDTO.success(BookmarkListResponseDTO.builder()
                 .cafeList(cafeRepository.findCafesByBookmarkList(cafeIds))

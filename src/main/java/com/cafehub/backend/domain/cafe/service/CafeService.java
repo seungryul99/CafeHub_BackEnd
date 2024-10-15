@@ -21,6 +21,7 @@ import com.cafehub.backend.domain.reviewLike.repository.ReviewLikeRepository;
 import com.cafehub.backend.domain.reviewPhotos.dto.PhotoUrlResponseDTO;
 import com.cafehub.backend.domain.reviewPhotos.entity.ReviewPhoto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -84,6 +86,7 @@ public class CafeService {
 
         if(jwtThreadLocalStorage.isLoginMember()){
             loginMemberId = jwtThreadLocalStorage.getMemberIdFromJwt();
+            log.info("추출한 MemberId : " + loginMemberId);
 
             loginMember = memberRepository.findById(loginMemberId).get();
         }

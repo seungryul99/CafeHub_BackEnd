@@ -2,6 +2,7 @@ package com.cafehub.backend.config;
 
 
 import com.cafehub.backend.common.filter.CorsFilter;
+import com.cafehub.backend.common.filter.GlobalFilterExceptionHandleFilter;
 import com.cafehub.backend.common.filter.jwt.JwtCheckFilter;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.member.jwt.JwtValidator;
@@ -21,6 +22,16 @@ public class FilterConfig {
 
 
     @Bean
+    public FilterRegistrationBean<Filter> GlobalFilterExceptionHandleFilter() {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new GlobalFilterExceptionHandleFilter());
+        filterRegistrationBean.setOrder(0);
+        filterRegistrationBean.addUrlPatterns("/*");
+        return filterRegistrationBean;
+    }
+
+
+    @Bean
     public FilterRegistrationBean<Filter> corsCheckFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new CorsFilter());
@@ -34,7 +45,7 @@ public class FilterConfig {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new JwtCheckFilter(jwtValidator,jwtThreadLocalStorage));
         filterRegistrationBean.setOrder(2);
-        filterRegistrationBean.addUrlPatterns("/api/auth/*");
+        filterRegistrationBean.addUrlPatterns("/api/auth/*", "/api/optional-auth/*");
         return filterRegistrationBean;
     }
 

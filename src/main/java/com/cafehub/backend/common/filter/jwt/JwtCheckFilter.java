@@ -3,10 +3,17 @@ package com.cafehub.backend.common.filter.jwt;
 import com.cafehub.backend.domain.member.jwt.JwtValidator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 
 @Slf4j
@@ -15,6 +22,10 @@ public class JwtCheckFilter implements Filter {
 
     private final JwtValidator jwtValidator;
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
+
+    private static final String AUTHORIZATION_HEADER_VALUE_TYPE = "Bearer ";
+    private static final String AUTHORIZATION_HEADER_KEY = "Authorization";
+    private static final String OPTIONAL_AUTH_PATH = "/api/optional-auth";
 
 
     @Override
@@ -26,58 +37,52 @@ public class JwtCheckFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-
+        log.info("/api/auth/*, /api/optional-auth/* URI의 request JWT Check Filter에 들어옴");
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String authorizationHeaderValue = httpServletRequest.getHeader(AUTHORIZATION_HEADER_KEY);
+        String requestUri = httpServletRequest.getRequestURI();
 
 
 
+        if(authorizationHeaderValue == null){
 
-        log.info("JWT Check Filter 에서 로그인이 필요한 reqeust에 대해서 JWT 유효성 검사 시작");
-        
-        // Authorization 헤더에서 JWT Access 토큰 추출
-        String authorizationHeader = httpServletRequest.getHeader("Authorization");
-        log.info("헤더에서 추출한 토큰 : " + authorizationHeader);
-
-
-
-        String jwtAccessToken = null;
-        if (authorizationHeader.startsWith("Bearer ")){
-
-            jwtAccessToken = authorizationHeader.substring(7);
+            if (requestUri.startsWith(OPTIONAL_AUTH_PATH)){
+                log.info("/api/optional-auth/* URI의 request 비로그인 사용자에 대해서 정상적으로 처리 완료됨");
+                chain.doFilter(request, response);
+                return;
+            }
+                
+            // 반드시 인증이 필요한데 authorizationHeaderValue에 아무것도 존재하지 않는 경우 예외발생
+            throw new RuntimeException();
         }
 
-        log.info("추출한 accessToken: {}", jwtAccessToken);
 
-        if (jwtAccessToken != null) {
+        String jwtAccessToken = extractTokenFromAuthorizationHeader(authorizationHeaderValue);
 
 
-            if(jwtValidator.validateJwtAccessToken(jwtAccessToken)) {
+        if (jwtValidator.validateJwtAccessToken(jwtAccessToken)) {
 
-                log.info("jwt Access Token 검증 성공");
-
+            try {
                 jwtThreadLocalStorage.initJwtAccessTokenHolder(jwtAccessToken);
-
-
-                log.info("사용자 닉네임 : " + jwtThreadLocalStorage.getMemberNicknameFromJwt());
-                log.info("사용자 멤버 ID : " + jwtThreadLocalStorage.getMemberIdFromJwt());
-
                 chain.doFilter(request, response);
-
+            }
+            finally {
                 jwtThreadLocalStorage.clearJwtAccessTokenHolder();
                 log.info("ThreadLocal Resource 정리");
             }
-            else {
-
-                log.info("jwt Access Token 검증 실패");
-            }
-
-
-        } else {
-            log.info("Request 헤더에서 토큰을 추출하지 못함");
         }
-
     }
 
 
+    private String extractTokenFromAuthorizationHeader(String authorizationHeaderValue){
+
+        if (authorizationHeaderValue.startsWith(AUTHORIZATION_HEADER_VALUE_TYPE)){
+            return authorizationHeaderValue.substring(7);
+        }
+        else {
+            // 토큰 타입이 유효 하지 않은 오류 발생
+            throw new RuntimeException();
+        }
+    }
 }
