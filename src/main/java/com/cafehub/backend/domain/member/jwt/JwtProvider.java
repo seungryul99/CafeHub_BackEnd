@@ -24,21 +24,21 @@ public class JwtProvider {
     }
 
 
-    public String createJwtAccessToken(JwtMemberPayloadDTO jwtMemberPayloadDTO) {
+    public String createJwtAccessToken(JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO) {
         return Jwts.builder()
                 .claim("tokenType", "jwt_access")
-                .claim("nickname", jwtMemberPayloadDTO.getNickname())
-                .claim("memberId", jwtMemberPayloadDTO.getMemberId())
+                .claim("nickname", jwtTokenPayloadCreateDTO.getNickname())
+                .claim("memberId", jwtTokenPayloadCreateDTO.getMemberId())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACEESS_TOKEN_EXPIRATION_MS))
                 .signWith(secretKey)
                 .compact();
     }
 
-    public String createJwtRefreshToken(JwtMemberPayloadDTO jwtMemberPayloadDTO) {
+    public String createJwtRefreshToken(JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO) {
         return Jwts.builder()
                 .claim("tokenType", "jwt_Refresh")
-                .claim("memberId", jwtMemberPayloadDTO.getMemberId())
+                .claim("memberId", jwtTokenPayloadCreateDTO.getMemberId())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_MS))
                 .signWith(secretKey)

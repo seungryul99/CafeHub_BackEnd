@@ -7,7 +7,7 @@ import com.cafehub.backend.domain.member.dto.request.KakaoOAuthTokenRequestDTO;
 import com.cafehub.backend.domain.member.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.dto.response.KakaoUserResourceResponseDTO;
 import com.cafehub.backend.domain.member.entity.Member;
-import com.cafehub.backend.domain.member.jwt.JwtMemberPayloadDTO;
+import com.cafehub.backend.domain.member.jwt.JwtTokenPayloadCreateDTO;
 import com.cafehub.backend.domain.member.jwt.JwtPayloadReader;
 import com.cafehub.backend.domain.member.jwt.JwtProvider;
 import com.cafehub.backend.domain.member.repository.MemberRepository;
@@ -173,15 +173,15 @@ public class KakaoMemberService implements OAuth2MemberService {
 
         Member member = memberRepository.findByAuthInfo(authInfo);
 
-        JwtMemberPayloadDTO jwtMemberPayloadDTO = JwtMemberPayloadDTO.builder()
+        JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO = JwtTokenPayloadCreateDTO.builder()
                 .memberId(member.getId())
                 .nickname(member.getNickname())
                 .build();
 
 
-        String jwtAccessToken = jwtProvider.createJwtAccessToken(jwtMemberPayloadDTO);
+        String jwtAccessToken = jwtProvider.createJwtAccessToken(jwtTokenPayloadCreateDTO);
         log.info("JWT ACCESS TOKEN 발급 성공!");
-        String jwtRefreshToken = jwtProvider.createJwtRefreshToken(jwtMemberPayloadDTO);
+        String jwtRefreshToken = jwtProvider.createJwtRefreshToken(jwtTokenPayloadCreateDTO);
         log.info("JWT REFRESH TOKEN 발급 성공!");
 
 

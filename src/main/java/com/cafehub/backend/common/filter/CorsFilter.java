@@ -1,5 +1,6 @@
 package com.cafehub.backend.common.filter;
 
+import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,6 +33,8 @@ public class CorsFilter implements Filter {
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpServletResponse.setHeader("Access-Control-Max-Age", "10800");
+
+
 
         if ("OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
             log.info("preflight request 처리");

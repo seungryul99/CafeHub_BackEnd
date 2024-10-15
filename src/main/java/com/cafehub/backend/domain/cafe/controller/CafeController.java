@@ -2,7 +2,6 @@ package com.cafehub.backend.domain.cafe.controller;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.domain.cafe.dto.request.CafeInfoRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
@@ -48,15 +47,8 @@ public class CafeController implements CafeControllerDocs {
 
 
     @GetMapping("/cafe/{cafeId}")
-    public ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@PathVariable("cafeId") Long cafeId,
-                                                                        @RequestHeader(value = "Authorization", required = false) String accessToken
-                                                                        ){
+    public ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@PathVariable("cafeId") Long cafeId){
 
-        CafeInfoRequestDTO requestDTO = CafeInfoRequestDTO.builder()
-                .cafeId(cafeId)
-                .jwtAccessToken(accessToken)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(cafeService.getCafeInfo(requestDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(cafeService.getCafeInfo(cafeId));
     }
 }

@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class JwtMemberPayloadDTO {
+public class JwtTokenPayloadCreateDTO {
 
     private Long memberId;
 

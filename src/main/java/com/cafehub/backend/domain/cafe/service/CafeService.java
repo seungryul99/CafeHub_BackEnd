@@ -2,9 +2,9 @@ package com.cafehub.backend.domain.cafe.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
+import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.bookmark.repository.BookmarkRepository;
 import com.cafehub.backend.domain.cafe.dto.CafeDetails;
-import com.cafehub.backend.domain.cafe.dto.request.CafeInfoRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
@@ -13,7 +13,6 @@ import com.cafehub.backend.domain.cafe.repository.CafeRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.jwt.JwtPayloadReader;
 import com.cafehub.backend.domain.member.repository.MemberRepository;
-import com.cafehub.backend.domain.menu.entity.Menu;
 import com.cafehub.backend.domain.menu.repository.MenuRepository;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
@@ -51,7 +50,7 @@ public class CafeService {
 
     private final MemberRepository memberRepository;
 
-    private final JwtPayloadReader jwtPayloadReader;
+    private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
 
     private static final int TOP_REVIEW_SIZE = 2;
@@ -64,7 +63,6 @@ public class CafeService {
 
         Slice<CafeDetails> cafeDetails =cafeRepository.findCafesBySlice(requestDTO);
 
-
         return ResponseDTO.success(CafeListResponseDTO.builder()
                 .cafeList(cafeDetails.getContent())
                 .isLast(cafeDetails.isLast())
@@ -74,25 +72,21 @@ public class CafeService {
 
 
     @Transactional(readOnly = true)
-    public ResponseDTO<CafeInfoResponseDTO> getCafeInfo(CafeInfoRequestDTO requestDTO) {
+    public ResponseDTO<CafeInfoResponseDTO> getCafeInfo(Long cafeId) {
 
         // Optional 처리는 나중에
-        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
+        Cafe cafe = cafeRepository.findById(cafeId).get();
 
         // 유효하지 않은 JWT에 따른 예외 처리는 컨트롤러단에서 나중에, 일단 유효한 JWT만 들어온다고 가정
 
         Long loginMemberId = null;
         Member loginMember = null;
 
-        if(requestDTO.getJwtAccessToken() != null){
-            loginMemberId = jwtPayloadReader.getMemberId(requestDTO.getJwtAccessToken());
+        if(jwtThreadLocalStorage.isLoginMember()){
+            loginMemberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
-            if(loginMemberId!=null){
-                // Optional 나중에
-                loginMember = memberRepository.findById(loginMemberId).get();
-            }
+            loginMember = memberRepository.findById(loginMemberId).get();
         }
-
 
 
         Boolean bookmarkChecked = isBookmarkChecked(cafe.getId(),loginMember);
