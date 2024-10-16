@@ -28,24 +28,20 @@ public class JwtValidator {
 
     public boolean validateJwtAccessToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
 
             return true;
         } catch (SignatureException e) {
             log.info("서명 오류");
-            throw new RuntimeException();
         } catch (MalformedJwtException e) {
             log.info("유효하지 않은 토큰");
-            throw new RuntimeException();
         } catch (ExpiredJwtException e) {
-            log.info("만료된 않은 토큰");
-            throw new RuntimeException();
+            log.info("만료 된 토큰");
         } catch (UnsupportedJwtException e) {
             log.info("지원하지 않는 토큰");
-            throw new RuntimeException();
         } catch (IllegalArgumentException e) {
             log.info("JWT token compact of handler are invalid");
-            throw new RuntimeException();
         }
+        return false;
     }
 }

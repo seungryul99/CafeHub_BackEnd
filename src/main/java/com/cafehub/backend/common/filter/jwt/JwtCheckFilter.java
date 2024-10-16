@@ -3,17 +3,10 @@ package com.cafehub.backend.common.filter.jwt;
 import com.cafehub.backend.domain.member.jwt.JwtValidator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 
 @Slf4j
@@ -81,7 +74,7 @@ public class JwtCheckFilter implements Filter {
             return authorizationHeaderValue.substring(7);
         }
         else {
-            // 토큰 타입이 유효 하지 않은 오류 발생
+        // 토큰 타입이 유효 하지 않은 오류 발생
             throw new RuntimeException();
         }
     }
