@@ -12,6 +12,4 @@ public class BookmarkRequestDTO {
     private Long cafeId;
 
     private Boolean bookmarkChecked;
-
-    private String jwtAccessToken;
 }

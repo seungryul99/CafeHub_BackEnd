@@ -26,28 +26,17 @@ public class JwtValidator {
     }
 
 
-
     public boolean validateJwtAccessToken(String token) {
         try {
-            // 토큰의 서명 및 유효성을 검증하고 Claims(페이로드)를 추출
-            Claims claims = Jwts.
-                    parser()
-                    .setSigningKey(secretKey) // 비밀 키를 설정
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
 
-
-            log.info(String.valueOf(claims));
-
-            // 여기에서 claims로 추가적인 검증 가능 (예: 토큰의 만료 시간)
             return true;
         } catch (SignatureException e) {
             log.info("서명 오류");
         } catch (MalformedJwtException e) {
             log.info("유효하지 않은 토큰");
         } catch (ExpiredJwtException e) {
-            log.info("만료된 않은 토큰");
+            log.info("만료 된 토큰");
         } catch (UnsupportedJwtException e) {
             log.info("지원하지 않는 토큰");
         } catch (IllegalArgumentException e) {

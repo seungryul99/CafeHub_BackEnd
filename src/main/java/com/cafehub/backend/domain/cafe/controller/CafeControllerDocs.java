@@ -45,6 +45,5 @@ public interface CafeControllerDocs {
             parameters = {
                     @Parameter(name = "cafeId", description = "1 이상의 정수", example = "1")
             })
-    ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@PathVariable("cafeId") Long cafeId,
-                                                                 @RequestHeader(value = "Authorization", required = false) String accessToken);
+    ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@PathVariable("cafeId") Long cafeId);
 }

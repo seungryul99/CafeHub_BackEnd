@@ -51,8 +51,8 @@ public class MemberController {
         String jwtRefreshToken = jwtTokens.get("jwtRefreshToken");
 
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Set-Cookie", "JwtAccessToken=" + jwtAccessToken + "; Path=/; Max-Age=3600; SameSite=Lax; Secure")
-                .header("Set-Cookie", "JwtRefreshToken=" + jwtRefreshToken + "; Path=/; Max-Age=604800; SameSite=Lax; HttpOnly; Secure")
+                .header("Set-Cookie", "JwtAccessToken=" + "Bearer " + jwtAccessToken + "; Path=/; Max-Age=3600; SameSite=Lax; Secure")
+                .header("Set-Cookie", "JwtRefreshToken=" + "Bearer " +  jwtRefreshToken + "; Path=/; Max-Age=604800; SameSite=Lax; HttpOnly; Secure")
                 .header("Location", "http://localhost:3000/OAuthCallback")
                 .build();
     }

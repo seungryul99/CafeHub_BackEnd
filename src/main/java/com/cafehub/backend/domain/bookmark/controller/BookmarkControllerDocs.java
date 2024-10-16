@@ -25,6 +25,5 @@ public interface BookmarkControllerDocs {
                     // 스와거는 나중에
             })
     @PostMapping("/bookmark")
-    ResponseEntity<ResponseDTO<BookmarkResponseDTO>> bookmarkManage(@RequestBody BookmarkRequestDTO requestDTO,
-                                                                           @RequestHeader(value = "Authorization", required = false) String jwtAccessToken);
+    ResponseEntity<ResponseDTO<BookmarkResponseDTO>> bookmarkManage(@RequestBody BookmarkRequestDTO requestDTO);
 }

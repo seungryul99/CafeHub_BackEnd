@@ -2,6 +2,7 @@ package com.cafehub.backend.domain.bookmark.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
+import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.bookmark.dto.request.BookmarkRequestDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkListResponseDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkResponseDTO;
@@ -31,7 +32,7 @@ public class BookmarkService {
 
     private final MemberRepository memberRepository;
 
-    private final JwtPayloadReader jwtPayloadReader;
+    private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
 
     
@@ -39,7 +40,7 @@ public class BookmarkService {
     public ResponseDTO<BookmarkResponseDTO> bookmark(BookmarkRequestDTO requestDTO) {
 
         Long cafeId = requestDTO.getCafeId();
-        Long memberId = getMemberIdFromJwt(requestDTO.getJwtAccessToken());
+        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
 
         Bookmark bookmark = Bookmark.builder()
@@ -63,7 +64,7 @@ public class BookmarkService {
     public ResponseDTO<BookmarkResponseDTO> deleteBookmark(BookmarkRequestDTO requestDTO) {
 
         Long cafeId = requestDTO.getCafeId();
-        Long memberId = getMemberIdFromJwt(requestDTO.getJwtAccessToken());
+        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
 
         bookmarkRepository.deleteByCafeIdAndMemberId(cafeId, memberId);
@@ -76,9 +77,9 @@ public class BookmarkService {
 
 
     @Transactional(readOnly = true)
-    public ResponseDTO<BookmarkListResponseDTO> getBookmarkList(String jwtAccessToken) {
+    public ResponseDTO<BookmarkListResponseDTO> getBookmarkList() {
 
-        Long memberId = getMemberIdFromJwt(jwtAccessToken);
+        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
         
         // 가져와야 할 모든 정보는 Cafe 테이블에 있음
@@ -93,15 +94,9 @@ public class BookmarkService {
                 .toList();
 
 
-
         // 해당 memberId를 통해서 In으로 한번에 카페에서 조회
         return ResponseDTO.success(BookmarkListResponseDTO.builder()
                 .cafeList(cafeRepository.findCafesByBookmarkList(cafeIds))
                 .build());
-    }
-
-
-    private Long getMemberIdFromJwt(String jwtAccessToken){
-        return jwtPayloadReader.getMemberId(jwtAccessToken);
     }
 }
