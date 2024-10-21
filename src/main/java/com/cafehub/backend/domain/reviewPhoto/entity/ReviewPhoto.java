@@ -1,4 +1,4 @@
-package com.cafehub.backend.domain.reviewPhotos.entity;
+package com.cafehub.backend.domain.reviewPhoto.entity;
 
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;

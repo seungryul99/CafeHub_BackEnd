@@ -19,7 +19,7 @@ public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
     }
 
     @Override
-    public List<CafeInfoResponseDTO.BestMenuDetail> getBestMenuList(Long cafeId) {
+    public List<CafeInfoResponseDTO.BestMenuDetail> findBestMenuList(Long cafeId) {
 
         return jpaQueryFactory
                 .select(new QCafeInfoResponseDTO_BestMenuDetail(
@@ -29,6 +29,8 @@ public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
                 ))
                 .from(menu)
                 .where(menu.cafe.id.eq(cafeId))
+                .where(menu.isBest.eq(true))
+                .orderBy(menu.name.asc())
                 .fetch();
     }
 }
