@@ -3,8 +3,12 @@ package com.cafehub.backend.domain.cafe.entity;
 
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;
+import com.cafehub.backend.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,4 +49,7 @@ public class Cafe extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer reviewCnt;
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menuList = new ArrayList<>();
 }

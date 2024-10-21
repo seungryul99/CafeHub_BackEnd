@@ -2,6 +2,8 @@ package com.cafehub.backend.domain.menu.repository;
 
 import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.QCafeInfoResponseDTO_BestMenuDetail;
+import com.cafehub.backend.domain.menu.dto.response.MenuListResponse;
+import com.cafehub.backend.domain.menu.dto.response.QMenuListResponse_MenuDetail;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
@@ -31,6 +33,21 @@ public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
                 .where(menu.cafe.id.eq(cafeId))
                 .where(menu.isBest.eq(true))
                 .orderBy(menu.name.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<MenuListResponse.MenuDetail> findAllMenuList(Long cafeId) {
+
+        return jpaQueryFactory
+                .select(new QMenuListResponse_MenuDetail(
+                        menu.id,
+                        menu.category,
+                        menu.name,
+                        menu.price
+                ))
+                .from(menu)
+                .where(menu.cafe.id.eq(cafeId))
                 .fetch();
     }
 }
