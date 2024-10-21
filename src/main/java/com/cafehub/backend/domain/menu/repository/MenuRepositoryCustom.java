@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface MenuRepositoryCustom {
 
-    List<CafeInfoResponseDTO.BestMenuDetail> getBestMenuList(Long cafeId);
+    List<CafeInfoResponseDTO.BestMenuDetail> findBestMenuList(Long cafeId);
 }

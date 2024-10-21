@@ -4,7 +4,7 @@ package com.cafehub.backend.domain.review.entity;
 import com.cafehub.backend.domain.cafe.entity.Cafe;
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.domain.member.entity.Member;
-import com.cafehub.backend.domain.reviewPhotos.entity.ReviewPhoto;
+import com.cafehub.backend.domain.reviewPhoto.entity.ReviewPhoto;
 import jakarta.persistence.*;
 import lombok.*;
 
