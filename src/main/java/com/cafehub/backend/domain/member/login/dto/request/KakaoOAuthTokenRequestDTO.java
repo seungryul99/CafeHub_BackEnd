@@ -1,4 +1,4 @@
-package com.cafehub.backend.domain.member.dto.request;
+package com.cafehub.backend.domain.member.login.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

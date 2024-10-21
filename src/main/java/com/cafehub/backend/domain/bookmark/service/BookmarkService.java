@@ -9,16 +9,13 @@ import com.cafehub.backend.domain.bookmark.dto.response.BookmarkResponseDTO;
 import com.cafehub.backend.domain.bookmark.entity.Bookmark;
 import com.cafehub.backend.domain.bookmark.repository.BookmarkRepository;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
-import com.cafehub.backend.domain.member.entity.Member;
-import com.cafehub.backend.domain.member.jwt.JwtPayloadReader;
-import com.cafehub.backend.domain.member.repository.MemberRepository;
+import com.cafehub.backend.domain.member.login.repository.LoginRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,7 +27,7 @@ public class BookmarkService {
 
     private final CafeRepository cafeRepository;
 
-    private final MemberRepository memberRepository;
+    private final LoginRepository loginRepository;
 
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
@@ -45,7 +42,7 @@ public class BookmarkService {
 
         Bookmark bookmark = Bookmark.builder()
                 .cafe(cafeRepository.findById(cafeId).get())
-                .member(memberRepository.findById(memberId).get())
+                .member(loginRepository.findById(memberId).get())
                 .build();
 
         bookmarkRepository.save(bookmark);

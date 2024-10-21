@@ -1,6 +1,6 @@
 package com.cafehub.backend.common.filter.jwt;
 
-import com.cafehub.backend.domain.member.jwt.JwtPayloadReader;
+import com.cafehub.backend.domain.member.login.jwt.JwtPayloadReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
