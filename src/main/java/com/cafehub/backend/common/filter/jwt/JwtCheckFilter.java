@@ -1,6 +1,6 @@
 package com.cafehub.backend.common.filter.jwt;
 
-import com.cafehub.backend.domain.member.jwt.JwtValidator;
+import com.cafehub.backend.domain.member.login.jwt.JwtValidator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

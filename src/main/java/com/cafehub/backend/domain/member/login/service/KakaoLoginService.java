@@ -1,16 +1,16 @@
-package com.cafehub.backend.domain.member.service;
+package com.cafehub.backend.domain.member.login.service;
 
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
 import com.cafehub.backend.domain.authInfo.repository.AuthInfoRepository;
-import com.cafehub.backend.domain.member.dto.request.KakaoOAuthTokenRequestDTO;
-import com.cafehub.backend.domain.member.dto.response.KakaoOAuthTokenResponseDTO;
-import com.cafehub.backend.domain.member.dto.response.KakaoUserResourceResponseDTO;
+import com.cafehub.backend.domain.member.login.dto.request.KakaoOAuthTokenRequestDTO;
+import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
+import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
 import com.cafehub.backend.domain.member.entity.Member;
-import com.cafehub.backend.domain.member.jwt.JwtTokenPayloadCreateDTO;
-import com.cafehub.backend.domain.member.jwt.JwtPayloadReader;
-import com.cafehub.backend.domain.member.jwt.JwtProvider;
-import com.cafehub.backend.domain.member.repository.MemberRepository;
+import com.cafehub.backend.domain.member.login.jwt.JwtTokenPayloadCreateDTO;
+import com.cafehub.backend.domain.member.login.jwt.JwtPayloadReader;
+import com.cafehub.backend.domain.member.login.jwt.JwtProvider;
+import com.cafehub.backend.domain.member.login.repository.LoginRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @Transactional
-public class KakaoMemberService implements OAuth2MemberService {
+public class KakaoLoginService implements OAuth2LoginService {
 
     private final String clientId;
     private final String redirectUri;
@@ -33,18 +33,18 @@ public class KakaoMemberService implements OAuth2MemberService {
     private final String loginPageUrl;
 
     private final RestClient restClient;
-    private final MemberRepository memberRepository;
+    private final LoginRepository loginRepository;
     private final AuthInfoRepository authInfoRepository;
     private final JwtProvider jwtProvider;
     private final JwtPayloadReader jwtPayloadReader;
 
 
-    public KakaoMemberService(@Value("${kakao.loginUrl}") String kakaoLoginUrl,
-                              @Value("${kakao.clientId}") String clientId,
-                              @Value("${kakao.redirectUri}") String redirectUri,
-                              @Value("${kakao.clientSecret}") String clientSecret,
-                              RestClient restClient, MemberRepository memberRepository,
-                              AuthInfoRepository authInfoRepository, JwtProvider jwtProvider, JwtPayloadReader jwtPayloadReader) {
+    public KakaoLoginService(@Value("${kakao.loginUrl}") String kakaoLoginUrl,
+                             @Value("${kakao.clientId}") String clientId,
+                             @Value("${kakao.redirectUri}") String redirectUri,
+                             @Value("${kakao.clientSecret}") String clientSecret,
+                             RestClient restClient, LoginRepository loginRepository,
+                             AuthInfoRepository authInfoRepository, JwtProvider jwtProvider, JwtPayloadReader jwtPayloadReader) {
 
         this.clientId = clientId;
         this.redirectUri = redirectUri;
@@ -53,7 +53,7 @@ public class KakaoMemberService implements OAuth2MemberService {
         this.authInfoRepository = authInfoRepository;
         this.jwtPayloadReader = jwtPayloadReader;
         this.loginPageUrl = kakaoLoginUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&response_type=code";
-        this.memberRepository = memberRepository;
+        this.loginRepository = loginRepository;
         this.jwtProvider = jwtProvider;
     }
 
@@ -147,7 +147,7 @@ public class KakaoMemberService implements OAuth2MemberService {
                     .authInfo(newMemberAuthInfo)
                     .build();
 
-            memberRepository.save(newMember);
+            loginRepository.save(newMember);
             log.info("회원가입 성공");
 
             return;
@@ -171,7 +171,7 @@ public class KakaoMemberService implements OAuth2MemberService {
         AuthInfo authInfo = authInfoRepository.findByAppId(appId);
         log.info("정상 동작 확인 " + authInfo.getAppId().toString());
 
-        Member member = memberRepository.findByAuthInfo(authInfo);
+        Member member = loginRepository.findByAuthInfo(authInfo);
 
         JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO = JwtTokenPayloadCreateDTO.builder()
                 .memberId(member.getId())

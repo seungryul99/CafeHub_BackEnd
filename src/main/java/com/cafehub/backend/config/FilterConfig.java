@@ -5,7 +5,7 @@ import com.cafehub.backend.common.filter.CorsFilter;
 import com.cafehub.backend.common.filter.GlobalFilterExceptionHandleFilter;
 import com.cafehub.backend.common.filter.jwt.JwtCheckFilter;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
-import com.cafehub.backend.domain.member.jwt.JwtValidator;
+import com.cafehub.backend.domain.member.login.jwt.JwtValidator;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

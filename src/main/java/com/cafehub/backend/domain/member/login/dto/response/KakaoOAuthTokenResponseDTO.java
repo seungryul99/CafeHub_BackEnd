@@ -1,4 +1,4 @@
-package com.cafehub.backend.domain.member.dto.response;
+package com.cafehub.backend.domain.member.login.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.cafehub.backend.domain.member.controller;
+package com.cafehub.backend.domain.member.login.controller;
 
-import com.cafehub.backend.domain.member.service.OAuth2MemberService;
+import com.cafehub.backend.domain.member.login.service.OAuth2LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,17 +15,17 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class MemberController {
+public class LoginController {
 
-    public static final String MEMBER_SERVICE_SUFFIX = "MemberService";
+    public static final String MEMBER_SERVICE_SUFFIX = "LoginService";
 
-    private final Map<String,OAuth2MemberService> oAuth2MemberServiceMap;
+    private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
 
 
     @GetMapping("/api/member/login/{provider}")
     public ResponseEntity<Void> login(@PathVariable("provider") String provider){
 
-        OAuth2MemberService memberService = oAuth2MemberServiceMap.get(provider + MEMBER_SERVICE_SUFFIX);
+        OAuth2LoginService memberService = oAuth2LoginServiceMap.get(provider + MEMBER_SERVICE_SUFFIX);
 
         log.info("로그인 요청 발생, 사용자가 프론트에서 {}로 로그인 하기 버튼을 누름", provider);
 
@@ -41,7 +41,7 @@ public class MemberController {
     public ResponseEntity<Void> OAuthCallback(@RequestParam ("code") String authorizationCode,
                                               @RequestParam ("state") String provider){
 
-        OAuth2MemberService memberService = oAuth2MemberServiceMap.get(provider + MEMBER_SERVICE_SUFFIX);
+        OAuth2LoginService memberService = oAuth2LoginServiceMap.get(provider + MEMBER_SERVICE_SUFFIX);
 
         log.info("사용자가 카카오에 로그인했고 {}에서 CafeHub에 사용자를 통해서 리다이렉트로 콜백 성공", provider);
 

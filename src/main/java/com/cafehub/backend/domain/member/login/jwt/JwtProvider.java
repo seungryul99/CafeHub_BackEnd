@@ -1,4 +1,4 @@
-package com.cafehub.backend.domain.member.jwt;
+package com.cafehub.backend.domain.member.login.jwt;
 
 
 import io.jsonwebtoken.Jwts;
