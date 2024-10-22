@@ -23,8 +23,9 @@ public class MemberService {
 
         Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
 
+
         MyPageResponseDTO res = MyPageResponseDTO.builder().
-                memberImgUrl(member.getProfileImg().getUrl()).
+                memberImgUrl(member.getProfileImg() != null ? member.getProfileImg().getUrl() : null).
                 nickname(member.getNickname()).
                 email(member.getEmail()).
                 build();
