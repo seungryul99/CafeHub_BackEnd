@@ -36,6 +36,7 @@ public class CorsFilter implements Filter {
 
 
 
+
         if ("OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
             log.info("preflight request 처리");
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
