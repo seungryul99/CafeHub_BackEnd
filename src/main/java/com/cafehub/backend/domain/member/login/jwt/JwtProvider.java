@@ -15,8 +15,8 @@ public class JwtProvider {
 
     private final SecretKey secretKey;
 
-    private static final long ACEESS_TOKEN_EXPIRATION_MS = 60 * 60 * 1000; // 1시간
-    private static final long REFRESH_TOKEN_EXPIRATION_MS = 60 * 60 * 1000 *24; // 24시간
+    private static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 6; // 1000ms = 1초, 1초 *60 *60 *12 = 6시간
+    private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 
 
     public JwtProvider(@Value("${spring.jwt.secret}") String secret) {
@@ -29,8 +29,9 @@ public class JwtProvider {
                 .claim("tokenType", "jwt_access")
                 .claim("nickname", jwtTokenPayloadCreateDTO.getNickname())
                 .claim("memberId", jwtTokenPayloadCreateDTO.getMemberId())
+                .claim("OAuthProvider", jwtTokenPayloadCreateDTO.getProvider())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + ACEESS_TOKEN_EXPIRATION_MS))
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_MS))
                 .signWith(secretKey)
                 .compact();
     }
@@ -39,6 +40,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .claim("tokenType", "jwt_Refresh")
                 .claim("memberId", jwtTokenPayloadCreateDTO.getMemberId())
+                .claim("OAuthProvider", jwtTokenPayloadCreateDTO.getProvider())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_MS))
                 .signWith(secretKey)

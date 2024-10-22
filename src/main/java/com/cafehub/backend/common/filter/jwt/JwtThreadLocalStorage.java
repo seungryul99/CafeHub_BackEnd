@@ -36,5 +36,8 @@ public class JwtThreadLocalStorage {
         return jwtPayloadReader.getNickname(jwtAccessTokenHolder.get());
     }
 
+    public String getOAuthProviderNameFromJwt(){
+        return jwtPayloadReader.getProvider(jwtAccessTokenHolder.get());
+    }
 
 }

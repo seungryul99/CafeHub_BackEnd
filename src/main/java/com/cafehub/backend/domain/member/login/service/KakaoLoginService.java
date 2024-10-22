@@ -27,10 +27,14 @@ import java.util.Map;
 @Transactional
 public class KakaoLoginService implements OAuth2LoginService {
 
+    private static final String KAKAO_OAUTH_PROVIDER_NAME = "kakao";
+
     private final String clientId;
     private final String redirectUri;
     private final String clientSecret;
     private final String loginPageUrl;
+
+    private final String logoutRedirectUrl;
 
     private final RestClient restClient;
     private final LoginRepository loginRepository;
@@ -43,12 +47,14 @@ public class KakaoLoginService implements OAuth2LoginService {
                              @Value("${kakao.clientId}") String clientId,
                              @Value("${kakao.redirectUri}") String redirectUri,
                              @Value("${kakao.clientSecret}") String clientSecret,
+                             @Value("${kakao.logoutRedirectUrl}") String logoutRedirectUrl,
                              RestClient restClient, LoginRepository loginRepository,
                              AuthInfoRepository authInfoRepository, JwtProvider jwtProvider, JwtPayloadReader jwtPayloadReader) {
 
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.clientSecret = clientSecret;
+        this.logoutRedirectUrl = logoutRedirectUrl;
         this.restClient = restClient;
         this.authInfoRepository = authInfoRepository;
         this.jwtPayloadReader = jwtPayloadReader;
@@ -81,6 +87,7 @@ public class KakaoLoginService implements OAuth2LoginService {
 
         return issueJwtTokens(userInfo.getAppId());
     }
+
 
 
     private KakaoOAuthTokenResponseDTO getOAuthTokens(String authorizationCode) {
@@ -136,7 +143,7 @@ public class KakaoLoginService implements OAuth2LoginService {
 
             AuthInfo newMemberAuthInfo = AuthInfo.builder()
                     .appId(appId)
-                    .provider("kakao")
+                    .provider(KAKAO_OAUTH_PROVIDER_NAME)
                     .build();
 
 
@@ -176,6 +183,7 @@ public class KakaoLoginService implements OAuth2LoginService {
         JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO = JwtTokenPayloadCreateDTO.builder()
                 .memberId(member.getId())
                 .nickname(member.getNickname())
+                .provider(KAKAO_OAUTH_PROVIDER_NAME)
                 .build();
 
 
@@ -194,5 +202,19 @@ public class KakaoLoginService implements OAuth2LoginService {
 
         return jwtTokens;
     }
+
+
+
+    @Override
+    public String getProviderLogoutPageUrl() {
+
+        log.info("사용자가 카카오 계정 로그아웃 할지 선택");
+
+        return "https://kauth.kakao.com/oauth/logout?" +
+                "client_id="+ clientId + "&" +
+                "logout_redirect_uri=" + logoutRedirectUrl + "&"
+                + "state=kakao";
+    }
+
 
 }

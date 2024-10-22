@@ -14,4 +14,6 @@ public class JwtTokenPayloadCreateDTO {
 
     private String nickname;
 
+    private String provider;
+
 }

@@ -30,4 +30,8 @@ public class JwtPayloadReader {
     public Date getExpiration(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
     }
+
+    public String getProvider(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("OAuthProvider", String.class);
+    }
 }
