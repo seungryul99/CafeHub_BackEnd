@@ -10,16 +10,19 @@ import lombok.*;
 @AllArgsConstructor
 public class Image {
 
-    @Column(name = "image_url")
-    private String url;
-
     @Column(name = "s3_key")
     private String key;
 
+    @Column(name = "image_url", nullable = false)
+    private String url;
 
 
     public Image(String url){
-        
+        this.url = url;
+    }
+
+    public void updateUrl(String key,String url){
+        this.key = key;
         this.url = url;
     }
 }
