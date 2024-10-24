@@ -32,4 +32,15 @@ public class Member extends BaseTimeEntity {
     @OneToOne (fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn (name = "auth_info_id", unique = true)
     private AuthInfo authInfo;
+
+
+
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImg(String key, String profileImg){
+        this.profileImg.updateUrl(key, profileImg);
+    }
+
 }

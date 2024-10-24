@@ -150,7 +150,7 @@ public class KakaoLoginService implements OAuth2LoginService {
             Member newMember = Member.builder()
                     .email(email)
                     .nickname(nickname)
-                    .profileImg(new Image(profileImageUrl))
+                    .profileImg(profileImageUrl != null ? new Image(profileImageUrl) : new Image("DefaultImage"))
                     .authInfo(newMemberAuthInfo)
                     .build();
 
