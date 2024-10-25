@@ -18,6 +18,10 @@ public class S3KeyGenerator {
     private  String memberProfileImgPath;
 
 
+    public String generateReviewPhotoImgS3Key(String fileName){
+        return reviewPhotoPath + '/' + fileName + UUID.randomUUID();
+    }
+
     public String generateProfileImgS3Key(String fileName) {
         return memberProfileImgPath + '/' + fileName + UUID.randomUUID();
     }

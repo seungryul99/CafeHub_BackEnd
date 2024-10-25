@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/auth/mypage")
 public class MemberController {
 
+
     private final MemberService memberService;
 
 
