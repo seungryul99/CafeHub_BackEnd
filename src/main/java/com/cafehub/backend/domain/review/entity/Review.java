@@ -49,6 +49,6 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "cafe_id")
     private Cafe cafe;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewPhoto> reviewPhotos = new ArrayList<>();
 }
