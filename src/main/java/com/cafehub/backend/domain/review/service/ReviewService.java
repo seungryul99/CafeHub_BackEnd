@@ -129,12 +129,13 @@ public class ReviewService {
 
 
 
+
         if (jwtThreadLocalStorage.isLoginMember()){
 
             Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
             String loginMemberNickname = loginMember.getNickname();
 
-            for (ReviewDetail rd : reviewDetails){
+            for (ReviewDetail rd : reviewDetails.getContent()){
 
                 if (rd.getAuthor().equals(loginMemberNickname)) rd.updateReviewManagement();
             }

@@ -39,7 +39,7 @@ public class ReviewController {
 
 
 
-    @GetMapping("/cafe/{cafeId}/reviews/{currentPage}")
+    @GetMapping("/optional-auth/cafe/{cafeId}/reviews/{currentPage}")
     public ResponseEntity<ResponseDTO<AllReviewGetResponseDTO>> readAllReview(@PathVariable Long cafeId,
                                                                               @PathVariable int currentPage){
 
