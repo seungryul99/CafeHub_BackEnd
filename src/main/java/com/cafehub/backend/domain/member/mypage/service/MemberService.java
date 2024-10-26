@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -62,8 +63,9 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).get();
         member.updateNickname(requestDTO.getNickname());
 
-        Review review = reviewRepository.findById(memberId).get();
-        review.updateWriter(requestDTO.getNickname());
+        List<Review> memberReviewList = reviewRepository.findAllByMemberId(memberId);
+
+        for (Review review : memberReviewList) review.updateWriter(requestDTO.getNickname());
 
 
         return ResponseDTO.success(new MyPageUpdateResponseDTO(memberId));
