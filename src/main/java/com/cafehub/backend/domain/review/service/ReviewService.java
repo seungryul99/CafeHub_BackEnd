@@ -117,6 +117,8 @@ public class ReviewService {
 
         reviewRepository.save(review);
 
+        cafe.updateRatingAndReviewCountByAddReview(review.getRating());
+
         return ResponseDTO.success(new ReviewCreateResponseDTO(review.getId()));
     }
 
