@@ -8,6 +8,8 @@ import com.cafehub.backend.domain.member.mypage.dto.request.MemberNicknameUpdate
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
 import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import com.cafehub.backend.domain.review.entity.Review;
+import com.cafehub.backend.domain.review.repository.ReviewRepository;
 import io.awspring.cloud.s3.S3Operations;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final ReviewRepository reviewRepository;
+
 
     @Transactional(readOnly = true)
     public ResponseDTO<MyPageResponseDTO> getMyPage() {
@@ -58,7 +62,9 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).get();
         member.updateNickname(requestDTO.getNickname());
 
-        // 리뷰의 Author도 수정해야함
+        Review review = reviewRepository.findById(memberId).get();
+        review.updateWriter(requestDTO.getNickname());
+
 
         return ResponseDTO.success(new MyPageUpdateResponseDTO(memberId));
     }

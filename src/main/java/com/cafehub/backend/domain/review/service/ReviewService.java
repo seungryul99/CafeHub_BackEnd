@@ -126,9 +126,11 @@ public class ReviewService {
         Slice<ReviewDetail> reviewDetails = reviewRepository.findReviewsBySlice(requestDTO);
 
 
+
         if (jwtThreadLocalStorage.isLoginMember()){
 
-            String loginMemberNickname = jwtThreadLocalStorage.getMemberNicknameFromJwt();
+            Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+            String loginMemberNickname = loginMember.getNickname();
 
             for (ReviewDetail rd : reviewDetails){
 
