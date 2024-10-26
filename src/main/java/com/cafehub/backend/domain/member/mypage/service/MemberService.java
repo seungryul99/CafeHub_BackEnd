@@ -58,6 +58,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).get();
         member.updateNickname(requestDTO.getNickname());
 
+        // 리뷰의 Author도 수정해야함
 
         return ResponseDTO.success(new MyPageUpdateResponseDTO(memberId));
     }

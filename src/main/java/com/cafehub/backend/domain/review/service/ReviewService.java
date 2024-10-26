@@ -9,15 +9,22 @@ import com.cafehub.backend.domain.cafe.entity.Cafe;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import com.cafehub.backend.domain.review.dto.ReviewDetail;
+import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewCreateRequestDTO;
+import com.cafehub.backend.domain.review.dto.response.AllReviewGetResponseDTO;
 import com.cafehub.backend.domain.review.dto.response.ReviewCreateResponseDTO;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
+import com.cafehub.backend.domain.reviewLike.repository.ReviewLikeRepository;
+import com.cafehub.backend.domain.reviewPhoto.dto.ReviewPhotoDetail;
 import com.cafehub.backend.domain.reviewPhoto.entity.ReviewPhoto;
+import com.cafehub.backend.domain.reviewPhoto.repository.ReviewPhotoRepository;
 import io.awspring.cloud.s3.S3Operations;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +52,10 @@ public class ReviewService {
     private final CafeRepository cafeRepository;
 
     private final MemberRepository memberRepository;
+
+    private final ReviewLikeRepository reviewLikeRepository;
+
+    private final ReviewPhotoRepository reviewPhotoRepository;
 
 
     public ResponseDTO<ReviewCreateResponseDTO> createReview(ReviewCreateRequestDTO requestDTO, List<MultipartFile> reviewPhotos) {
@@ -109,4 +120,71 @@ public class ReviewService {
         return ResponseDTO.success(new ReviewCreateResponseDTO(review.getId()));
     }
 
+    public ResponseDTO<AllReviewGetResponseDTO> getAllReview(AllReviewGetRequestDTO requestDTO) {
+
+        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
+        Slice<ReviewDetail> reviewDetails = reviewRepository.findReviewsBySlice(requestDTO);
+
+
+        if (jwtThreadLocalStorage.isLoginMember()){
+
+            String loginMemberNickname = jwtThreadLocalStorage.getMemberNicknameFromJwt();
+
+            for (ReviewDetail rd : reviewDetails){
+
+                if (rd.getAuthor().equals(loginMemberNickname)) rd.updateReviewManagement();
+            }
+
+            updateLikeStatusInReviews(reviewDetails.getContent(), jwtThreadLocalStorage.getMemberIdFromJwt());
+        }
+        updateReviewPhotoUrls(reviewDetails.getContent());
+
+        return ResponseDTO.success(AllReviewGetResponseDTO.of(reviewDetails.getContent(), cafe.getRating(), cafe.getReviewCnt(), reviewDetails.isLast(), requestDTO.getCurrentPage()));
+    }
+
+
+    private void updateLikeStatusInReviews(List<ReviewDetail> reviewDetails, Long loginMemberId) {
+
+        // Top N 리뷰의 ID 리스트 만들기
+        List<Long> reviewIds = reviewDetails.stream()
+                .map(ReviewDetail::getReviewId)
+                .toList();
+
+        // 한 번의 DB 커넥션으로 사용자가 좋아요를 누른 리뷰 아이디 들을 검색
+        List<Long> likeCheckedReviewIds =  reviewLikeRepository.findLikeCheckedReviewIds(loginMemberId, reviewIds);
+
+        // 최대 N개의 리뷰들을 순회하게 되지만 N이 현재는 2이고 추후 아무리 높아져도 5 정도일 것으로 예상해서 그냥 전수 순회 로직을 짬
+        for (ReviewDetail rd : reviewDetails){
+
+            if(likeCheckedReviewIds.contains(rd.getReviewId())){
+                rd.setLikeChecked(true);
+            }
+        }
+    }
+
+    private void updateReviewPhotoUrls(List<ReviewDetail> reviews){
+
+        // Top N 리뷰의 ID 리스트 만들기
+        List<Long> reviewIds = reviews.stream()
+                .map(ReviewDetail::getReviewId)
+                .toList();
+
+        // 한 번의 DB 커넥션으로 모든 사진 조회
+        List<ReviewPhotoDetail> photoUrls = reviewPhotoRepository.findAllByReviewIdsIn(reviewIds);
+
+        // 리뷰 ID에 따라 사진 URL을 매핑하는 맵 생성 후 세팅, 리뷰 Id : photoUrls 의 레퍼런스 구조
+        Map<Long, List<String>> reviewPhotosMap = new HashMap<>();
+
+        for (ReviewDetail rd : reviews){
+            reviewPhotosMap.put(rd.getReviewId(),new ArrayList<>());
+        }
+
+        for (ReviewPhotoDetail rp : photoUrls){
+            reviewPhotosMap.get(rp.getReviewId()).add(rp.getPhotoUrl());
+        }
+
+        for (ReviewDetail x : reviews) {
+            x.setPhotoUrls(reviewPhotosMap.get(x.getReviewId()));
+        }
+    }
 }
