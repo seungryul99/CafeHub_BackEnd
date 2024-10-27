@@ -5,6 +5,7 @@ import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewCreateRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewDeleteRequestDTO;
+import com.cafehub.backend.domain.review.dto.request.ReviewLikeRequestDTO;
 import com.cafehub.backend.domain.review.dto.response.AllReviewGetResponseDTO;
 import com.cafehub.backend.domain.review.dto.response.ReviewCreateResponseDTO;
 import com.cafehub.backend.domain.review.service.ReviewService;
@@ -52,6 +53,14 @@ public class ReviewController {
     public ResponseEntity<ResponseDTO<Void>> deleteReview(@RequestBody ReviewDeleteRequestDTO requestDTO){
 
         return ResponseEntity.ok(reviewService.deleteReview(requestDTO));
+    }
+
+
+    @PostMapping(value = "/auth/review/like")
+    public ResponseEntity<ResponseDTO<Void>> reviewLikeManage(@RequestBody ReviewLikeRequestDTO requestDTO){
+
+        if(requestDTO.getReviewLike()) return ResponseEntity.ok(reviewService.reviewLike(requestDTO));
+        else return ResponseEntity.ok(reviewService.cancelReviewLike(requestDTO));
     }
 
 }

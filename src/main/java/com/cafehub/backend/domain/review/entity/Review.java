@@ -52,7 +52,15 @@ public class Review extends BaseTimeEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewPhoto> reviewPhotos = new ArrayList<>();
 
-    public void updateWriter(String writer){
+    public void updateWriterByChangeNickname(String writer){
         this.writer = writer;
+    }
+
+    public void updateLikeCntByAddReviewLike(){
+        likeCnt++;
+    }
+
+    public void updateLikeCntByDeleteReviewLike(){
+        likeCnt--;
     }
 }
