@@ -12,6 +12,7 @@ import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewCreateRequestDTO;
+import com.cafehub.backend.domain.review.dto.request.ReviewDeleteRequestDTO;
 import com.cafehub.backend.domain.review.dto.response.AllReviewGetResponseDTO;
 import com.cafehub.backend.domain.review.dto.response.ReviewCreateResponseDTO;
 import com.cafehub.backend.domain.review.entity.Review;
@@ -191,5 +192,38 @@ public class ReviewService {
         for (ReviewDetail x : reviews) {
             x.setPhotoUrls(reviewPhotosMap.get(x.getReviewId()));
         }
+    }
+
+
+    /**
+     *   리뷰 삭제를 위해서 처리 해야 할 일들
+     *
+     *   1. 리뷰 삭제로 인한 카페의 리뷰수 조정, 별점 조정
+     *   2. 삭제할 리뷰의 모든 좋아요 삭제
+     *   3. 삭제할 리뷰의 모든 리뷰 사진들 삭제
+     *   4. 삭제할 리뷰의 s3 상 모든 사진 삭제
+     */
+    public ResponseDTO<Void> deleteReview(ReviewDeleteRequestDTO requestDTO) {
+
+        // 2차검증, 예외처리는 나중에
+
+        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
+        Review deleteReview = reviewRepository.findById(requestDTO.getReviewId()).get();
+
+        cafe.updateRatingAndReviewCountByDeleteReview(deleteReview.getRating());
+
+
+        reviewLikeRepository.deleteAllByReviewId(requestDTO.getReviewId());
+
+        List<ReviewPhoto> deleteReviewReviewPhotos = deleteReview.getReviewPhotos();
+
+        for(ReviewPhoto rp : deleteReviewReviewPhotos){
+
+            s3Operations.deleteObject(s3Bucket, rp.getReviewPhoto().getKey());
+        }
+
+        reviewRepository.deleteById(requestDTO.getReviewId());
+
+        return ResponseDTO.success(null);
     }
 }

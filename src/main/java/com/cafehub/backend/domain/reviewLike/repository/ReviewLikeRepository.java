@@ -11,8 +11,7 @@ import java.util.List;
 
 public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
 
-    boolean existsByMemberIdAndReviewId(Long member_id, Long review_id);
-
+    void deleteAllByReviewId(Long reviewId);
 
     @Query("SELECT rl.review.id FROM ReviewLike rl WHERE rl.member.id = :memberId AND rl.review.id IN :reviewIds")
     List<Long> findLikeCheckedReviewIds(@Param("memberId") Long memberId, @Param("reviewIds") List<Long> reviewIds);

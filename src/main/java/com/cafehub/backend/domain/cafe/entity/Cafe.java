@@ -4,7 +4,6 @@ package com.cafehub.backend.domain.cafe.entity;
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.menu.entity.Menu;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -65,6 +64,20 @@ public class Cafe extends BaseTimeEntity {
 
         double sum = this.rating * reviewCnt + rating;
         reviewCnt++;
+
+        this.rating = sum/reviewCnt;
+    }
+
+    public void updateRatingAndReviewCountByDeleteReview(Integer rating){
+
+        if(this.reviewCnt == 1){
+            reviewCnt--;
+            this.rating = 0.0;
+            return;
+        }
+
+        double sum = this.rating * reviewCnt -rating;
+        reviewCnt--;
 
         this.rating = sum/reviewCnt;
     }
