@@ -4,6 +4,7 @@ package com.cafehub.backend.domain.review.controller;
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewCreateRequestDTO;
+import com.cafehub.backend.domain.review.dto.request.ReviewDeleteRequestDTO;
 import com.cafehub.backend.domain.review.dto.response.AllReviewGetResponseDTO;
 import com.cafehub.backend.domain.review.dto.response.ReviewCreateResponseDTO;
 import com.cafehub.backend.domain.review.service.ReviewService;
@@ -44,6 +45,13 @@ public class ReviewController {
                                                                               @PathVariable int currentPage){
 
         return ResponseEntity.ok(reviewService.getAllReview(new AllReviewGetRequestDTO(cafeId, currentPage)));
+    }
+
+
+    @DeleteMapping("/auth/review")
+    public ResponseEntity<ResponseDTO<Void>> deleteReview(@RequestBody ReviewDeleteRequestDTO requestDTO){
+
+        return ResponseEntity.ok(reviewService.deleteReview(requestDTO));
     }
 
 }
