@@ -65,7 +65,7 @@ public class MemberService {
 
         List<Review> memberReviewList = reviewRepository.findAllByMemberId(memberId);
 
-        for (Review review : memberReviewList) review.updateWriter(requestDTO.getNickname());
+        for (Review review : memberReviewList) review.updateWriterByChangeNickname(requestDTO.getNickname());
 
 
         return ResponseDTO.success(new MyPageUpdateResponseDTO(memberId));

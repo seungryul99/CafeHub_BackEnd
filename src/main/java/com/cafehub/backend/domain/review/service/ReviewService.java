@@ -13,10 +13,12 @@ import com.cafehub.backend.domain.review.dto.ReviewDetail;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewCreateRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewDeleteRequestDTO;
+import com.cafehub.backend.domain.review.dto.request.ReviewLikeRequestDTO;
 import com.cafehub.backend.domain.review.dto.response.AllReviewGetResponseDTO;
 import com.cafehub.backend.domain.review.dto.response.ReviewCreateResponseDTO;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
+import com.cafehub.backend.domain.reviewLike.entity.ReviewLike;
 import com.cafehub.backend.domain.reviewLike.repository.ReviewLikeRepository;
 import com.cafehub.backend.domain.reviewPhoto.dto.ReviewPhotoDetail;
 import com.cafehub.backend.domain.reviewPhoto.entity.ReviewPhoto;
@@ -223,6 +225,34 @@ public class ReviewService {
         }
 
         reviewRepository.deleteById(requestDTO.getReviewId());
+
+        return ResponseDTO.success(null);
+    }
+
+    public ResponseDTO<Void> reviewLike(ReviewLikeRequestDTO requestDTO) {
+
+        Review review = reviewRepository.findById(requestDTO.getReviewId()).get();
+        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+
+        ReviewLike reviewLike = ReviewLike.builder()
+                .review(review)
+                .member(member)
+                .build();
+
+        reviewLikeRepository.save(reviewLike);
+
+        review.updateLikeCntByAddReviewLike();
+
+        return ResponseDTO.success(null);
+    }
+
+    public ResponseDTO<Void> cancelReviewLike(ReviewLikeRequestDTO requestDTO) {
+
+        Review review = reviewRepository.findById(requestDTO.getReviewId()).get();
+
+        reviewLikeRepository.deleteByReviewIdAndMemberId(requestDTO.getReviewId(), jwtThreadLocalStorage.getMemberIdFromJwt());
+
+        review.updateLikeCntByDeleteReviewLike();
 
         return ResponseDTO.success(null);
     }
