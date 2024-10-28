@@ -3,6 +3,8 @@ package com.cafehub.backend.domain.member.mypage.service;
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.common.util.S3KeyGenerator;
+import com.cafehub.backend.domain.comment.entity.Comment;
+import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.mypage.dto.request.MemberNicknameUpdateRequestDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
@@ -40,6 +42,8 @@ public class MemberService {
 
     private final ReviewRepository reviewRepository;
 
+    private final CommentRepository commentRepository;
+
 
     @Transactional(readOnly = true)
     public ResponseDTO<MyPageResponseDTO> getMyPage() {
@@ -64,8 +68,10 @@ public class MemberService {
         member.updateNickname(requestDTO.getNickname());
 
         List<Review> memberReviewList = reviewRepository.findAllByMemberId(memberId);
+        List<Comment> memberCommentList = commentRepository.findALlByMemberId(memberId);
 
         for (Review review : memberReviewList) review.updateWriterByChangeNickname(requestDTO.getNickname());
+        for (Comment comment : memberCommentList) comment.updateWriterByChangeNickname(requestDTO.getNickname());
 
 
         return ResponseDTO.success(new MyPageUpdateResponseDTO(memberId));

@@ -34,4 +34,9 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne (fetch = LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
+
+    public void updateWriterByChangeNickname(String writer) {
+
+        this.writer = writer;
+    }
 }
