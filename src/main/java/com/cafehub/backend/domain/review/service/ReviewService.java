@@ -105,7 +105,7 @@ public class ReviewService {
                 .rating(requestDTO.getReviewRating())
                 .likeCnt(0)
                 .commentCnt(0)
-                .writer(jwtThreadLocalStorage.getMemberNicknameFromJwt())
+                .writer(member.getNickname())
                 .member(member)
                 .cafe(cafe)
                 .reviewPhotos(new ArrayList<>())

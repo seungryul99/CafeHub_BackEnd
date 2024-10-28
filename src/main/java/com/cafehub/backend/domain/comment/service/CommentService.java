@@ -59,9 +59,11 @@ public class CommentService {
     public ResponseDTO<AllCommentGetResponseDTO> getAllCommentsBySlice(AllCommentGetRequestDTO requestDTO) {
 
         Slice<AllCommentGetResponseDTO.CommentDetail> commentDetails = commentRepository.findCommentsBySlice(requestDTO);
-        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
 
-        updateCommentManagement(commentDetails.getContent(), member.getNickname());
+        if(jwtThreadLocalStorage.isLoginMember()){
+            Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+            updateCommentManagement(commentDetails.getContent(), member.getNickname());
+        }
 
         return ResponseDTO.success(AllCommentGetResponseDTO.of(commentDetails.getContent(), commentDetails.isLast(), commentDetails.getNumber()));
     }
