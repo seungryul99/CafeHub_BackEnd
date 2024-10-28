@@ -29,6 +29,8 @@ public class AllCommentGetResponseDTO {
 
         private Long commentId;
 
+        private Long reviewId;
+
         private String nickname;
 
         private String commentWriterProfile;
@@ -42,10 +44,11 @@ public class AllCommentGetResponseDTO {
 
 
         @QueryProjection
-        public CommentDetail(Long commentId, String nickname, String commentWriterProfile,
+        public CommentDetail(Long commentId, Long reviewId, String nickname, String commentWriterProfile,
                              String commentContent, LocalDateTime commentDate){
 
             this.commentId = commentId;
+            this.reviewId = reviewId;
             this.nickname = nickname;
             this.commentWriterProfile = commentWriterProfile;
             this.commentContent = commentContent;
