@@ -67,4 +67,8 @@ public class Review extends BaseTimeEntity {
     public void updateCommentCntByAddComment(){
         commentCnt++;
     }
+
+    public void updateCommentCntByDeleteComment(){
+        commentCnt--;
+    }
 }

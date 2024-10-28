@@ -73,4 +73,14 @@ public class CommentService {
             if (cd.getNickname().equals(nickname)) cd.updateCommentManagement();
         }
     }
+
+    public ResponseDTO<Void> deleteComment(Long reviewId, Long commentId) {
+
+        Review review = reviewRepository.findById(reviewId).get();
+
+        commentRepository.deleteById(commentId);
+        review.updateCommentCntByDeleteComment();
+
+        return ResponseDTO.success(null);
+    }
 }

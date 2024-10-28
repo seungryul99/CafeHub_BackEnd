@@ -38,6 +38,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
         List<AllCommentGetResponseDTO.CommentDetail> commentDetails = jpaQueryFactory
                 .select(new QAllCommentGetResponseDTO_CommentDetail(
                         comment.id,
+                        comment.review.id,
                         comment.writer,
                         member.profileImg.url,
                         comment.content,

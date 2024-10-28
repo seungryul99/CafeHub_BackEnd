@@ -43,4 +43,12 @@ public class CommentController {
 
         return ResponseEntity.ok(commentService.writeComment(requestDTO));
     }
+
+
+    @DeleteMapping("/auth/review/{reviewId}/comment/{commentId}")
+    public ResponseEntity<ResponseDTO<Void>> deleteComment(@PathVariable Long reviewId,
+                                                           @PathVariable Long commentId){
+
+        return ResponseEntity.ok(commentService.deleteComment(reviewId,commentId));
+    }
 }
