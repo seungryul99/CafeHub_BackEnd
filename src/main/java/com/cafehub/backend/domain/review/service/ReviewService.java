@@ -7,6 +7,8 @@ import com.cafehub.backend.common.util.S3KeyGenerator;
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.cafe.entity.Cafe;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
+import com.cafehub.backend.domain.comment.entity.Comment;
+import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
@@ -60,6 +62,7 @@ public class ReviewService {
 
     private final ReviewPhotoRepository reviewPhotoRepository;
 
+    private final CommentRepository commentRepository;
 
     public ResponseDTO<ReviewCreateResponseDTO> createReview(ReviewCreateRequestDTO requestDTO, List<MultipartFile> reviewPhotos) {
 
@@ -129,7 +132,6 @@ public class ReviewService {
 
         Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
         Slice<ReviewDetail> reviewDetails = reviewRepository.findReviewsBySlice(requestDTO);
-
 
 
 
@@ -204,6 +206,7 @@ public class ReviewService {
      *   2. 삭제할 리뷰의 모든 좋아요 삭제
      *   3. 삭제할 리뷰의 모든 리뷰 사진들 삭제
      *   4. 삭제할 리뷰의 s3 상 모든 사진 삭제
+     *   5. 삭제할 리뷰의 모든 댓글 삭제
      */
     public ResponseDTO<Void> deleteReview(ReviewDeleteRequestDTO requestDTO) {
 
@@ -211,6 +214,7 @@ public class ReviewService {
 
         Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
         Review deleteReview = reviewRepository.findById(requestDTO.getReviewId()).get();
+        List<Comment> commentList = commentRepository.findAllByReviewId(requestDTO.getReviewId());
 
         cafe.updateRatingAndReviewCountByDeleteReview(deleteReview.getRating());
 
@@ -224,7 +228,10 @@ public class ReviewService {
             s3Operations.deleteObject(s3Bucket, rp.getReviewPhoto().getKey());
         }
 
+        commentRepository.deleteAll(commentList);
+
         reviewRepository.deleteById(requestDTO.getReviewId());
+
 
         return ResponseDTO.success(null);
     }
