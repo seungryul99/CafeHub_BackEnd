@@ -15,9 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Review extends BaseTimeEntity {
 
     @Id
@@ -51,6 +49,20 @@ public class Review extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewPhoto> reviewPhotos = new ArrayList<>();
+
+    @Builder
+    public Review(String content, Integer rating, Integer likeCnt, Integer commentCnt,
+                  String writer, Member member, Cafe cafe, List<ReviewPhoto> reviewPhotos) {
+
+        this.content = content;
+        this.rating = rating;
+        this.likeCnt = likeCnt;
+        this.commentCnt = commentCnt;
+        this.writer = writer;
+        this.member = member;
+        this.cafe = cafe;
+        this.reviewPhotos = reviewPhotos;
+    }
 
     public void updateWriterByChangeNickname(String writer){
         this.writer = writer;

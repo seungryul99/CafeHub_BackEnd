@@ -10,9 +10,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -34,6 +32,15 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne (fetch = LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
+
+
+    @Builder
+    public Comment(String content, String writer, Member member, Review review) {
+        this.content = content;
+        this.writer = writer;
+        this.member = member;
+        this.review = review;
+    }
 
     public void updateWriterByChangeNickname(String writer) {
 

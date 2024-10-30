@@ -10,9 +10,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Bookmark extends BaseTimeEntity {
 
     @Id
@@ -27,4 +25,10 @@ public class Bookmark extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "cafe_id")
     private Cafe cafe;
+
+    @Builder
+    public Bookmark(Member member, Cafe cafe) {
+        this.member = member;
+        this.cafe = cafe;
+    }
 }

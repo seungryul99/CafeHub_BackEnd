@@ -10,9 +10,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -33,6 +31,14 @@ public class Member extends BaseTimeEntity {
     @JoinColumn (name = "auth_info_id", unique = true)
     private AuthInfo authInfo;
 
+
+    @Builder
+    private Member(String nickname, String email, Image profileImg, AuthInfo authInfo) {
+        this.nickname = nickname;
+        this.email = email;
+        this.profileImg = profileImg;
+        this.authInfo = authInfo;
+    }
 
 
     public void updateNickname(String nickname){

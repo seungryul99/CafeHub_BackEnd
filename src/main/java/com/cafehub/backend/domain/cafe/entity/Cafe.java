@@ -12,9 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Cafe extends BaseTimeEntity {
 
     @Id
@@ -53,6 +51,23 @@ public class Cafe extends BaseTimeEntity {
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
 
+
+    @Builder
+    public Cafe(String name, Theme theme, String address, String phone,
+                String operationHours, String closeDays, Image cafeImg,
+                Double rating, Integer reviewCnt, List<Menu> menuList) {
+
+        this.name = name;
+        this.theme = theme;
+        this.address = address;
+        this.phone = phone;
+        this.operationHours = operationHours;
+        this.closeDays = closeDays;
+        this.cafeImg = cafeImg;
+        this.rating = rating;
+        this.reviewCnt = reviewCnt;
+        this.menuList = menuList;
+    }
 
     public void updateRatingAndReviewCountByAddReview(Integer rating){
 

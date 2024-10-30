@@ -7,9 +7,7 @@ import java.util.Date;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthInfo {
 
     @Id
@@ -24,6 +22,14 @@ public class AuthInfo {
     private Date jwtRefreshTokenExpireIn;
 
     private Long appId;
+
+    @Builder
+    public AuthInfo(String provider, String jwtRefreshToken, Date jwtRefreshTokenExpireIn, Long appId) {
+        this.provider = provider;
+        this.jwtRefreshToken = jwtRefreshToken;
+        this.jwtRefreshTokenExpireIn = jwtRefreshTokenExpireIn;
+        this.appId = appId;
+    }
 
     public void updateAuthInfo(String jwtRefreshToken, Date expiration) {
 
