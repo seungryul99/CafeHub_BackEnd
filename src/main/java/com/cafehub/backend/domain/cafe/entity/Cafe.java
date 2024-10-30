@@ -53,7 +53,7 @@ public class Cafe extends BaseTimeEntity {
 
 
     @Builder
-    public Cafe(String name, Theme theme, String address, String phone,
+    private Cafe(String name, Theme theme, String address, String phone,
                 String operationHours, String closeDays, Image cafeImg,
                 Double rating, Integer reviewCnt, List<Menu> menuList) {
 

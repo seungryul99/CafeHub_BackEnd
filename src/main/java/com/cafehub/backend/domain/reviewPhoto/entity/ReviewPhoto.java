@@ -25,7 +25,7 @@ public class ReviewPhoto extends BaseTimeEntity {
     private Review review;
 
     @Builder
-    public ReviewPhoto(Image reviewPhoto, Review review) {
+    private ReviewPhoto(Image reviewPhoto, Review review) {
         this.reviewPhoto = reviewPhoto;
         this.review = review;
     }

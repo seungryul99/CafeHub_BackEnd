@@ -24,7 +24,7 @@ public class AuthInfo {
     private Long appId;
 
     @Builder
-    public AuthInfo(String provider, String jwtRefreshToken, Date jwtRefreshTokenExpireIn, Long appId) {
+    private AuthInfo(String provider, String jwtRefreshToken, Date jwtRefreshTokenExpireIn, Long appId) {
         this.provider = provider;
         this.jwtRefreshToken = jwtRefreshToken;
         this.jwtRefreshTokenExpireIn = jwtRefreshTokenExpireIn;

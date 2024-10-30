@@ -51,7 +51,7 @@ public class Review extends BaseTimeEntity {
     private List<ReviewPhoto> reviewPhotos = new ArrayList<>();
 
     @Builder
-    public Review(String content, Integer rating, Integer likeCnt, Integer commentCnt,
+    private Review(String content, Integer rating, Integer likeCnt, Integer commentCnt,
                   String writer, Member member, Cafe cafe, List<ReviewPhoto> reviewPhotos) {
 
         this.content = content;

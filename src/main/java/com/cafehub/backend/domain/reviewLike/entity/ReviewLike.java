@@ -27,7 +27,7 @@ public class ReviewLike extends BaseTimeEntity {
     private Review review;
 
     @Builder
-    public ReviewLike(Member member, Review review) {
+    private ReviewLike(Member member, Review review) {
         this.member = member;
         this.review = review;
     }
