@@ -1,11 +1,14 @@
 package com.cafehub.backend.common.dto;
 
 
+import com.cafehub.backend.common.exception.BaseErrorCode;
+import com.cafehub.backend.common.exception.dto.ErrorReason;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
+
+import static com.cafehub.backend.common.constants.CafeHubConstants.OK;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,10 +23,15 @@ public class ResponseDTO<T> {
 
     private final T data;
 
+    public static <T> ResponseDTO<T> success(T data) {
 
-
-    public static <T> ResponseDTO<T>  success(T data){
-
-        return new ResponseDTO<T>(true, HttpStatus.OK.toString(), null, data);
+        return new ResponseDTO<>(true, OK, null, data);
     }
+
+    public static <T> ResponseDTO<T> fail(BaseErrorCode errorCode) {
+
+        ErrorReason errorReason = errorCode.getErrorReason();
+        return new ResponseDTO<>(false , errorReason.getCode() , errorReason.getErrorMessage(), null);
+    }
+
 }
