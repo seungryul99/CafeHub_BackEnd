@@ -12,9 +12,7 @@ import com.cafehub.backend.domain.cafe.entity.Cafe;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
 import com.cafehub.backend.domain.menu.repository.MenuRepository;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
-import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
-import com.cafehub.backend.domain.reviewLike.entity.ReviewLike;
 import com.cafehub.backend.domain.reviewLike.repository.ReviewLikeRepository;
 import com.cafehub.backend.domain.reviewPhoto.dto.ReviewPhotoDetail;
 import com.cafehub.backend.domain.reviewPhoto.repository.ReviewPhotoRepository;
@@ -29,13 +27,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.TOP_N_REVIEW_SIZE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CafeService {
-
-    private static final int TOP_N_REVIEW_SIZE = 2;
 
     private final CafeRepository cafeRepository;
 
@@ -52,13 +50,12 @@ public class CafeService {
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
 
-
     // [Refactor Point] readOnly 옵션은 실제로 성능 비교를 해봐야 알 수 있음.
     // readOnly를 지원하지 않는 DB의 경우 쓸데 없이 네트워크만 한 번 더 타고 가서 나 읽기전용 모드요 라고 알려주는 역효과만 있음
     @Transactional(readOnly = true)
     public ResponseDTO<CafeListResponseDTO> getCafesByThemeAndSort(CafeListRequestDTO requestDTO) {
 
-        Slice<CafeDetails> cafeDetails =cafeRepository.findCafesBySlice(requestDTO);
+        Slice<CafeDetails> cafeDetails = cafeRepository.findCafesBySlice(requestDTO);
 
         return ResponseDTO.success(CafeListResponseDTO.builder()
                 .cafeList(cafeDetails.getContent())
@@ -77,7 +74,7 @@ public class CafeService {
      *  3.카페의 Top N개의 리뷰와 리뷰 사진들
      *
      *  <로그인 한 사용자의 경우>
-     *  4. 해당 카페를 북마크 한 적이 있는지 여부 & 해당 카페의 Top N개의 리뷰에 대해서 좋아요를 누른적이 있는지 여뷰
+     *  4. 해당 카페를 북마크 한 적이 있는지 여부 & 해당 카페의 Top N개의 리뷰에 대해서 좋아요를 누른적이 있는지 여부
      *
      *  <변경사항>
      *  + 리뷰 작성자 프로필 추가

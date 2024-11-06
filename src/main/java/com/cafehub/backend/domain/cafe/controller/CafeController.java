@@ -7,18 +7,22 @@ import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import com.cafehub.backend.domain.cafe.service.CafeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class CafeController implements CafeControllerDocs {
+public class CafeController implements CafeControllerAPI {
 
     private final CafeService cafeService;
-
 
 
     @GetMapping("/cafeList/{theme}/{sortedType}/{currentPage}")
@@ -26,14 +30,7 @@ public class CafeController implements CafeControllerDocs {
                                                                         @PathVariable("sortedType") String sortType,
                                                                         @PathVariable("currentPage") int currentPage){
 
-
-        // [Refactor Point] 파라미터 취합 -> DTO로 생성, 이 로직을 컨트롤러가 아닌 다른 곳에서 가져갈 수 있지 않을까?
-        CafeListRequestDTO requestDTO = CafeListRequestDTO.builder()
-                .theme(theme)
-                .sortType(sortType)
-                .currentPage(currentPage)
-                .build();
-
+        CafeListRequestDTO requestDTO = CafeListRequestDTO.fromThemeSortAndPage(theme,sortType,currentPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(cafeService.getCafesByThemeAndSort(requestDTO));
     }

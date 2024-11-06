@@ -4,6 +4,7 @@ import com.cafehub.backend.domain.cafe.dto.CafeDetails;
 import com.cafehub.backend.domain.cafe.dto.QCafeDetails;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.entity.Theme;
+import com.cafehub.backend.domain.cafe.exception.InvalidCafeListPageRequest;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,15 +16,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.CAFE_LIST_PAGING_SIZE;
 import static com.cafehub.backend.domain.cafe.entity.QCafe.cafe;
 
 
 
 @Repository
 public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
-
-    private static final int PAGE_SIZE = 10;
-
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -36,8 +35,7 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
     @Override
     public Slice<CafeDetails> findCafesBySlice(CafeListRequestDTO requestDTO) {
 
-        int page = requestDTO.getCurrentPage();
-
+        int currentPage = requestDTO.getCurrentPage();
 
         List<CafeDetails> cafeList = jpaQueryFactory
                 .select(new QCafeDetails(
@@ -50,15 +48,16 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
                 .from(cafe)
                 .orderBy(getOrderSpecifier(requestDTO.getSortType()), cafe.id.desc())
                 .where(themeEq(requestDTO.getTheme()))
-                .offset(page * PAGE_SIZE)
-                .limit(PAGE_SIZE + 1)
+                .offset(currentPage * CAFE_LIST_PAGING_SIZE)
+                .limit(CAFE_LIST_PAGING_SIZE + 1)
                 .fetch();
 
+        if(cafeList.isEmpty()) throw new InvalidCafeListPageRequest();
 
-        boolean hasNext = cafeList.size() > PAGE_SIZE;
+        boolean hasNext = cafeList.size() > CAFE_LIST_PAGING_SIZE;
         if (hasNext) cafeList.removeLast();
 
-        return new SliceImpl<>(cafeList, PageRequest.of(page, PAGE_SIZE), hasNext);
+        return new SliceImpl<>(cafeList, PageRequest.of(currentPage, CAFE_LIST_PAGING_SIZE), hasNext);
     }
 
     private BooleanExpression themeEq(String theme) {
@@ -68,12 +67,12 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
 
     private OrderSpecifier<?> getOrderSpecifier(String sortType) {
         return switch (sortType) {
-            case "rating" -> cafe.rating.desc();
-            case "rating_a" -> cafe.rating.asc();
-            case "reviewNum" -> cafe.reviewCnt.desc();
-            case "reviewNum_a" -> cafe.reviewCnt.asc();
-            case "name" -> cafe.name.asc();
-            case "name_d" -> cafe.name.desc();
+            case "rating_desc" -> cafe.rating.desc();
+            case "rating_asc" -> cafe.rating.asc();
+            case "reviewNum_desc" -> cafe.reviewCnt.desc();
+            case "reviewNum_asc" -> cafe.reviewCnt.asc();
+            case "name_asc" -> cafe.name.asc();
+            case "name_desc" -> cafe.name.desc();
             default -> null;
         };
     }
