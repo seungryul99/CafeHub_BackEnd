@@ -28,10 +28,9 @@ public class ResponseDTO<T> {
         return new ResponseDTO<>(true, OK, null, data);
     }
 
-    public static <T> ResponseDTO<T> fail(BaseErrorCode errorCode) {
+    public static <T> ResponseDTO<T> fail(String code, String errorMessage) {
 
-        ErrorReason errorReason = errorCode.getErrorReason();
-        return new ResponseDTO<>(false , errorReason.getCode() , errorReason.getErrorMessage(), null);
+        return new ResponseDTO<>(false , code , errorMessage, null);
     }
 
 }
