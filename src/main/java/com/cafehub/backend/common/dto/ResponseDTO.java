@@ -33,4 +33,10 @@ public class ResponseDTO<T> {
         return new ResponseDTO<>(false , code , errorMessage, null);
     }
 
+    public static <T> ResponseDTO<T> fail(ErrorReason errorReason) {
+
+        return new ResponseDTO<>(false , errorReason.getCode() , errorReason.getErrorMessage(), null);
+    }
+
+
 }

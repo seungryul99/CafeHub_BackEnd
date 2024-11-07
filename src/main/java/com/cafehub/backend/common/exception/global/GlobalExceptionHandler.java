@@ -31,7 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         ErrorReason errorReason = ex.getErrorReason();
 
         return ResponseEntity.status(errorReason.getStatus())
-                .body(ResponseDTO.fail(errorReason.getCode(), errorReason.getErrorMessage()));
+                .body(ResponseDTO.fail(errorReason));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         ErrorReason errorReason = CommonErrorCode._INVALID_PARAM_REQUEST.getErrorReason();
 
         return ResponseEntity.status(errorReason.getStatus())
-                .body(ResponseDTO.fail(errorReason.getCode(), errorReason.getErrorMessage()));
+                .body(ResponseDTO.fail(errorReason));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         ErrorReason errorReason = CommonErrorCode._PARAM_TYPE_MISMATCH_REQUEST.getErrorReason();
 
         return ResponseEntity.status(errorReason.getStatus())
-                .body(ResponseDTO.fail(errorReason.getCode(), errorReason.getErrorMessage()));
+                .body(ResponseDTO.fail(errorReason));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         ErrorReason errorReason = CommonErrorCode._METHOD_NOT_ALLOWED.getErrorReason();
 
         return ResponseEntity.status(errorReason.getStatus())
-                .body(ResponseDTO.fail(errorReason.getCode(), errorReason.getErrorMessage()));
+                .body(ResponseDTO.fail(errorReason));
     }
 
 
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         ErrorReason errorReason = CommonErrorCode._NOT_FOUND.getErrorReason();
 
         return ResponseEntity.status(status)
-                .body(ResponseDTO.fail(errorReason.getCode(), errorReason.getErrorMessage()));
+                .body(ResponseDTO.fail(errorReason));
     }
 
 
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
         ErrorReason errorReason = CommonErrorCode._UNKNOWN_INTERNAL_SERVER_ERROR.getErrorReason();
 
         return ResponseEntity.status(errorReason.getStatus())
-                .body(ResponseDTO.fail(errorReason.getCode(), errorReason.getErrorMessage()));
+                .body(ResponseDTO.fail(errorReason));
     }
 
 }
