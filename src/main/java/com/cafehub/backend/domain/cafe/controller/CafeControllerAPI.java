@@ -25,13 +25,9 @@ public interface CafeControllerAPI {
     @Operation(
             summary = "카페 리스트 조회",
             description = "사용자가 선택  한 테마와 정렬 기준으로 카페 리스트를 조회합니다. 1페이지에 10개의 카페를 받을 수 있습니다.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "성공적으로 카페 리스트를 조회한 경우"),
-                    @ApiResponse(responseCode = "400", description = "잘못된 요청으로 인해 조회 실패")
-            },
             parameters = {
                     @Parameter(name = "theme", description = "Date | Meet | Dessert | Study | All", example = "Date"),
-                    @Parameter(name = "sortedType", description = "name | name_d | reviewNum | reviewNum_a | rating | rating_a", example = "name"),
+                    @Parameter(name = "sortedType", description = "name_asc | name_desc | reviewNum_desc | reviewNum_asc | rating_desc | rating_asc", example = "name_asc"),
                     @Parameter(name = "currentPage", description = "0 이상의 정수", example = "0")
             })
     @GetMapping("/cafeList/{theme}/{sortedType}/{currentPage}")

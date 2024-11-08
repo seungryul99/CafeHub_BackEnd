@@ -17,7 +17,7 @@ public class CafeListRequestDTO {
         this.currentPage = currentPage;
     }
 
-    public static CafeListRequestDTO fromThemeSortAndPage (String theme, String sortType, Integer currentPage){
+    public static CafeListRequestDTO themeSortPageOf (String theme, String sortType, Integer currentPage){
         return CafeListRequestDTO.builder()
                 .theme(theme)
                 .sortType(sortType)

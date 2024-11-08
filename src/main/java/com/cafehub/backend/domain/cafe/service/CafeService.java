@@ -18,7 +18,9 @@ import com.cafehub.backend.domain.reviewPhoto.dto.ReviewPhotoDetail;
 import com.cafehub.backend.domain.reviewPhoto.repository.ReviewPhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,13 +57,7 @@ public class CafeService {
     @Transactional(readOnly = true)
     public ResponseDTO<CafeListResponseDTO> getCafesByThemeAndSort(CafeListRequestDTO requestDTO) {
 
-        Slice<CafeDetails> cafeDetails = cafeRepository.findCafesBySlice(requestDTO);
-
-        return ResponseDTO.success(CafeListResponseDTO.builder()
-                .cafeList(cafeDetails.getContent())
-                .isLast(cafeDetails.isLast())
-                .currentPage(cafeDetails.getNumber())
-                .build());
+        return ResponseDTO.success(CafeListResponseDTO.from(cafeRepository.findCafesBySlice(requestDTO)));
     }
 
 

@@ -30,13 +30,10 @@ public class CafeController implements CafeControllerAPI {
                                                                         @PathVariable("sortedType") String sortType,
                                                                         @PathVariable("currentPage") int currentPage){
 
-        CafeListRequestDTO requestDTO = CafeListRequestDTO.fromThemeSortAndPage(theme,sortType,currentPage);
+        CafeListRequestDTO requestDTO = CafeListRequestDTO.themeSortPageOf(theme,sortType,currentPage);
 
         return ResponseEntity.status(HttpStatus.OK).body(cafeService.getCafesByThemeAndSort(requestDTO));
     }
-
-
-
 
     @GetMapping("/optional-auth/cafe/{cafeId}")
     public ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@PathVariable("cafeId") Long cafeId){

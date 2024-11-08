@@ -4,11 +4,11 @@ import com.cafehub.backend.domain.cafe.dto.CafeDetails;
 import com.cafehub.backend.domain.cafe.dto.QCafeDetails;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.entity.Theme;
-import com.cafehub.backend.domain.cafe.exception.InvalidCafeListPageRequest;
+import com.cafehub.backend.domain.cafe.exception.InvalidCafeListPageRequestException;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -20,17 +20,11 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.CAFE_LIST_PA
 import static com.cafehub.backend.domain.cafe.entity.QCafe.cafe;
 
 
-
 @Repository
+@RequiredArgsConstructor
 public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-
-    // [Refactor Point] QueryDsl Config로 빼야 할까? 이유 분석하고 결정
-    public CafeRepositoryCustomImpl(EntityManager entityManager){
-        this.jpaQueryFactory = new JPAQueryFactory(entityManager);
-    }
-
 
     @Override
     public Slice<CafeDetails> findCafesBySlice(CafeListRequestDTO requestDTO) {
@@ -52,7 +46,7 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
                 .limit(CAFE_LIST_PAGING_SIZE + 1)
                 .fetch();
 
-        if(cafeList.isEmpty()) throw new InvalidCafeListPageRequest();
+        if(cafeList.isEmpty()) throw new InvalidCafeListPageRequestException();
 
         boolean hasNext = cafeList.size() > CAFE_LIST_PAGING_SIZE;
         if (hasNext) cafeList.removeLast();
@@ -92,8 +86,6 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
                 .from(cafe)
                 .where(cafe.id.in(cafeIds))
                 .fetch();
-
-
 
         return cafeList;
     }

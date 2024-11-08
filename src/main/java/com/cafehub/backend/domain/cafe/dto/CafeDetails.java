@@ -11,15 +11,10 @@ import lombok.Setter;
 public class CafeDetails {
 
     private Long cafeId;
-
     private String cafePhotoUrl;
-
     private String cafeName;
-
     private Theme cafeTheme;
-
     private Double cafeRating;
-
     private Integer cafeReviewNum;
 
     @QueryProjection
@@ -31,5 +26,4 @@ public class CafeDetails {
         this.cafeRating = cafeRating;
         this.cafeReviewNum = cafeReviewNum;
     }
-
 }

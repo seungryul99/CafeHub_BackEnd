@@ -3,9 +3,9 @@ package com.cafehub.backend.domain.cafe.exception;
 import com.cafehub.backend.common.exception.CafeHubException;
 import com.cafehub.backend.domain.cafe.exception.code.CafeExceptionCode;
 
-public class InvalidCafeListPageRequest extends CafeHubException {
+public class InvalidCafeListPageRequestException extends CafeHubException {
 
-    public InvalidCafeListPageRequest() {
+    public InvalidCafeListPageRequestException() {
         super(CafeExceptionCode.INVALID_PAGE_REQUEST);
     }
 }
