@@ -17,8 +17,6 @@ public class MenuService {
 
     public ResponseDTO<MenuListResponse> getMenuList(Long cafeId) {
 
-        MenuListResponse menuListResponse = new MenuListResponse(menuRepository.findAllMenuList(cafeId));
-
-        return ResponseDTO.success(menuListResponse);
+        return ResponseDTO.success(new MenuListResponse(menuRepository.findAllMenuList(cafeId)));
     }
 }

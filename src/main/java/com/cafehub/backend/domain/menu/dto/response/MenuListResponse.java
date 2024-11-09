@@ -13,17 +13,13 @@ public class MenuListResponse {
 
     private List<MenuDetail> menuList;
 
-
     @Getter
     @Setter
     public static class MenuDetail {
 
         private Long menuId;
-
         private Category category;
-
         private String menuName;
-
         private Integer price;
 
         @QueryProjection

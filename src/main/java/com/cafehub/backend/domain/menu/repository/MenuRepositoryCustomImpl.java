@@ -4,6 +4,7 @@ import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.QCafeInfoResponseDTO_BestMenuDetail;
 import com.cafehub.backend.domain.menu.dto.response.MenuListResponse;
 import com.cafehub.backend.domain.menu.dto.response.QMenuListResponse_MenuDetail;
+import com.cafehub.backend.domain.menu.exception.MenuListNotFoundException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
     @Override
     public List<MenuListResponse.MenuDetail> findAllMenuList(Long cafeId) {
 
-        return jpaQueryFactory
+        List<MenuListResponse.MenuDetail> menuDetailList = jpaQueryFactory
                 .select(new QMenuListResponse_MenuDetail(
                         menu.id,
                         menu.category,
@@ -49,5 +50,9 @@ public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
                 .from(menu)
                 .where(menu.cafe.id.eq(cafeId))
                 .fetch();
+
+        if (menuDetailList.isEmpty()) throw new MenuListNotFoundException();
+
+        return menuDetailList;
     }
 }
