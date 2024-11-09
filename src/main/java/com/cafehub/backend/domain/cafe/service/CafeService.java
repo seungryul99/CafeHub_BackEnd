@@ -4,11 +4,11 @@ package com.cafehub.backend.domain.cafe.service;
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.bookmark.repository.BookmarkRepository;
-import com.cafehub.backend.domain.cafe.dto.CafeDetails;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeListResponseDTO;
 import com.cafehub.backend.domain.cafe.entity.Cafe;
+import com.cafehub.backend.domain.cafe.exception.CafeNotFoundException;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
 import com.cafehub.backend.domain.menu.repository.MenuRepository;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
@@ -18,9 +18,6 @@ import com.cafehub.backend.domain.reviewPhoto.dto.ReviewPhotoDetail;
 import com.cafehub.backend.domain.reviewPhoto.repository.ReviewPhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.cafehub.backend.common.constants.CafeHubConstants.TOP_N_REVIEW_SIZE;
 
 @Slf4j
 @Service
@@ -67,45 +62,39 @@ public class CafeService {
      *  <모든 사용자에게 제공>
      *  1.카페의 기본 정보
      *  2.카페의 대표 메뉴들
-     *  3.카페의 Top N개의 리뷰와 리뷰 사진들
+     *  3.카페의 Top N개의 리뷰와 리뷰 사진들과 리뷰 작성자 프로필
      *
      *  <로그인 한 사용자의 경우>
      *  4. 해당 카페를 북마크 한 적이 있는지 여부 & 해당 카페의 Top N개의 리뷰에 대해서 좋아요를 누른적이 있는지 여부
-     *
-     *  <변경사항>
-     *  + 리뷰 작성자 프로필 추가
      */
     @Transactional(readOnly = true)
     public ResponseDTO<CafeInfoResponseDTO> getCafeInfo(Long cafeId) {
 
-
-        // 1.카페의 기본 정보
-        // Optional 처리는 나중에, 파라미터로 부터 받은 카페 ID를 통해서 DB에서 해당 카페의 기본 정보를 가져옴
-        Cafe cafe = cafeRepository.findById(cafeId).get();
-
-        // 2.카페의 대표 메뉴들
-        // 해당 카페의 대표 메뉴 리스트를 가져옴, 바로 DTO 레벨로 조회
+        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeNotFoundException::new);
         List<CafeInfoResponseDTO.BestMenuDetail> bestMenuList = menuRepository.findBestMenuList(cafeId);
-
-        // 3.카페의 Top N개의 리뷰와 리뷰 사진들
-        // 좋아요를 기준으로 TOP N 개의 리뷰를 가져옴, 단 이때 사용자가 각 리뷰에 대해 좋아요를 눌렀는지 체크여부와 사진들은 안가져옴
-        List<ReviewDetail> topNReview = reviewRepository.findTopNReviewsByCafeId(cafeId, TOP_N_REVIEW_SIZE);
+        List<ReviewDetail> topNReview = reviewRepository.findTopNReviewsByCafeId(cafeId);
         updateReviewPhotoUrls(topNReview);
 
-
-        // ThreadLocal에서 현재 회원이 로그인 했는지 확인 후 정보를 가지고 옴.
         Long loginMemberId = null;
         Boolean bookmarkChecked = false;
 
         if (jwtThreadLocalStorage.isLoginMember()) loginMemberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
-        // 4.로그인 한 회원의 경우 해당 카페를 북마크 한 적이 있는지 여부 & 해당 카페의 Top N개의 리뷰에 대해서 좋아요를 누른적이 있는지 여뷰
+        // 로그인 한 회원의 경우 해당 카페를 북마크 한 적이 있는지 여부 & 해당 카페의 Top N개의 리뷰에 대해서 좋아요를 누른적이 있는지 여부 체크
         if(loginMemberId != null){
             bookmarkChecked = bookmarkRepository.existsByCafeIdAndMemberId(cafeId, loginMemberId);
             updateLikeStatusInReviews(topNReview, loginMemberId);
         }
 
-        return ResponseDTO.success(CafeInfoResponseDTO.of(cafe, bookmarkChecked, bestMenuList, topNReview));
+        return ResponseDTO.success(
+                CafeInfoResponseDTO.createFromCafeBookmarkMenuReview(
+                        cafe,
+                        bookmarkChecked,
+                        bestMenuList,
+                        topNReview
+                )
+        );
+
     }
 
     private void updateReviewPhotoUrls(List<ReviewDetail> topNReview){

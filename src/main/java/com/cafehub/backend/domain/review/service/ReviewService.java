@@ -142,7 +142,7 @@ public class ReviewService {
 
             for (ReviewDetail rd : reviewDetails.getContent()){
 
-                if (rd.getAuthor().equals(loginMemberNickname)) rd.updateReviewManagement();
+                if (rd.getAuthor().equals(loginMemberNickname)) rd.updateReviewManagementEnabled();
             }
 
             updateLikeStatusInReviews(reviewDetails.getContent(), jwtThreadLocalStorage.getMemberIdFromJwt());

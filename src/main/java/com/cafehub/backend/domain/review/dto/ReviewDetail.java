@@ -14,27 +14,20 @@ import java.util.List;
 public class ReviewDetail {
 
     private Long reviewId;
-
     private String author;
-
     private String authorProfile;
-
     private Integer reviewRating;
-
     private String reviewContent;
 
     @JsonFormat(pattern = "yy.MM.dd hh.mm")
     private LocalDateTime reviewCreateAt;
 
     private Integer likeCnt;
-
     private Integer commentCnt;
 
-    // 객체를 생성 할 때  default == false가 유의미하게 활용됨
+    // 아래 두 필드는 객체를 생성할 때 default 값인 false가 유의미 하게 사용됨.
     private boolean likeChecked;
-
     private boolean reviewManagement;
-
     private List<String> photoUrls;
 
     @QueryProjection
@@ -51,7 +44,7 @@ public class ReviewDetail {
         this.commentCnt = commentCnt;
     }
 
-    public void updateReviewManagement(){
+    public void updateReviewManagementEnabled(){
         reviewManagement = true;
     }
 }
