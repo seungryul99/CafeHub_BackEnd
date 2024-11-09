@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface ReviewRepositoryCustom {
 
-    List<ReviewDetail> findTopNReviewsByCafeId(Long cafeId, int topNReviewSize);
+    List<ReviewDetail> findTopNReviewsByCafeId(Long cafeId);
 
     Slice<ReviewDetail> findReviewsBySlice(AllReviewGetRequestDTO requestDTO);
 }

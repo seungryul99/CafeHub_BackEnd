@@ -36,15 +36,14 @@ public interface CafeControllerAPI {
                                                                  @PositiveOrZero(message = "카페리스트 검색 조건중 현재 페이지는 0 이상의 정수만 입력해야 합니다") int currentPage);
 
 
+
     @Operation(
             summary = "카페 상세정보 조회",
-            description = "사용자가 선택한 카페의 id를 기반으로 해당 카페의 정보들을 조회합니다.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "성공적으로 카페를 조회한 경우"),
-                    @ApiResponse(responseCode = "400", description = "잘못된 요청으로 인해 조회 실패")
-            },
+            description = "사용자가 선택한 카페의 Id에 해당하는 카페의 정보들을 조회합니다.",
             parameters = {
                     @Parameter(name = "cafeId", description = "1 이상의 정수", example = "1")
             })
-    ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@PathVariable("cafeId") Long cafeId);
+    @GetMapping("/optional-auth/cafe/{cafeId}")
+    ResponseEntity<ResponseDTO<CafeInfoResponseDTO>> getCafeInfo(@Positive(message = "조회 하려는 카페의 ID는 1이상의 정수여야 합니다") Long cafeId);
+
 }

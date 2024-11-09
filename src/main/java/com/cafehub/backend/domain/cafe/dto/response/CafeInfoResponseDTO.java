@@ -17,18 +17,28 @@ import java.util.List;
 @Builder
 public class CafeInfoResponseDTO {
 
+    private Long cafeId;
+    private String cafePhotoUrl;
+    private String cafeName;
+    private Theme cafeTheme;
+    private Integer cafeReviewCnt;
+    private String cafeOperationHour;
+    private String cafeAddress;
+    private String cafePhone;
+    private Double cafeRating;
+    private Boolean bookmarkChecked;
+    private List<BestMenuDetail> bestMenuList;
+    private List<ReviewDetail> bestReviewList;
+
     @Getter
     @Setter
     public static class BestMenuDetail{
 
         private Long menuId;
-
         private String name;
-
         private Integer price;
 
-
-        @Builder
+        @Builder(access = AccessLevel.PRIVATE)
         @QueryProjection
         public BestMenuDetail(Long menuId, String name, Integer price) {
             this.menuId = menuId;
@@ -37,36 +47,7 @@ public class CafeInfoResponseDTO {
         }
     }
 
-
-    private Long cafeId;
-
-    private String cafePhotoUrl;
-
-    private String cafeName;
-
-    private Theme cafeTheme;
-
-    private Integer cafeReviewCnt;
-
-    private String cafeOperationHour;
-
-    private String cafeAddress;
-
-    private String cafePhone;
-
-    private Double cafeRating;
-
-    private Boolean bookmarkChecked;
-
-    private List<BestMenuDetail> bestMenuList;
-
-    private List<ReviewDetail> bestReviewList;
-
-
-
-
-    // 여기서 수행하는게 맞을까? Converter로 옮길까? 정적 메서드로 제공해도 되는가? 고민
-    public static CafeInfoResponseDTO of(Cafe cafe, Boolean bookmarkChecked,
+    public static CafeInfoResponseDTO createFromCafeBookmarkMenuReview(Cafe cafe, Boolean bookmarkChecked,
                                          List<CafeInfoResponseDTO.BestMenuDetail> bestMenuList,
                                          List<ReviewDetail> topNReview){
 

@@ -18,7 +18,7 @@ public class CafeListResponseDTO {
     private Integer currentPage;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private CafeListResponseDTO(List<CafeDetails> cafeList, Boolean isLast, Integer currentPage) {
+    public CafeListResponseDTO(List<CafeDetails> cafeList, Boolean isLast, Integer currentPage) {
         this.cafeList = cafeList;
         this.isLast = isLast;
         this.currentPage = currentPage;

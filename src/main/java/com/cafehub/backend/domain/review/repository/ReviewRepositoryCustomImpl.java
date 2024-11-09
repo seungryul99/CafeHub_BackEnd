@@ -1,6 +1,7 @@
 package com.cafehub.backend.domain.review.repository;
 
 
+import com.cafehub.backend.common.constants.CafeHubConstants;
 import com.cafehub.backend.domain.review.dto.QReviewDetail;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.TOP_N_REVIEW_SIZE;
 import static com.cafehub.backend.domain.member.entity.QMember.member;
 import static com.cafehub.backend.domain.review.entity.QReview.review;
 
@@ -32,7 +34,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     // 이렇게 TOP N개의 리뷰를 조회하기 위해서 모든 리뷰를 좋아요 순으로 정렬하고 
     // 위에서 부터 N개 가져오는 방식은 성능 문제를 발생 시킬 수 있기 때문에 이를 해결할 방법도 추후 생각해 봐야한다.
     @Override
-    public List<ReviewDetail> findTopNReviewsByCafeId(Long cafeId, int topNReviewSize) {
+    public List<ReviewDetail> findTopNReviewsByCafeId(Long cafeId) {
 
         return jpaQueryFactory.select(new QReviewDetail(
                         review.id,
@@ -48,7 +50,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .join(review.member, member)
                 .where(review.cafe.id.eq(cafeId))
                 .orderBy(review.likeCnt.desc(), review.commentCnt.desc())
-                .limit(topNReviewSize)
+                .limit(TOP_N_REVIEW_SIZE)
                 .fetch();
     }
 

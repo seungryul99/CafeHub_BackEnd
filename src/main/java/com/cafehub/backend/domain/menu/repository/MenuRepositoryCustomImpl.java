@@ -6,19 +6,19 @@ import com.cafehub.backend.domain.menu.dto.response.MenuListResponse;
 import com.cafehub.backend.domain.menu.dto.response.QMenuListResponse_MenuDetail;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.cafehub.backend.domain.menu.entity.QMenu.menu;
 
+
+@Repository
+@RequiredArgsConstructor
 public class MenuRepositoryCustomImpl implements MenuRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
-
-    // [Refactor Point] QueryDsl Config로 빼야 할까? 이유 분석하고 결정
-    public MenuRepositoryCustomImpl(EntityManager entityManager){
-        this.jpaQueryFactory = new JPAQueryFactory(entityManager);
-    }
 
     @Override
     public List<CafeInfoResponseDTO.BestMenuDetail> findBestMenuList(Long cafeId) {
