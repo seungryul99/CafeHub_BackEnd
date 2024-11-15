@@ -88,12 +88,18 @@ public class LoginController {
 
 
     @PostMapping("/reissue/token")
-    public ResponseEntity<ResponseDTO<Void>> reissueJwtAccessTokenWithJwtRefreshToken(@CookieValue("JwtRefreshToken") String jwtRefreshToken){
+    public ResponseEntity<ResponseDTO<Void>> reissueJwtTokens(@CookieValue("JwtRefreshToken") String jwtRefreshToken){
 
-        String newAccessToken = jwtAuthService.reIssueJwtAccessTokenWithRefreshToken(jwtRefreshToken);
+
+        Map<String, String> reIssueTokens = jwtAuthService.reIssueJwtAccessTokenWithRefreshToken(jwtRefreshToken);
+
+        String reIssueAccessToken = reIssueTokens.get(JWT_ACCESS_TOKEN);
+        String reIssueRefreshToken = reIssueTokens.get(JWT_REFRESH_TOKEN);
+
 
         return ResponseEntity.status(200)
-                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + newAccessToken + JWT_ACCESS_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + reIssueAccessToken + JWT_ACCESS_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  reIssueRefreshToken + JWT_REFRESH_TOKEN_SETTING)
                 .build();
     }
 

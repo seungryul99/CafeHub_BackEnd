@@ -31,9 +31,15 @@ public class AuthInfo {
         this.appId = appId;
     }
 
-    public void updateAuthInfoByJwtIssue(String jwtRefreshToken, Date expiration) {
+    public void updateAuthInfoByJwtIssue(String jwtRefreshToken, Date jwtRefreshTokenExpireIn) {
 
         this.jwtRefreshToken = jwtRefreshToken;
-        this.jwtRefreshTokenExpireIn = expiration;
+        this.jwtRefreshTokenExpireIn = jwtRefreshTokenExpireIn;
+    }
+
+    public void updateJwtRefreshTokenByReIssueJwt(String jwtRefreshToken, Date jwtRefreshTokenExpireIn){
+
+        this.jwtRefreshToken = jwtRefreshToken;
+        this.jwtRefreshTokenExpireIn = jwtRefreshTokenExpireIn;
     }
 }

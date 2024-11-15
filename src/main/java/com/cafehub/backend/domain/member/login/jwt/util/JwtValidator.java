@@ -69,4 +69,5 @@ public class JwtValidator {
     private void isRefreshToken(String token){
         if(!jwtPayloadReader.getTokenType(token).equals("jwt_refresh")) throw new InvalidJwtRefreshTokenException();
     }
+
 }

@@ -119,7 +119,7 @@ public class CafeHubConstants {
      *   JWT Access Token, Refresh Token 유효시간 관리 상수
      */
 
-    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60; // 1000ms = 1초, 1초 *60 *60 *12 = 6시간
+    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 6; // 1000ms = 1초, 1초 *60 *60 *12 = 6시간
     public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 
 }
