@@ -3,17 +3,16 @@ package com.cafehub.backend.domain.member.login.service;
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
 import com.cafehub.backend.domain.authInfo.repository.AuthInfoRepository;
+import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.dto.request.KakaoOAuthTokenRequestDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
-import com.cafehub.backend.domain.member.entity.Member;
-import com.cafehub.backend.domain.member.login.jwt.JwtTokenPayloadCreateDTO;
-import com.cafehub.backend.domain.member.login.jwt.JwtPayloadReader;
-import com.cafehub.backend.domain.member.login.jwt.JwtProvider;
+import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
+import com.cafehub.backend.domain.member.login.jwt.util.JwtProvider;
+import com.cafehub.backend.domain.member.login.jwt.dto.JwtTokenPayloadCreateDTO;
 import com.cafehub.backend.domain.member.login.repository.LoginRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
@@ -21,19 +20,18 @@ import org.springframework.web.client.RestClient;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.*;
+
 
 @Slf4j
 @Service
 @Transactional
 public class KakaoLoginService implements OAuth2LoginService {
 
-    private static final String KAKAO_OAUTH_PROVIDER_NAME = "kakao";
-
     private final String clientId;
     private final String redirectUri;
     private final String clientSecret;
     private final String loginPageUrl;
-
     private final String logoutRedirectUrl;
 
     private final RestClient restClient;
@@ -101,21 +99,22 @@ public class KakaoLoginService implements OAuth2LoginService {
                 .redirectUri(redirectUri)
                 .build();
 
+
         return restClient.post()
-                .uri("https://kauth.kakao.com/oauth/token")
-                .contentType(MediaType.valueOf("application/x-www-form-urlencoded;charset=utf-8"))
-                .body(tokenRequestDTO.convertAllFieldsToMultiValueMap())
-                .retrieve()
-                .body(KakaoOAuthTokenResponseDTO.class);
+                         .uri(KAKAO_OAUTH_TOKEN_REQUEST_URL)
+                         .contentType(KAKAO_OAUTH_TOKEN_CONTENT_TYPE)
+                         .body(tokenRequestDTO.convertAllFieldsToMultiValueMap())
+                         .retrieve()
+                         .body(KakaoOAuthTokenResponseDTO.class);
     }
 
     private KakaoUserResourceResponseDTO getKakaoMemberResourceByAccessToken(String accessToken) {
 
-        log.info("AccessToken을 통해서 사용자의 카카오 상 정보를 받아옴");
+        log.info("OAuth AccessToken을 통해서 사용자의 카카오 상 정보를 받아옴");
 
         return restClient.get()
-                .uri("https://kapi.kakao.com/v2/user/me")
-                .header("Authorization", "Bearer " + accessToken)
+                .uri(KAKAO_USER_INFO_API_URL)
+                .header(AUTHORIZATION_HEADER, BEARER_TOKEN_TYPE + accessToken)
                 .retrieve()
                 .body(KakaoUserResourceResponseDTO.class);
     }
@@ -182,7 +181,6 @@ public class KakaoLoginService implements OAuth2LoginService {
 
         JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO = JwtTokenPayloadCreateDTO.builder()
                 .memberId(member.getId())
-                .nickname(member.getNickname())
                 .provider(KAKAO_OAUTH_PROVIDER_NAME)
                 .build();
 
@@ -193,12 +191,12 @@ public class KakaoLoginService implements OAuth2LoginService {
         log.info("JWT REFRESH TOKEN 발급 성공!");
 
 
-        authInfo.updateAuthInfo(jwtRefreshToken, jwtPayloadReader.getExpiration(jwtRefreshToken));
+        authInfo.updateAuthInfoByJwtIssue(jwtRefreshToken, jwtPayloadReader.getExpiration(jwtRefreshToken));
 
 
         Map<String, String> jwtTokens = new HashMap<>();
-        jwtTokens.put("jwtAccessToken", jwtAccessToken);
-        jwtTokens.put("jwtRefreshToken", jwtRefreshToken);
+        jwtTokens.put(JWT_ACCESS_TOKEN, jwtAccessToken);
+        jwtTokens.put(JWT_REFRESH_TOKEN, jwtRefreshToken);
 
         return jwtTokens;
     }
@@ -206,7 +204,7 @@ public class KakaoLoginService implements OAuth2LoginService {
 
 
     @Override
-    public String getProviderLogoutPageUrl() {
+    public String getLogoutPageUrl() {
 
         log.info("사용자가 카카오 계정 로그아웃 할지 선택");
 

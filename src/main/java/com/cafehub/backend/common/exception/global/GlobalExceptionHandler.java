@@ -108,6 +108,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
             Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
 
         log.warn("ResponseEntityExceptionHandler가 처리한 스프링 MVC 예외 발생 : {}",statusCode);
+        log.warn("예외 내용 : {}", ex.getMessage());
 
         return ResponseEntity.status(statusCode)
                 .body(ResponseDTO.fail(statusCode.toString(), ex.getMessage()));
@@ -118,13 +119,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 
 
     // 스프링에서 기본적으로 제공하는 ResponseEntityExceptionHandler와 내가 직접 처리해주는 CafeHubException 이나 Validation을 처리해도
-    // 내가 놓친 알 수 없는 원인으로 추가적인 에러가 발생할 수 있음, 따라서 최종 방어선을 만들어 놓음
+    // 내가 놓친 알 수 없는 원인으로 추가적인 에러가 발생할 수 있음
     @ExceptionHandler(Exception.class)
-    private ResponseEntity<ResponseDTO<Void>> handleUnknownInternalException(){
+    private ResponseEntity<ResponseDTO<Void>> handleUnknownInternalException(Exception e){
 
         ErrorReason errorReason = CommonErrorCode._UNKNOWN_INTERNAL_SERVER_ERROR.getErrorReason();
 
         log.warn("핸들러에서 알 수 없는 처리하지 못한 예외 발생 : {}", errorReason.getCode());
+        log.warn("예외 내용 : {}", e.getMessage());
 
         return ResponseEntity.status(errorReason.getStatus())
                 .body(ResponseDTO.fail(errorReason));

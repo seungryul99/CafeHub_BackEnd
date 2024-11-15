@@ -1,4 +1,4 @@
-package com.cafehub.backend.domain.member.login.jwt;
+package com.cafehub.backend.domain.member.login.jwt.util;
 
 
 import io.jsonwebtoken.Jwts;
@@ -19,8 +19,8 @@ public class JwtPayloadReader {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getNickname (String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("nickname", String.class);
+    public String getTokenType(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("tokenType", String.class);
     }
 
     public Long getMemberId(String token) {

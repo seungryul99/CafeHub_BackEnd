@@ -24,7 +24,7 @@ public enum CommonErrorCode implements BaseErrorCode {
     _NOT_FOUND(NOT_FOUND, "COMMON 404", "해당 경로로 가능한 요청이 없습니다"),
 
     _METHOD_NOT_ALLOWED(METHOD_NOT_ALLOWED, "COMMON 405", "허용되지 않은 HTTP 메서드로 요청이 발생했습니다"),
-    _UNKNOWN_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "COMMON 500", "서버 내부 에러가 발생했습니다"),
+    _UNKNOWN_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "COMMON 500", "서버 내부에서 알수 없는 에러가 발생했습니다. 관리자에게 문의해 주세요."),
     ;
     private final Integer status;
     private final String code;

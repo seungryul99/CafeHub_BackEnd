@@ -1,6 +1,7 @@
-package com.cafehub.backend.domain.member.login.jwt;
+package com.cafehub.backend.domain.member.login.jwt.util;
 
 
+import com.cafehub.backend.domain.member.login.jwt.dto.JwtTokenPayloadCreateDTO;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,13 +11,13 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.ACCESS_TOKEN_EXPIRATION_MS;
+import static com.cafehub.backend.common.constants.CafeHubConstants.REFRESH_TOKEN_EXPIRATION_MS;
+
 @Component
 public class JwtProvider {
 
     private final SecretKey secretKey;
-
-    private static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 6; // 1000ms = 1초, 1초 *60 *60 *12 = 6시간
-    private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 
 
     public JwtProvider(@Value("${spring.jwt.secret}") String secret) {
@@ -27,7 +28,6 @@ public class JwtProvider {
     public String createJwtAccessToken(JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO) {
         return Jwts.builder()
                 .claim("tokenType", "jwt_access")
-                .claim("nickname", jwtTokenPayloadCreateDTO.getNickname())
                 .claim("memberId", jwtTokenPayloadCreateDTO.getMemberId())
                 .claim("OAuthProvider", jwtTokenPayloadCreateDTO.getProvider())
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -38,7 +38,7 @@ public class JwtProvider {
 
     public String createJwtRefreshToken(JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO) {
         return Jwts.builder()
-                .claim("tokenType", "jwt_Refresh")
+                .claim("tokenType", "jwt_refresh")
                 .claim("memberId", jwtTokenPayloadCreateDTO.getMemberId())
                 .claim("OAuthProvider", jwtTokenPayloadCreateDTO.getProvider())
                 .issuedAt(new Date(System.currentTimeMillis()))

@@ -8,6 +8,6 @@ public interface OAuth2LoginService {
 
     Map<String, String> loginWithOAuthAndIssueJwt(String authorizationCode);
 
-    String getProviderLogoutPageUrl();
+    String getLogoutPageUrl();
 
 }
