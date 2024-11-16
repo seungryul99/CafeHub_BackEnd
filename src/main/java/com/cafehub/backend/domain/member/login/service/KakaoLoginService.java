@@ -64,9 +64,6 @@ public class KakaoLoginService implements OAuth2LoginService {
 
     @Override
     public String getLoginPageUrl(String provider) {
-
-        // 추후 csrf 공격 방지 목적을 위한 OAuth의 state 파라미터를 목적에 맞게 사용할 예정임
-        // 자세한 내용은 개발 로그에
         return loginPageUrl + "&state=" + provider;
     }
 
@@ -77,7 +74,7 @@ public class KakaoLoginService implements OAuth2LoginService {
         KakaoOAuthTokenResponseDTO tokenResponse = getOAuthTokens(authorizationCode);
 
         String accessToken = tokenResponse.getAccessToken();
-        log.info("카카오 인증서버에서 Access Token 받아오기 성공: " + accessToken.substring(0, 5));
+        log.info("카카오 인증서버에서 Access Token 받아오기 성공: " + accessToken.substring(0, 3));
 
         KakaoUserResourceResponseDTO userInfo = getKakaoMemberResourceByAccessToken(accessToken);
 
@@ -131,7 +128,7 @@ public class KakaoLoginService implements OAuth2LoginService {
 
         /**
          *  AuthInfo의 appId를 통해서 AuthInfo 조회 후 해당 AuthInfo로 MemberExist 확인
-         *  추후 성능 테스트 때 성능 직접 비교 하면서 Join 방식과 비교후 바꿀 생각, 자세한건 개발로그
+         *  추후 성능 테스트 때 성능 직접 비교 하면서 Join 방식과 비교후 바꿀 생각
          *  
          *  일단은 임시로 AuthInfo로만 검증
          */
@@ -179,26 +176,24 @@ public class KakaoLoginService implements OAuth2LoginService {
 
         Member member = loginRepository.findByAuthInfo(authInfo);
 
-        JwtTokenPayloadCreateDTO jwtTokenPayloadCreateDTO = JwtTokenPayloadCreateDTO.builder()
+        JwtTokenPayloadCreateDTO payload = JwtTokenPayloadCreateDTO.builder()
                 .memberId(member.getId())
                 .provider(KAKAO_OAUTH_PROVIDER_NAME)
                 .build();
 
 
-        String jwtAccessToken = jwtProvider.createJwtAccessToken(jwtTokenPayloadCreateDTO);
+        String jwtAccessToken = jwtProvider.createJwtAccessToken(payload);
         log.info("JWT ACCESS TOKEN 발급 성공!");
-        String jwtRefreshToken = jwtProvider.createJwtRefreshToken(jwtTokenPayloadCreateDTO);
+        String jwtRefreshToken = jwtProvider.createJwtRefreshToken(payload);
         log.info("JWT REFRESH TOKEN 발급 성공!");
-
 
         authInfo.updateAuthInfoByJwtIssue(jwtRefreshToken, jwtPayloadReader.getExpiration(jwtRefreshToken));
 
 
-        Map<String, String> jwtTokens = new HashMap<>();
-        jwtTokens.put(JWT_ACCESS_TOKEN, jwtAccessToken);
-        jwtTokens.put(JWT_REFRESH_TOKEN, jwtRefreshToken);
-
-        return jwtTokens;
+        return Map.of(
+                JWT_ACCESS_TOKEN, jwtAccessToken,
+                JWT_REFRESH_TOKEN, jwtRefreshToken
+        );
     }
 
 

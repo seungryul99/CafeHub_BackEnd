@@ -19,13 +19,12 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class LoginController {
-
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
-
-    private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
+public class LoginController implements LoginControllerAPI{
 
     private final JwtAuthService jwtAuthService;
+    private final JwtThreadLocalStorage jwtThreadLocalStorage;
+    private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
+
 
 
     @GetMapping("/api/member/login/{provider}")
@@ -51,13 +50,9 @@ public class LoginController {
 
         Map<String, String> jwtTokens = loginService.loginWithOAuthAndIssueJwt(authorizationCode);
 
-        String jwtAccessToken = jwtTokens.get(JWT_ACCESS_TOKEN);
-        String jwtRefreshToken = jwtTokens.get(JWT_REFRESH_TOKEN);
-
-
         return ResponseEntity.status(FOUND)
-                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + jwtAccessToken + JWT_ACCESS_TOKEN_SETTING)
-                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  jwtRefreshToken + JWT_REFRESH_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + jwtTokens.get(JWT_ACCESS_TOKEN) + JWT_ACCESS_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  jwtTokens.get(JWT_REFRESH_TOKEN) + JWT_REFRESH_TOKEN_SETTING)
                 .header(LOCATION_HEADER, FRONT_LOGIN_SUCCESS_URI)
                 .build();
     }

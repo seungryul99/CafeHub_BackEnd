@@ -82,12 +82,8 @@ public class CafeHubConstants {
     public static final String LOCATION_HEADER = "Location";
     public static final String SET_COOKIE_HEADER = "Set-Cookie";
     public static final String JWT_ACCESS_TOKEN = "JwtAccessToken";
-
-    // 로컬 테스트 용
     public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Max-Age=360000; SameSite=None; Secure";
     public static final String JWT_REFRESH_TOKEN = "JwtRefreshToken";
-    // 로컬 테스트 용
-
     public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Max-Age=864000; SameSite=None; HttpOnly; Secure";
     public static final String FRONT_LOGIN_SUCCESS_URI = "http://localhost:3000/OAuthCallback";
 
@@ -119,6 +115,7 @@ public class CafeHubConstants {
      *   JWT Access Token, Refresh Token 유효시간 관리 상수
      */
 
+    // for test , 6시간 => 6초로 변경
     public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 6; // 1000ms = 1초, 1초 *60 *60 *12 = 6시간
     public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 

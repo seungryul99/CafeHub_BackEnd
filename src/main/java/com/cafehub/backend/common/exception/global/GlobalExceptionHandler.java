@@ -15,6 +15,8 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -116,6 +118,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 
 
 
+    @ExceptionHandler(RestClientException.class)
+    protected ResponseEntity<Object> handleRestClientException(RestClientException e) {
+
+        ErrorReason errorReason = CommonErrorCode._REST_CLIENT_ERROR.getErrorReason();
+
+        log.warn("RestClient를 사용한 CafeHub -> OAuth Resource Server 통신간 예외 발생 : {}", errorReason.getCode());
+        log.warn("예외 내용 : {}", e.getMessage());
+
+        return ResponseEntity.status(errorReason.getStatus())
+                .body(ResponseDTO.fail(errorReason));
+    }
 
 
     // 스프링에서 기본적으로 제공하는 ResponseEntityExceptionHandler와 내가 직접 처리해주는 CafeHubException 이나 Validation을 처리해도

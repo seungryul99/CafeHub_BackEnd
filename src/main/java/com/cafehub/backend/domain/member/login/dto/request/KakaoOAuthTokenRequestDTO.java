@@ -17,7 +17,7 @@ public class KakaoOAuthTokenRequestDTO {
     private final String clientSecret;
 
     @Builder
-    public KakaoOAuthTokenRequestDTO(String clientId, String redirectUri, String clientSecret, String code){
+    private KakaoOAuthTokenRequestDTO(String clientId, String redirectUri, String clientSecret, String code){
 
         this.grantType = "authorization_code";
         this.clientId = clientId;
