@@ -7,6 +7,7 @@ import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.dto.request.KakaoOAuthTokenRequestDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
+import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtProvider;
 import com.cafehub.backend.domain.member.login.jwt.dto.JwtTokenPayloadCreateDTO;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.cafehub.backend.common.constants.CafeHubConstants.*;
@@ -199,14 +199,22 @@ public class KakaoLoginService implements OAuth2LoginService {
 
 
     @Override
-    public String getLogoutPageUrl() {
+    public String getLogoutPageUrl(Long memberId) {
 
-        log.info("사용자가 카카오 계정 로그아웃 할지 선택");
+        log.info("사용자가 CafeHub만 로그아웃 할지, 카카오와 함께 로그아웃 할지 결정");
 
         return "https://kauth.kakao.com/oauth/logout?" +
                 "client_id="+ clientId + "&" +
                 "logout_redirect_uri=" + logoutRedirectUrl + "&"
-                + "state=kakao";
+                + "state=kakao" + memberId;
+    }
+
+    @Override
+    public void removeRefreshTokenOnLogout(Long memberId) {
+
+        Member member = loginRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        AuthInfo authInfo = member.getAuthInfo();
+        authInfo.deleteJwtRefreshTokenByLogout();
     }
 
 

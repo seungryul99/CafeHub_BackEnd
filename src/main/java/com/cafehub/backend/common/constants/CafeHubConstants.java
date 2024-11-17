@@ -85,7 +85,10 @@ public class CafeHubConstants {
     public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Max-Age=360000; SameSite=None; Secure";
     public static final String JWT_REFRESH_TOKEN = "JwtRefreshToken";
     public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Max-Age=864000; SameSite=None; HttpOnly; Secure";
+    public static final String JWT_REFRESH_TOKEN_LOGOUT_SETTING = "; Path=/; Max-Age=0; SameSite=Lax; HttpOnly; Secure";
     public static final String FRONT_LOGIN_SUCCESS_URI = "http://localhost:3000/OAuthCallback";
+    public static final String FRONT_LOGOUT_SUCCESS_URI = "http://localhost:3000/Logout";
+
 
 
 

@@ -42,4 +42,9 @@ public class AuthInfo {
         this.jwtRefreshToken = jwtRefreshToken;
         this.jwtRefreshTokenExpireIn = jwtRefreshTokenExpireIn;
     }
+
+    public void deleteJwtRefreshTokenByLogout(){
+        this.jwtRefreshToken = null;
+        this.jwtRefreshTokenExpireIn = null;
+    }
 }

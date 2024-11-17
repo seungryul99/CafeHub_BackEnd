@@ -26,7 +26,6 @@ public class LoginController implements LoginControllerAPI{
     private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
 
 
-
     @GetMapping("/api/member/login/{provider}")
     public ResponseEntity<Void> login(@PathVariable("provider") String provider){
 
@@ -57,32 +56,6 @@ public class LoginController implements LoginControllerAPI{
                 .build();
     }
 
-
-
-    @PostMapping("/api/auth/member/logout")
-    public ResponseEntity<ResponseDTO<?>> providerLogout (){
-
-        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(jwtThreadLocalStorage.getOAuthProviderNameFromJwt() + Login_SERVICE_SUFFIX);
-
-        return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl()));
-    }
-
-
-    @GetMapping("/serviceLogout")
-    public ResponseEntity<ResponseDTO<Void>> serviceLogout(@RequestParam("state") String provider){
-
-        // 확장을 위해 남겨둠, DB에서 사용자 AuthInfo 와 관련해서 OAuth2 Refresh Token 제거 등의 추후 처리가 필요하다던가 등등
-        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + Login_SERVICE_SUFFIX);
-
-    
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header(SET_COOKIE_HEADER, "JwtRefreshToken=; Path=/; Max-Age=0; SameSite=Lax; HttpOnly; Secure")
-                .header(LOCATION_HEADER, "http://localhost:3000/Logout")
-                .build();
-    }
-
-
-
     @PostMapping("/reissue/token")
     public ResponseEntity<ResponseDTO<Void>> reissueJwtTokens(@CookieValue("JwtRefreshToken") String jwtRefreshToken){
 
@@ -96,6 +69,33 @@ public class LoginController implements LoginControllerAPI{
         return ResponseEntity.status(200)
                 .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + accessToken + JWT_ACCESS_TOKEN_SETTING)
                 .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  refreshToken + JWT_REFRESH_TOKEN_SETTING)
+                .build();
+    }
+
+
+    @PostMapping("/api/auth/member/logout")
+    public ResponseEntity<ResponseDTO<?>> providerLogout (){
+
+        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(jwtThreadLocalStorage.getOAuthProviderNameFromJwt() + Login_SERVICE_SUFFIX);
+
+        return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl(jwtThreadLocalStorage.getMemberIdFromJwt())));
+    }
+
+
+    @GetMapping("/serviceLogout")
+    public ResponseEntity<ResponseDTO<Void>> serviceLogout(@RequestParam("state") String state){
+
+        String provider = state.replaceAll("\\d.*", "");
+        Long memberId = Long.parseLong(state.replaceAll("\\D", ""));
+
+
+        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + Login_SERVICE_SUFFIX);
+        loginService.removeRefreshTokenOnLogout(memberId);
+
+    
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + JWT_REFRESH_TOKEN_LOGOUT_SETTING)
+                .header(LOCATION_HEADER, FRONT_LOGOUT_SUCCESS_URI)
                 .build();
     }
 
