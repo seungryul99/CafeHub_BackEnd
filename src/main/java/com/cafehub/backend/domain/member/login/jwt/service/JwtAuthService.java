@@ -57,18 +57,16 @@ public class JwtAuthService {
         String reIssueRefresh = jwtProvider.createJwtRefreshToken(payload);
 
 
-        Map<String, String> reIssueTokenMap = new HashMap<>();
-        reIssueTokenMap.put(JWT_ACCESS_TOKEN, reIssueAccess);
-        reIssueTokenMap.put(JWT_REFRESH_TOKEN, reIssueRefresh);
-
-
         // 파라미터로 전송받은 jwtRefreshToken이 탈취 당할 경우 RefreshToken Rotate를 진행했지만 Refresh Token을 만료시켜 버린게 아니기 때문에
         // 리프레시 토큰이 2개로 늘어난 문제가 발생함. 어디선가 탈취 당할 경우 리프레시 토큰이 두개가 됨.
 
         // 변경감지 작동을 안함, 체크 포인트
-        memberAuthinfo.updateJwtRefreshTokenByReIssueJwt(reIssueRefresh, jwtPayloadReader.getExpiration(reIssueRefresh));
+        memberAuthinfo.updateJwtRefreshTokenByReIssue(reIssueRefresh, jwtPayloadReader.getExpiration(reIssueRefresh));
         authInfoRepository.save(memberAuthinfo);
 
-        return reIssueTokenMap;
+        return  Map.of(
+                JWT_ACCESS_TOKEN, reIssueAccess,
+                JWT_REFRESH_TOKEN, reIssueRefresh
+        );
     }
 }

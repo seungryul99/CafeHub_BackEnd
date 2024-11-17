@@ -59,7 +59,7 @@ public class JwtValidator {
 
             isRefreshToken(token);
 
-        } catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e){ // 프론트 쪽에서 다시 로그인 하라는 화면 처리가 필요함
             throw new JwtRefreshTokenExpiredException();
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidJwtRefreshTokenException();

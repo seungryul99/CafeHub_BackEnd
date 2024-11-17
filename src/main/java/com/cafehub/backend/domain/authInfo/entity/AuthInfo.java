@@ -37,7 +37,7 @@ public class AuthInfo {
         this.jwtRefreshTokenExpireIn = jwtRefreshTokenExpireIn;
     }
 
-    public void updateJwtRefreshTokenByReIssueJwt(String jwtRefreshToken, Date jwtRefreshTokenExpireIn){
+    public void updateJwtRefreshTokenByReIssue(String jwtRefreshToken, Date jwtRefreshTokenExpireIn){
 
         this.jwtRefreshToken = jwtRefreshToken;
         this.jwtRefreshTokenExpireIn = jwtRefreshTokenExpireIn;

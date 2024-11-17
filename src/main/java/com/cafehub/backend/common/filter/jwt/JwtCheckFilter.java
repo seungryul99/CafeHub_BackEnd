@@ -19,12 +19,13 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.BEARER_TOKEN
 public class JwtCheckFilter implements Filter {
 
     private static final String OPTIONAL_AUTH_PATH = "/api/optional-auth";
+
     private final JwtValidator jwtValidator;
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("JWT CHECK FILTER 초기화");
+        log.info("JWT CHECK FILTER Init");
     }
 
     @Override
@@ -32,7 +33,7 @@ public class JwtCheckFilter implements Filter {
 
         log.info("/api/auth/*, /api/optional-auth/* URI의 request가 JWT Check Filter에 들어옴");
 
-        
+
         // Request 헤더에서 "토큰타입 + 토큰" 추출, requestURI 추출
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String authorizationHeaderValue = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
@@ -58,7 +59,7 @@ public class JwtCheckFilter implements Filter {
         // Reqeust 헤더의 "토큰타입 + 토큰" 에서 토큰 추출
         String jwtAccessToken = extractTokenFromAuthorizationHeader(authorizationHeaderValue);
 
-        // 추출한 jwt AccessToken JWT Validator로 보내서 검증
+        // 추출한 jwt AccessToken JWT Validator로 검증
         if (jwtValidator.validateJwtAccessToken(jwtAccessToken)) {
 
             // 정상적인 JWT AccessToken임이 확인 되었으면 ThreadLocal 저장소에 해당 토큰 저장 후 다음 필터로 통과 시켜줌

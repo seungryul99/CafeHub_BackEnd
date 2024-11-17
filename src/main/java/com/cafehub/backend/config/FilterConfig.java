@@ -18,9 +18,9 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class FilterConfig {
 
+    private final ObjectMapper objectMapper;
     private final JwtValidator jwtValidator;
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
-    private final ObjectMapper objectMapper;
 
 
     @Bean

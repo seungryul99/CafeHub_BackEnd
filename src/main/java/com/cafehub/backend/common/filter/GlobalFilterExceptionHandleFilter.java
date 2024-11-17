@@ -40,7 +40,7 @@ public class GlobalFilterExceptionHandleFilter implements Filter {
         catch (AuthorizationHeaderNotExistException e){
 
             ErrorReason errorReason = e.getErrorReason();
-            log.info("/api/auth 요청에서 Authorization 헤더가 Null로 설정된 예외 발생 : {}", errorReason.getCode());
+            log.warn("/api/auth 요청에서 Authorization 헤더가 Null로 설정된 예외 발생 : {}", errorReason.getCode());
 
             createErrorResponse(httpServletResponse, errorReason);
         }

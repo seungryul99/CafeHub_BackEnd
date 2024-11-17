@@ -67,6 +67,7 @@ public class LoginController implements LoginControllerAPI{
         return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl()));
     }
 
+
     @GetMapping("/serviceLogout")
     public ResponseEntity<ResponseDTO<Void>> serviceLogout(@RequestParam("state") String provider){
 
@@ -88,13 +89,13 @@ public class LoginController implements LoginControllerAPI{
 
         Map<String, String> reIssueTokens = jwtAuthService.reIssueJwtAccessTokenWithRefreshToken(jwtRefreshToken);
 
-        String reIssueAccessToken = reIssueTokens.get(JWT_ACCESS_TOKEN);
-        String reIssueRefreshToken = reIssueTokens.get(JWT_REFRESH_TOKEN);
+        String accessToken = reIssueTokens.get(JWT_ACCESS_TOKEN);
+        String refreshToken = reIssueTokens.get(JWT_REFRESH_TOKEN);
 
 
         return ResponseEntity.status(200)
-                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + reIssueAccessToken + JWT_ACCESS_TOKEN_SETTING)
-                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  reIssueRefreshToken + JWT_REFRESH_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + accessToken + JWT_ACCESS_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  refreshToken + JWT_REFRESH_TOKEN_SETTING)
                 .build();
     }
 
