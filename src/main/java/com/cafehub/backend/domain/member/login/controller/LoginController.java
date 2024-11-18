@@ -59,7 +59,6 @@ public class LoginController implements LoginControllerAPI{
     @PostMapping("/reissue/token")
     public ResponseEntity<ResponseDTO<Void>> reissueJwtTokens(@CookieValue("JwtRefreshToken") String jwtRefreshToken){
 
-
         Map<String, String> reIssueTokens = jwtAuthService.reIssueJwtAccessTokenWithRefreshToken(jwtRefreshToken);
 
         String accessToken = reIssueTokens.get(JWT_ACCESS_TOKEN);
