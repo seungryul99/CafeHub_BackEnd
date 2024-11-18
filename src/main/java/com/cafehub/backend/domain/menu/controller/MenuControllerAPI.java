@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Validated
-@Tag(name = "2. [메뉴]", description = "Menu API")
+@Tag(name = "3. [메뉴]", description = "Menu API")
 public interface MenuControllerAPI {
 
     @Operation(

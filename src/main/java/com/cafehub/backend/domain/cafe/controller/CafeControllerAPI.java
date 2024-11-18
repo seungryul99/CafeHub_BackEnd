@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @Validated
-@Tag(name = "1. [카페]", description = "Cafe API")
+@Tag(name = "2. [카페]", description = "Cafe API")
 public interface CafeControllerAPI {
 
     @Operation(

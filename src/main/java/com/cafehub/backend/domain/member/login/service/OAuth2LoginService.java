@@ -5,9 +5,8 @@ import java.util.Map;
 
 public interface OAuth2LoginService {
     String getLoginPageUrl(String provider);
-
     Map<String, String> loginWithOAuthAndIssueJwt(String authorizationCode);
+    String getLogoutPageUrl(Long memberId);
 
-    String getProviderLogoutPageUrl();
-
+    void removeRefreshTokenOnLogout(Long memberId);
 }

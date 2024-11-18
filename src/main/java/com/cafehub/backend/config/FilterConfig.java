@@ -5,7 +5,8 @@ import com.cafehub.backend.common.filter.CorsFilter;
 import com.cafehub.backend.common.filter.GlobalFilterExceptionHandleFilter;
 import com.cafehub.backend.common.filter.jwt.JwtCheckFilter;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
-import com.cafehub.backend.domain.member.login.jwt.JwtValidator;
+import com.cafehub.backend.domain.member.login.jwt.util.JwtValidator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class FilterConfig {
 
+    private final ObjectMapper objectMapper;
     private final JwtValidator jwtValidator;
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
@@ -24,7 +26,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<Filter> GlobalFilterExceptionHandleFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new GlobalFilterExceptionHandleFilter());
+        filterRegistrationBean.setFilter(new GlobalFilterExceptionHandleFilter(objectMapper));
         filterRegistrationBean.setOrder(0);
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;

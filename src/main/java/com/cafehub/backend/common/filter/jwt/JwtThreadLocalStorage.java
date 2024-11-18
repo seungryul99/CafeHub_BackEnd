@@ -1,6 +1,6 @@
 package com.cafehub.backend.common.filter.jwt;
 
-import com.cafehub.backend.domain.member.login.jwt.JwtPayloadReader;
+import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class JwtThreadLocalStorage {
 
     private final JwtPayloadReader jwtPayloadReader;
-
     private final ThreadLocal<String> jwtAccessTokenHolder = new ThreadLocal<>();
 
     void initJwtAccessTokenHolder(String jwtAccessToken){
@@ -32,9 +31,6 @@ public class JwtThreadLocalStorage {
         return jwtPayloadReader.getMemberId(jwtAccessTokenHolder.get());
     }
 
-    public String getMemberNicknameFromJwt(){
-        return jwtPayloadReader.getNickname(jwtAccessTokenHolder.get());
-    }
 
     public String getOAuthProviderNameFromJwt(){
         return jwtPayloadReader.getProvider(jwtAccessTokenHolder.get());
