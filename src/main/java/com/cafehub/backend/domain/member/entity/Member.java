@@ -2,14 +2,15 @@ package com.cafehub.backend.domain.member.entity;
 
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;
+import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -17,10 +18,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     @Column(nullable = false)
@@ -28,4 +26,27 @@ public class Member extends BaseTimeEntity {
 
     @Embedded
     private Image profileImg;
+
+    @OneToOne (fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn (name = "auth_info_id", unique = true)
+    private AuthInfo authInfo;
+
+
+    @Builder
+    private Member(String nickname, String email, Image profileImg, AuthInfo authInfo) {
+        this.nickname = nickname;
+        this.email = email;
+        this.profileImg = profileImg;
+        this.authInfo = authInfo;
+    }
+
+
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImg(String key, String profileImg){
+        this.profileImg.updateUrl(key, profileImg);
+    }
+
 }

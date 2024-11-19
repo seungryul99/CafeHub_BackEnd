@@ -3,14 +3,16 @@ package com.cafehub.backend.domain.cafe.entity;
 
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;
+import com.cafehub.backend.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Cafe extends BaseTimeEntity {
 
     @Id
@@ -45,4 +47,53 @@ public class Cafe extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer reviewCnt;
+
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menuList = new ArrayList<>();
+
+
+    @Builder
+    private Cafe(String name, Theme theme, String address, String phone,
+                String operationHours, String closeDays, Image cafeImg,
+                Double rating, Integer reviewCnt, List<Menu> menuList) {
+
+        this.name = name;
+        this.theme = theme;
+        this.address = address;
+        this.phone = phone;
+        this.operationHours = operationHours;
+        this.closeDays = closeDays;
+        this.cafeImg = cafeImg;
+        this.rating = rating;
+        this.reviewCnt = reviewCnt;
+        this.menuList = menuList;
+    }
+
+    public void updateRatingAndReviewCountByAddReview(Integer rating){
+
+        if(this.reviewCnt == 0) {
+            this.rating = rating.doubleValue();
+            reviewCnt++;
+            return;
+        }
+
+        double sum = this.rating * reviewCnt + rating;
+        reviewCnt++;
+
+        this.rating = sum/reviewCnt;
+    }
+
+    public void updateRatingAndReviewCountByDeleteReview(Integer rating){
+
+        if(this.reviewCnt == 1){
+            reviewCnt--;
+            this.rating = 0.0;
+            return;
+        }
+
+        double sum = this.rating * reviewCnt -rating;
+        reviewCnt--;
+
+        this.rating = sum/reviewCnt;
+    }
 }

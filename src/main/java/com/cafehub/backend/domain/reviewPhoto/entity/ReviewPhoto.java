@@ -1,4 +1,4 @@
-package com.cafehub.backend.domain.reviewPhotos.entity;
+package com.cafehub.backend.domain.reviewPhoto.entity;
 
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;
@@ -9,9 +9,7 @@ import lombok.*;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewPhoto extends BaseTimeEntity {
 
     @Id
@@ -26,4 +24,9 @@ public class ReviewPhoto extends BaseTimeEntity {
     @JoinColumn(name = "review_id")
     private Review review;
 
+    @Builder
+    private ReviewPhoto(Image reviewPhoto, Review review) {
+        this.reviewPhoto = reviewPhoto;
+        this.review = review;
+    }
 }

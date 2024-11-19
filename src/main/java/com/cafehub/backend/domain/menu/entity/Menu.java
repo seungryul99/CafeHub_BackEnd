@@ -9,9 +9,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Menu extends BaseTimeEntity {
 
     @Id
@@ -35,4 +33,14 @@ public class Menu extends BaseTimeEntity {
     @ManyToOne (fetch = LAZY)
     @JoinColumn(name = "cafe_id")
     private Cafe cafe;
+
+
+    @Builder
+    private Menu(Category category, String name, Integer price, Boolean isBest, Cafe cafe) {
+        this.category = category;
+        this.name = name;
+        this.price = price;
+        this.isBest = isBest;
+        this.cafe = cafe;
+    }
 }

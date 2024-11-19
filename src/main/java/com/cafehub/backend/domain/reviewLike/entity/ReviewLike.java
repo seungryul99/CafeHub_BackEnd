@@ -10,14 +10,12 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewLike extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ree_iviewLikd")
+    @Column(name = "review_like_id")
     private Long id;
 
     @ManyToOne (fetch = LAZY)
@@ -27,4 +25,10 @@ public class ReviewLike extends BaseTimeEntity {
     @ManyToOne (fetch = LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
+
+    @Builder
+    private ReviewLike(Member member, Review review) {
+        this.member = member;
+        this.review = review;
+    }
 }
