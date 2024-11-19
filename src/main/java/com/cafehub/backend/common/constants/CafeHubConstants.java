@@ -122,4 +122,13 @@ public class CafeHubConstants {
     public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 6; // 1000ms = 1초, 1초 *60 *60 *12 = 6시간
     public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 
+
+    /**
+     *    [Member Nickname 최대 길이]
+     *    
+     *    사용자의 닉네임 최대 길이 관리 상수
+     */
+
+    public static final int MEMBER_NICKNAME_MAX_LENGTH = 10;
+
 }
