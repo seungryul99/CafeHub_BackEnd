@@ -7,8 +7,12 @@ import com.cafehub.backend.domain.bookmark.dto.request.BookmarkRequestDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkListResponseDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkResponseDTO;
 import com.cafehub.backend.domain.bookmark.entity.Bookmark;
+import com.cafehub.backend.domain.bookmark.exception.BookmarkDuplicateException;
+import com.cafehub.backend.domain.bookmark.exception.BookmarkNotFoundException;
 import com.cafehub.backend.domain.bookmark.repository.BookmarkRepository;
+import com.cafehub.backend.domain.cafe.exception.CafeNotFoundException;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
+import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
 import com.cafehub.backend.domain.member.login.repository.LoginRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,61 +28,48 @@ import java.util.List;
 public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
-
     private final CafeRepository cafeRepository;
-
     private final LoginRepository loginRepository;
-
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
 
-    
-    // 예외 처리 나중에
     public ResponseDTO<BookmarkResponseDTO> bookmark(BookmarkRequestDTO requestDTO) {
 
         Long cafeId = requestDTO.getCafeId();
         Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
+        if(bookmarkRepository.existsByCafeIdAndMemberId(cafeId, memberId)) throw new BookmarkDuplicateException();
 
         Bookmark bookmark = Bookmark.builder()
-                .cafe(cafeRepository.findById(cafeId).get())
-                .member(loginRepository.findById(memberId).get())
+                .cafe(cafeRepository.findById(cafeId).orElseThrow(CafeNotFoundException::new))
+                .member(loginRepository.findById(memberId).orElseThrow(MemberNotFoundException::new))
                 .build();
 
         bookmarkRepository.save(bookmark);
 
-
-        return ResponseDTO.success(BookmarkResponseDTO.builder()
-                .cafeId(cafeId)
-                .build());
+        return ResponseDTO.success(new BookmarkResponseDTO(cafeId));
     }
 
 
-
-    
-    
-    // 예외 처리 나중에
     public ResponseDTO<BookmarkResponseDTO> deleteBookmark(BookmarkRequestDTO requestDTO) {
 
         Long cafeId = requestDTO.getCafeId();
         Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
+        if(!cafeRepository.existsById(cafeId)) throw new CafeNotFoundException();
+        if(!bookmarkRepository.existsByCafeIdAndMemberId(cafeId, memberId)) throw new BookmarkNotFoundException();
 
         bookmarkRepository.deleteByCafeIdAndMemberId(cafeId, memberId);
 
-        return ResponseDTO.success(BookmarkResponseDTO.builder()
-                .cafeId(cafeId)
-                .build());
+        return ResponseDTO.success(new BookmarkResponseDTO(cafeId));
     }
 
 
 
-    @Transactional(readOnly = true)
     public ResponseDTO<BookmarkListResponseDTO> getBookmarkList() {
 
         Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
-        
         // 가져와야 할 모든 정보는 Cafe 테이블에 있음
         // 북마크 테이블에서 사용자의 memberId로 전부 조회후 카페 Id 추출
         List<Bookmark> bookmarkList = bookmarkRepository.findAllByMemberId(memberId);
