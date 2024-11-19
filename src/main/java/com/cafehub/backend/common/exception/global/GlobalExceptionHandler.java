@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,12 +46,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
+        String errorMessage = ex.getBindingResult().getAllErrors().stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        errorMessage += ".";
+
         ErrorReason errorReason = CommonErrorCode._INVALID_PARAM_REQUEST.getErrorReason();
 
-        log.warn("파라미터 검증 중 예외 발생 : {}", errorReason.getCode());
+        log.warn("@Valid로 파라미터 검증 중 예외 발생 : {}", errorReason.getCode());
 
         return ResponseEntity.status(errorReason.getStatus())
-                .body(ResponseDTO.fail(errorReason));
+                .body(ResponseDTO.fail(errorReason.getCode(),errorMessage));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -63,7 +69,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 
         ErrorReason errorReason = CommonErrorCode._INVALID_PARAM_REQUEST.getErrorReason();
 
-        log.warn("파라미터 검증 중 예외 발생 : {}", errorReason.getCode());
+        log.warn("@Validated로 파라미터 검증 중 예외 발생 : {}", errorReason.getCode());
 
         return ResponseEntity.status(errorReason.getStatus())
                 .body(ResponseDTO.fail(errorReason.getCode(), errorMessage));
@@ -74,7 +80,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 
         ErrorReason errorReason = CommonErrorCode._PARAM_TYPE_MISMATCH_REQUEST.getErrorReason();
 
-        log.warn("파라미터 검증 중 예외 발생 : {}", errorReason.getCode());
+        log.warn("TypeMisMatch 파라미터 검증 중 예외 발생 : {}", errorReason.getCode());
 
         return ResponseEntity.status(errorReason.getStatus())
                 .body(ResponseDTO.fail(errorReason));

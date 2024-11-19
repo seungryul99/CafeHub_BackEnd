@@ -75,7 +75,7 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
     @Override
     public List<CafeDetails> findCafesByBookmarkList(List<Long> cafeIds) {
 
-        List<CafeDetails> cafeList = jpaQueryFactory
+        return jpaQueryFactory
                 .select(new QCafeDetails(
                         cafe.id,
                         cafe.cafeImg.url,
@@ -86,8 +86,6 @@ public class CafeRepositoryCustomImpl implements CafeRepositoryCustom {
                 .from(cafe)
                 .where(cafe.id.in(cafeIds))
                 .fetch();
-
-        return cafeList;
     }
 
 

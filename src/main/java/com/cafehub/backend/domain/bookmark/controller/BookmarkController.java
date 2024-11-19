@@ -6,7 +6,7 @@ import com.cafehub.backend.domain.bookmark.dto.request.BookmarkRequestDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkListResponseDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkResponseDTO;
 import com.cafehub.backend.domain.bookmark.service.BookmarkService;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,32 +17,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class BookmarkController implements BookmarkControllerDocs{
+public class BookmarkController{
 
     private final BookmarkService bookmarkService;
 
 
+    // @RequestBody에서 Long cafeId 에 1.2 같은 소수를 입력해도 알아서 정수부만 떼서 변환시켜 문제가 발생함.
+    // ex) cafeId : 1.2 는 1로 변환됨
+    // ex) cafeId : "1.2"는 변환되지 못하고 에러가 발생함
     @PostMapping("/bookmark")
-    public ResponseEntity<ResponseDTO<BookmarkResponseDTO>> bookmarkManage(@RequestBody BookmarkRequestDTO requestDTO){
-
-        log.info("북마크 하기 요청 발생");
-        log.info("북마크 체크 여부 : " + requestDTO.getBookmarkChecked());
-
+    public ResponseEntity<ResponseDTO<BookmarkResponseDTO>> bookmarkManage(@Valid @RequestBody BookmarkRequestDTO requestDTO){
 
         if (requestDTO.getBookmarkChecked()) return ResponseEntity.ok(bookmarkService.bookmark(requestDTO));
         else return ResponseEntity.ok(bookmarkService.deleteBookmark(requestDTO));
     }
 
 
-
     @GetMapping("/bookmarks")
     public ResponseEntity<ResponseDTO<BookmarkListResponseDTO>> getBookmarkList(){
 
-        log.info("사용자의 북마크 불러오기 요청 발생");
-
         return ResponseEntity.ok(bookmarkService.getBookmarkList());
     }
-
-
 
 }
