@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 
@@ -141,6 +142,16 @@ public class KakaoLoginService implements OAuth2LoginService {
                     .appId(appId)
                     .provider(KAKAO_OAUTH_PROVIDER_NAME)
                     .build();
+
+
+
+            if (nickname.length() > MEMBER_NICKNAME_MAX_LENGTH) nickname = nickname.substring(0,10);
+
+            // 중복 닉네임 체크
+            while (loginRepository.existsByNickname(nickname)){
+
+                nickname = nickname + UUID.randomUUID().toString().substring(0,3);
+            }
 
 
             Member newMember = Member.builder()

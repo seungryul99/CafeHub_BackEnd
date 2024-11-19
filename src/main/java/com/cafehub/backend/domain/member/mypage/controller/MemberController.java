@@ -6,6 +6,7 @@ import com.cafehub.backend.domain.member.mypage.dto.request.MemberNicknameUpdate
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
 import com.cafehub.backend.domain.member.mypage.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class MemberController {
 
 
     @PostMapping("/nickname")
-    public ResponseEntity<ResponseDTO<MyPageUpdateResponseDTO>> updateNickname(@RequestBody MemberNicknameUpdateRequestDTO requestDTO){
+    public ResponseEntity<ResponseDTO<MyPageUpdateResponseDTO>> updateNickname(@Valid @RequestBody MemberNicknameUpdateRequestDTO requestDTO){
 
         return ResponseEntity.ok(memberService.updateNickname(requestDTO));
     }

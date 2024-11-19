@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface LoginRepository extends JpaRepository<Member, Long> {
 
     Member findByAuthInfo(AuthInfo authInfo);
+    boolean existsByNickname(String nickname);
 }

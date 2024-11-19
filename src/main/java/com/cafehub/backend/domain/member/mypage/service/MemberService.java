@@ -6,9 +6,11 @@ import com.cafehub.backend.common.util.S3KeyGenerator;
 import com.cafehub.backend.domain.comment.entity.Comment;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
+import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
 import com.cafehub.backend.domain.member.mypage.dto.request.MemberNicknameUpdateRequestDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
+import com.cafehub.backend.domain.member.mypage.exception.MemberNicknameDuplicateException;
 import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
@@ -64,7 +66,10 @@ public class MemberService {
 
         Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
-        Member member = memberRepository.findById(memberId).get();
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        if(memberRepository.existsByNickname(requestDTO.getNickname())) throw new MemberNicknameDuplicateException();
+
         member.updateNickname(requestDTO.getNickname());
 
         List<Review> memberReviewList = reviewRepository.findAllByMemberId(memberId);
