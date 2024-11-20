@@ -11,7 +11,7 @@ import java.io.IOException;
 @Slf4j
 public class CorsFilter implements Filter {
 
-    private static final String CORS_ALLOW_ORIGIN = "http://localhost:3000";
+    private static final String CORS_ALLOW_ORIGIN = "https://main.d3fr2u7nicdqc9.amplifyapp.com/";
 
 
     @Override

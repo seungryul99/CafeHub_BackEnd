@@ -82,12 +82,12 @@ public class CafeHubConstants {
     public static final String LOCATION_HEADER = "Location";
     public static final String SET_COOKIE_HEADER = "Set-Cookie";
     public static final String JWT_ACCESS_TOKEN = "JwtAccessToken";
-    public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Max-Age=360000; SameSite=None; Secure";
+    public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Max-Age=10800; SameSite=None; Secure"; // 3시간
     public static final String JWT_REFRESH_TOKEN = "JwtRefreshToken";
-    public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Max-Age=864000; SameSite=None; HttpOnly; Secure";
+    public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Max-Age=86400; SameSite=None; HttpOnly; Secure"; // 24시간
     public static final String JWT_REFRESH_TOKEN_LOGOUT_SETTING = "; Path=/; Max-Age=0; SameSite=Lax; HttpOnly; Secure";
-    public static final String FRONT_LOGIN_SUCCESS_URI = "http://localhost:3000/OAuthCallback";
-    public static final String FRONT_LOGOUT_SUCCESS_URI = "http://localhost:3000/Logout";
+    public static final String FRONT_LOGIN_SUCCESS_URI = "https://main.d3fr2u7nicdqc9.amplifyapp.com/OAuthCallback";
+    public static final String FRONT_LOGOUT_SUCCESS_URI = "https://main.d3fr2u7nicdqc9.amplifyapp.com/Logout";
 
 
 
@@ -119,7 +119,7 @@ public class CafeHubConstants {
      */
 
     // for test , 6시간 => 6초로 변경
-    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 6; // 1000ms = 1초, 1초 *60 *60 *12 = 6시간
+    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 3; // 1초 *60 *60 *12 = 6시간
     public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 
 
