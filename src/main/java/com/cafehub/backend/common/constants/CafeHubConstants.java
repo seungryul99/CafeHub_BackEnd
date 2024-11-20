@@ -90,6 +90,13 @@ public class CafeHubConstants {
     public static final String FRONT_LOGOUT_SUCCESS_URI = "http://localhost:3000/Logout";
 
 
+    /**
+     *   [Cors Filter Constant]
+     *
+     *   CORS 필터에서 사용할 상수
+     */
+
+    public static final String CORS_ALLOW_ORIGIN = "http://localhost:3000";
 
 
     /**
