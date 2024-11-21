@@ -5,6 +5,7 @@ import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.request.MemberNicknameUpdateRequestDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
+import com.cafehub.backend.domain.member.mypage.exception.InvalidMemberProfileImgException;
 import com.cafehub.backend.domain.member.mypage.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @Slf4j
@@ -39,9 +42,17 @@ public class MemberController {
 
     @PostMapping(value = "/profileImg",  consumes = {"multipart/form-data"})
     public ResponseEntity<ResponseDTO<MyPageUpdateResponseDTO>> updateProfileImage(@RequestParam MultipartFile profileImg) {
-        log.info("사진 이미지 전달 정상 도착");
-        log.info("전송된 파일 이름 : " + profileImg.getOriginalFilename());
-        log.info("사진 용량 : " + profileImg.getSize());
+
+
+        /**
+         *  확장자 검증은 추후 커스텀 검증 어노테이션으로 뺄거임
+         */
+        // 파일 이름 확인
+        String originalFilename = profileImg.getOriginalFilename();
+        // 확장자 추출
+        int dotIndex = originalFilename != null ? originalFilename.lastIndexOf('.') : -1;
+        if (dotIndex == -1 || !List.of("png", "jpg", "jpeg").contains( originalFilename.substring(dotIndex + 1).toLowerCase()))
+            throw new InvalidMemberProfileImgException();
 
         return ResponseEntity.ok(memberService.updateProfileImg(profileImg));
     }
