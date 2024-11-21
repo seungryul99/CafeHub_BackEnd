@@ -82,10 +82,10 @@ public class CafeHubConstants {
     public static final String LOCATION_HEADER = "Location";
     public static final String SET_COOKIE_HEADER = "Set-Cookie";
     public static final String JWT_ACCESS_TOKEN = "JwtAccessToken";
-    public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Max-Age=10800; SameSite=None; Secure;"; // 3시간
-    public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Max-Age=86400; SameSite=None; HttpOnly; Secure;"; // 24시간
+    public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=10800; SameSite=None; Secure;"; // 3시간
+    public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=86400; SameSite=None; HttpOnly; Secure;"; // 24시간
     public static final String JWT_REFRESH_TOKEN = "JwtRefreshToken";
-    public static final String JWT_REFRESH_TOKEN_LOGOUT_SETTING = "; Path=/; Max-Age=0; SameSite=Lax; HttpOnly; Secure";
+    public static final String JWT_REFRESH_TOKEN_LOGOUT_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=0; SameSite=Lax; HttpOnly; Secure";
     public static final String FRONT_LOGIN_SUCCESS_URI = "https://www.cafehub.site/OAuthCallback";
     public static final String FRONT_LOGOUT_SUCCESS_URI = "https://www.cafehub.site/Logout";
 
