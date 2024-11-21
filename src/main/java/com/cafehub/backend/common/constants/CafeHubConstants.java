@@ -90,6 +90,13 @@ public class CafeHubConstants {
     public static final String FRONT_LOGOUT_SUCCESS_URI = "https://www.cafehub.site/Logout";
 
 
+    /**
+     *   [Cors Filter Constant]
+     *
+     *   CORS 필터에서 사용할 상수
+     */
+
+    public static final String CORS_ALLOW_ORIGIN = "http://localhost:3000";
 
 
     /**
@@ -124,11 +131,21 @@ public class CafeHubConstants {
 
 
     /**
-     *    [Member Nickname 최대 길이]
+     *    [Member Nickname 길이]
      *    
-     *    사용자의 닉네임 최대 길이 관리 상수
+     *    사용자의 닉네임 길이 관리 상수
      */
 
     public static final int MEMBER_NICKNAME_MAX_LENGTH = 10;
+    public static final int MEMBER_NICKNAME_MIN_LENGTH = 3;
+
+
+    /**
+     *    [Member 프로필 기본 이미지]
+     *
+     *    카카오톡 연동 사진을 동의하지 않은 사용자의 기본 이미지 URL 관리 상수
+     */
+
+    public static final String MEMBER_PROFILE_DEFAULT_IMAGE = "DefaultImage";
 
 }

@@ -7,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.CORS_ALLOW_ORIGIN;
+
 
 @Slf4j
 public class CorsFilter implements Filter {
-
-    private static final String CORS_ALLOW_ORIGIN = "https://www.cafehub.site";
 
 
     @Override
