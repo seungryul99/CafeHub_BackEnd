@@ -1,6 +1,5 @@
 package com.cafehub.backend.common.exception.global;
 
-import com.cafehub.backend.common.constants.CafeHubConstants;
 import com.cafehub.backend.common.exception.BaseErrorCode;
 import com.cafehub.backend.common.exception.dto.ErrorReason;
 import lombok.AllArgsConstructor;
@@ -25,7 +24,8 @@ public enum CommonErrorCode implements BaseErrorCode {
 
     _METHOD_NOT_ALLOWED(METHOD_NOT_ALLOWED, "COMMON_405", "허용되지 않은 HTTP 메서드로 요청이 발생했습니다"),
     _UNKNOWN_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "COMMON 500_1", "서버 내부에서 알수 없는 에러가 발생했습니다. 관리자에게 문의해 주세요."),
-    _REST_CLIENT_ERROR(INTERNAL_SERVER_ERROR, "COMMON_500_2", "RestClient 사용한 CafeHub -> OAuth Resource Server 통신 중 예외가 발생했습니다. 관리자에게 문의해 주세요.")
+    _REST_CLIENT_ERROR(INTERNAL_SERVER_ERROR, "COMMON_500_2", "RestClient 사용한 CafeHub -> OAuth Resource Server 통신 중 예외가 발생했습니다. 관리자에게 문의해 주세요."),
+    _S3_FILE_UPLOAD_ERROR(INTERNAL_SERVER_ERROR, "COMMON_500_3", "S3 저장소에 이미지 저장중 에러가 발생했습니다. 관리자에게 문의해 주세요.")
     ;
     private final Integer status;
     private final String code;
