@@ -1,5 +1,6 @@
 package com.cafehub.backend.domain.member.mypage.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class MemberNicknameUpdateRequestDTO {
 
+    @NotBlank(message = "닉네임은 공백만으로 구성될 수 없습니다")
     @Length(min = 3, max = 10, message = "닉네임은 3 ~ 10자여야 합니다")
     @Pattern(regexp = "^[a-zA-Z0-9가-힣\\s]*$", message = "닉네임에는 영문,한글,공백,숫자만 허용됩니다")
     private String nickname;

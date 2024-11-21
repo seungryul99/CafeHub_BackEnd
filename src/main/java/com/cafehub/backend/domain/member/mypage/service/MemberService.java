@@ -1,5 +1,6 @@
 package com.cafehub.backend.domain.member.mypage.service;
 
+import com.cafehub.backend.common.constants.CafeHubConstants;
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.common.util.S3KeyGenerator;
@@ -11,6 +12,7 @@ import com.cafehub.backend.domain.member.mypage.dto.request.MemberNicknameUpdate
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
 import com.cafehub.backend.domain.member.mypage.exception.MemberNicknameDuplicateException;
+import com.cafehub.backend.domain.member.mypage.exception.MemberNicknameTooShortException;
 import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
@@ -25,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.*;
+
 @Slf4j
 @Service
 @Transactional
@@ -33,50 +37,40 @@ public class MemberService {
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String s3Bucket;
-
     private final S3Operations s3Operations;
-
     private final S3KeyGenerator s3KeyGenerator;
 
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
     private final MemberRepository memberRepository;
-
     private final ReviewRepository reviewRepository;
-
     private final CommentRepository commentRepository;
 
 
-    @Transactional(readOnly = true)
     public ResponseDTO<MyPageResponseDTO> getMyPage() {
 
-        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
 
-
-        MyPageResponseDTO res = MyPageResponseDTO.builder().
-                memberImgUrl(member.getProfileImg() != null ? member.getProfileImg().getUrl() : null).
-                nickname(member.getNickname()).
-                email(member.getEmail()).
-                build();
-
-        return ResponseDTO.success(res);
+        return ResponseDTO.success(MyPageResponseDTO.convertMemberToMyPageResponseDTO(member));
     }
 
     public ResponseDTO<MyPageUpdateResponseDTO> updateNickname(MemberNicknameUpdateRequestDTO requestDTO) {
 
+        String updateNickname = requestDTO.getNickname().trim();
+
+        if(updateNickname.length() < MEMBER_NICKNAME_MIN_LENGTH) throw new MemberNicknameTooShortException();
+
         Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
-
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        if(memberRepository.existsByNickname(updateNickname)) throw new MemberNicknameDuplicateException();
 
-        if(memberRepository.existsByNickname(requestDTO.getNickname())) throw new MemberNicknameDuplicateException();
-
-        member.updateNickname(requestDTO.getNickname());
+        member.updateNickname(updateNickname);
 
         List<Review> memberReviewList = reviewRepository.findAllByMemberId(memberId);
         List<Comment> memberCommentList = commentRepository.findALlByMemberId(memberId);
 
-        for (Review review : memberReviewList) review.updateWriterByChangeNickname(requestDTO.getNickname());
-        for (Comment comment : memberCommentList) comment.updateWriterByChangeNickname(requestDTO.getNickname());
+        for (Review review : memberReviewList) review.updateWriterByChangeNickname(updateNickname);
+        for (Comment comment : memberCommentList) comment.updateWriterByChangeNickname(updateNickname);
 
 
         return ResponseDTO.success(new MyPageUpdateResponseDTO(memberId));
@@ -86,12 +80,13 @@ public class MemberService {
 
         Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
 
-        Member member = memberRepository.findById(memberId).get();
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         String newProfileImgUrl = null;
         String newProfileImgKey = s3KeyGenerator.generateProfileImgS3Key(profileImg.getOriginalFilename());
         String prevImgKey = member.getProfileImg().getKey();
 
-        long startTime = System.currentTimeMillis(); // 시작 시간 기록
+        long startTime = System.currentTimeMillis();
+        log.info("프로필 사진 s3에 업로드 시작");
 
         try {
             if (prevImgKey != null) s3Operations.deleteObject(s3Bucket, prevImgKey);
@@ -100,12 +95,9 @@ public class MemberService {
             throw new RuntimeException(e);
         }
 
+        long endTime = System.currentTimeMillis();
+        log.info("프로필 사진 업데이트 정상처리 완료, {} 크기의 사진 업로드에 걸린시간 {}ms: ",profileImg.getSize(),  endTime - startTime );
 
-
-        long endTime = System.currentTimeMillis(); // 종료 시간 기록
-        long duration = endTime - startTime; // 소요 시간 계산
-        log.info("{} 크기의 사진 업로드에 걸린시간 {}ms: ",profileImg.getSize(),  duration );
-        log.info("s3 사진 업데이트 정상처리 완료");
 
         if(newProfileImgUrl!=null){
             member.updateProfileImg(newProfileImgKey, newProfileImgUrl);
