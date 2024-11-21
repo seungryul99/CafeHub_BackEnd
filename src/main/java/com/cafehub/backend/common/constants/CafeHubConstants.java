@@ -96,7 +96,7 @@ public class CafeHubConstants {
      *   CORS 필터에서 사용할 상수
      */
 
-    public static final String CORS_ALLOW_ORIGIN = "http://localhost:3000";
+    public static final String CORS_ALLOW_ORIGIN = "https://www.cafehub.site";
 
 
     /**
