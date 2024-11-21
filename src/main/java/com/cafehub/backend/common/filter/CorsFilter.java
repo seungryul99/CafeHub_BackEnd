@@ -13,6 +13,7 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.CORS_ALLOW_O
 @Slf4j
 public class CorsFilter implements Filter {
 
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info("CORS FILTER Init");

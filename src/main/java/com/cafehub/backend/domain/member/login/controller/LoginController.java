@@ -49,6 +49,9 @@ public class LoginController implements LoginControllerAPI{
 
         Map<String, String> jwtTokens = loginService.loginWithOAuthAndIssueJwt(authorizationCode);
 
+
+        log.info("로그인 콜백 요청 발생 성공");
+
         return ResponseEntity.status(FOUND)
                 .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + jwtTokens.get(JWT_ACCESS_TOKEN) + JWT_ACCESS_TOKEN_SETTING)
                 .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  jwtTokens.get(JWT_REFRESH_TOKEN) + JWT_REFRESH_TOKEN_SETTING)
