@@ -7,10 +7,13 @@ import com.cafehub.backend.domain.comment.dto.request.AllCommentGetRequestDTO;
 import com.cafehub.backend.domain.comment.dto.request.CommentCreateRequestDTO;
 import com.cafehub.backend.domain.comment.dto.response.AllCommentGetResponseDTO;
 import com.cafehub.backend.domain.comment.entity.Comment;
+import com.cafehub.backend.domain.comment.exception.CommentNotFoundException;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
+import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
 import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import com.cafehub.backend.domain.review.entity.Review;
+import com.cafehub.backend.domain.review.exception.ReviewNotFoundException;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -35,10 +39,10 @@ public class CommentService {
     private final MemberRepository memberRepository;
 
 
-    public ResponseDTO<Void> writeComment(CommentCreateRequestDTO requestDTO) {
+    public ResponseDTO<Void> writeComment(Long reviewId, CommentCreateRequestDTO requestDTO) {
 
-        Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
-        Review review = reviewRepository.findById(requestDTO.getReviewId()).get();
+        Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
 
         Comment comment = Comment.builder()
                 .content(requestDTO.getCommentContent())
@@ -55,13 +59,15 @@ public class CommentService {
     }
 
 
-    @Transactional(readOnly = true)
+
     public ResponseDTO<AllCommentGetResponseDTO> getAllCommentsBySlice(AllCommentGetRequestDTO requestDTO) {
+
+        if(!reviewRepository.existsById(requestDTO.getReviewId())) throw new ReviewNotFoundException();
 
         Slice<AllCommentGetResponseDTO.CommentDetail> commentDetails = commentRepository.findCommentsBySlice(requestDTO);
 
         if(jwtThreadLocalStorage.isLoginMember()){
-            Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+            Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
             updateCommentManagement(commentDetails.getContent(), member.getNickname());
         }
 
@@ -78,7 +84,9 @@ public class CommentService {
 
     public ResponseDTO<Void> deleteComment(Long reviewId, Long commentId) {
 
-        Review review = reviewRepository.findById(reviewId).get();
+        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+
+        if(!commentRepository.existsById(commentId)) throw new CommentNotFoundException();
 
         commentRepository.deleteById(commentId);
         review.updateCommentCntByDeleteComment();
