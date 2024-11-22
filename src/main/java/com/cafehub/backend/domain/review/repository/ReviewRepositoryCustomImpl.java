@@ -1,10 +1,10 @@
 package com.cafehub.backend.domain.review.repository;
 
 
-import com.cafehub.backend.common.constants.CafeHubConstants;
 import com.cafehub.backend.domain.review.dto.QReviewDetail;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
+import com.cafehub.backend.domain.review.exception.InvalidReviewListPageRequestException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.PageRequest;
@@ -77,6 +77,8 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                 .limit(REVIEW_LIST_SIZE + 1)
                 .fetch();
 
+
+        if(reviewDetails.isEmpty()) throw new InvalidReviewListPageRequestException();
 
         boolean hasNext = reviewDetails.size() > REVIEW_LIST_SIZE;
         if (hasNext) reviewDetails.removeLast();
