@@ -6,6 +6,6 @@ import com.cafehub.backend.domain.cafe.exception.code.CafeExceptionCode;
 public class InvalidCafeListPageRequestException extends CafeHubException {
 
     public InvalidCafeListPageRequestException() {
-        super(CafeExceptionCode.INVALID_PAGE_REQUEST);
+        super(CafeExceptionCode.CAFE_LIST_INVALID_PAGE_REQUEST);
     }
 }

@@ -10,10 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 public class Image {
 
-    @Column(name = "s3_key")
+    @Column(length = 500, name = "s3_key")
     private String key;
 
-    @Column(name = "image_url", columnDefinition = "VARCHAR(255) DEFAULT 'DefaultImage'")
+    @Column(name = "image_url", columnDefinition = "VARCHAR(500) DEFAULT 'DefaultImage'")
     private String url;
 
 
