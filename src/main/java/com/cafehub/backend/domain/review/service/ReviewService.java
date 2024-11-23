@@ -6,10 +6,12 @@ import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.common.util.S3KeyGenerator;
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.cafe.entity.Cafe;
+import com.cafehub.backend.domain.cafe.exception.CafeNotFoundException;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
 import com.cafehub.backend.domain.comment.entity.Comment;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
+import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
 import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
@@ -19,8 +21,11 @@ import com.cafehub.backend.domain.review.dto.request.ReviewLikeRequestDTO;
 import com.cafehub.backend.domain.review.dto.response.AllReviewGetResponseDTO;
 import com.cafehub.backend.domain.review.dto.response.ReviewCreateResponseDTO;
 import com.cafehub.backend.domain.review.entity.Review;
+import com.cafehub.backend.domain.review.exception.ReviewNotFoundException;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
 import com.cafehub.backend.domain.reviewLike.entity.ReviewLike;
+import com.cafehub.backend.domain.reviewLike.exception.ReviewLikeAlreadyExistException;
+import com.cafehub.backend.domain.reviewLike.exception.ReviewLikeNotFoundException;
 import com.cafehub.backend.domain.reviewLike.repository.ReviewLikeRepository;
 import com.cafehub.backend.domain.reviewPhoto.dto.ReviewPhotoDetail;
 import com.cafehub.backend.domain.reviewPhoto.entity.ReviewPhoto;
@@ -36,6 +41,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+
+import static com.cafehub.backend.domain.reviewLike.entity.QReviewLike.reviewLike;
 
 @Slf4j
 @Service
@@ -64,7 +71,11 @@ public class ReviewService {
 
     private final CommentRepository commentRepository;
 
-    public ResponseDTO<ReviewCreateResponseDTO> createReview(ReviewCreateRequestDTO requestDTO, List<MultipartFile> reviewPhotos) {
+    public ResponseDTO<ReviewCreateResponseDTO> createReview(Long cafeId, ReviewCreateRequestDTO requestDTO, List<MultipartFile> reviewPhotos) {
+
+        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeNotFoundException::new);
+        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+
 
         Map<String, String> reviewPhotoMap = new HashMap<>();
 
@@ -96,8 +107,7 @@ public class ReviewService {
          *   성능 개선 테스트를 위해 우선 최악의 시나리오로 리뷰, 리뷰사진 등록을 진행함
          */
 
-        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
-        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+
 
 
         Review review = Review.builder()
@@ -130,14 +140,13 @@ public class ReviewService {
 
     public ResponseDTO<AllReviewGetResponseDTO> getAllReview(AllReviewGetRequestDTO requestDTO) {
 
-        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
+        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).orElseThrow(CafeNotFoundException::new);
         Slice<ReviewDetail> reviewDetails = reviewRepository.findReviewsBySlice(requestDTO);
-
 
 
         if (jwtThreadLocalStorage.isLoginMember()){
 
-            Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+            Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
             String loginMemberNickname = loginMember.getNickname();
 
             for (ReviewDetail rd : reviewDetails.getContent()){
@@ -210,10 +219,8 @@ public class ReviewService {
      */
     public ResponseDTO<Void> deleteReview(ReviewDeleteRequestDTO requestDTO) {
 
-        // 2차검증, 예외처리는 나중에
-
-        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).get();
-        Review deleteReview = reviewRepository.findById(requestDTO.getReviewId()).get();
+        Cafe cafe = cafeRepository.findById(requestDTO.getCafeId()).orElseThrow(CafeNotFoundException::new);
+        Review deleteReview = reviewRepository.findById(requestDTO.getReviewId()).orElseThrow(ReviewNotFoundException::new);
         List<Comment> commentList = commentRepository.findAllByReviewId(requestDTO.getReviewId());
 
         cafe.updateRatingAndReviewCountByDeleteReview(deleteReview.getRating());
@@ -238,8 +245,10 @@ public class ReviewService {
 
     public ResponseDTO<Void> reviewLike(ReviewLikeRequestDTO requestDTO) {
 
-        Review review = reviewRepository.findById(requestDTO.getReviewId()).get();
-        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).get();
+        Review review = reviewRepository.findById(requestDTO.getReviewId()).orElseThrow(ReviewNotFoundException::new);
+        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+
+        if(reviewLikeRepository.existsByReviewIdAndMemberId(review.getId(), member.getId())) throw new ReviewLikeAlreadyExistException();
 
         ReviewLike reviewLike = ReviewLike.builder()
                 .review(review)
@@ -255,7 +264,10 @@ public class ReviewService {
 
     public ResponseDTO<Void> cancelReviewLike(ReviewLikeRequestDTO requestDTO) {
 
-        Review review = reviewRepository.findById(requestDTO.getReviewId()).get();
+
+        Review review = reviewRepository.findById(requestDTO.getReviewId()).orElseThrow(ReviewNotFoundException::new);
+
+        if(!reviewLikeRepository.existsByReviewIdAndMemberId(review.getId(), jwtThreadLocalStorage.getMemberIdFromJwt())) throw new ReviewLikeNotFoundException();
 
         reviewLikeRepository.deleteByReviewIdAndMemberId(requestDTO.getReviewId(), jwtThreadLocalStorage.getMemberIdFromJwt());
 

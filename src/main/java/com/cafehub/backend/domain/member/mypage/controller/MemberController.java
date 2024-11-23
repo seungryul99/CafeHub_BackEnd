@@ -5,7 +5,8 @@ import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.request.MemberNicknameUpdateRequestDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
-import com.cafehub.backend.domain.member.mypage.exception.InvalidMemberProfileImgException;
+import com.cafehub.backend.domain.member.mypage.exception.InvalidMemberProfileImgExtensionException;
+import com.cafehub.backend.domain.member.mypage.exception.TooLongMemberProfileImgNameException;
 import com.cafehub.backend.domain.member.mypage.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,10 +50,12 @@ public class MemberController {
          */
         // 파일 이름 확인
         String originalFilename = profileImg.getOriginalFilename();
+
+        if (originalFilename.length() > 50) throw new TooLongMemberProfileImgNameException();
         // 확장자 추출
         int dotIndex = originalFilename != null ? originalFilename.lastIndexOf('.') : -1;
         if (dotIndex == -1 || !List.of("png", "jpg", "jpeg").contains( originalFilename.substring(dotIndex + 1).toLowerCase()))
-            throw new InvalidMemberProfileImgException();
+            throw new InvalidMemberProfileImgExtensionException();
 
         return ResponseEntity.ok(memberService.updateProfileImg(profileImg));
     }

@@ -4,6 +4,8 @@ package com.cafehub.backend.domain.comment.repository;
 import com.cafehub.backend.domain.comment.dto.request.AllCommentGetRequestDTO;
 import com.cafehub.backend.domain.comment.dto.response.AllCommentGetResponseDTO;
 import com.cafehub.backend.domain.comment.dto.response.QAllCommentGetResponseDTO_CommentDetail;
+import com.cafehub.backend.domain.comment.exception.InvalidCommentListPageRequestException;
+import com.cafehub.backend.domain.review.exception.InvalidReviewListPageRequestException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.PageRequest;
@@ -52,6 +54,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
                 .limit(COMMENT_PAGE_SIZE + 1)
                 .fetch();
 
+        if(commentDetails.isEmpty()) throw new InvalidCommentListPageRequestException();
 
         boolean hasNext = commentDetails.size() > COMMENT_PAGE_SIZE;
         if (hasNext) commentDetails.removeLast();
