@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtThreadLocalStorage {
 
+    // [FeedBack] Thread Local을 관리하는 애를 하나 더 만들면 좋지 않을까?
+
     private final JwtPayloadReader jwtPayloadReader;
     private final ThreadLocal<String> jwtAccessTokenHolder = new ThreadLocal<>();
 

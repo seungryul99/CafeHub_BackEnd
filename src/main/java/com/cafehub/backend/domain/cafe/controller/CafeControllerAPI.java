@@ -29,6 +29,7 @@ public interface CafeControllerAPI {@Operation(
                 @Parameter(name = "currentPage", description = "0 이상의 정수", example = "0")
         })
 
+    // [FeedBack] 빈 밸리데이션 어노테이션으로 빼는게 맞다.
 
     @GetMapping("/cafeList/{theme}/{sortedType}/{currentPage}")
     ResponseEntity<ResponseDTO<CafeListResponseDTO>> getCafeList(@Pattern(regexp = "^(Date|Meet|Dessert|Study|All)$", message = "카페리스트 검색 조건중 테마가 잘못 입력 되었습니다") String theme,

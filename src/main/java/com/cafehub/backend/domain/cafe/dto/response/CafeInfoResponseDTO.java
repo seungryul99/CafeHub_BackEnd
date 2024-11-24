@@ -30,6 +30,8 @@ public class CafeInfoResponseDTO {
     private List<BestMenuDetail> bestMenuList;
     private List<ReviewDetail> bestReviewList;
 
+
+    // [FeedBack] 논리적 구조화말고 성능쪽이나 메모리 구조에서 생각해 볼 수 있을까?
     @Getter
     @Setter
     public static class BestMenuDetail{
@@ -38,6 +40,8 @@ public class CafeInfoResponseDTO {
         private String name;
         private Integer price;
 
+
+        // [FeedBack] 쿼리 프로젝션을 쓰겠다는 근거를 더 만들어 보자
         @Builder(access = AccessLevel.PRIVATE)
         @QueryProjection
         public BestMenuDetail(Long menuId, String name, Integer price) {

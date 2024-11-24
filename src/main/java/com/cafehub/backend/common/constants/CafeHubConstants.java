@@ -4,6 +4,9 @@ import org.springframework.http.MediaType;
 
 public class CafeHubConstants {
 
+    // [FeedBack] 반드시 필요한 애들만 하는게 좋지 않나?
+
+
     /**
      *  [CafeHub API Success Code]
      *
