@@ -73,7 +73,7 @@ public class CafeHubConstants {
      *  메서드에서 처리하게 되는데, 이때 Provider에 따라서 KakaoLoginService, NaverLoginService 등으로 
      *  Service를 선택함. 이 때 필요한 Login Service 접미사.
      */
-    public static final String Login_SERVICE_SUFFIX = "LoginService";
+    public static final String LOGIN_SERVICE_SUFFIX = "LoginService";
 
 
     /**
@@ -85,6 +85,7 @@ public class CafeHubConstants {
     public static final String LOCATION_HEADER = "Location";
     public static final String SET_COOKIE_HEADER = "Set-Cookie";
     public static final String JWT_ACCESS_TOKEN = "JwtAccessToken";
+    public static final String JWT_REFRESH_TOKEN = "JwtRefreshToken";
 
     // local
     public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Max-Age=10800; SameSite=None; Secure;"; // 3시간
@@ -96,7 +97,7 @@ public class CafeHubConstants {
 
 //    public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=10800; SameSite=None; Secure;"; // 3시간
 //    public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=86400; SameSite=None; HttpOnly; Secure;"; // 24시간
-    public static final String JWT_REFRESH_TOKEN = "JwtRefreshToken";
+
 //    public static final String JWT_REFRESH_TOKEN_LOGOUT_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=0; SameSite=Lax; HttpOnly; Secure";
 //    public static final String FRONT_LOGIN_SUCCESS_URI = "https://www.cafehub.site/OAuthCallback";
 //    public static final String FRONT_LOGOUT_SUCCESS_URI = "https://www.cafehub.site/Logout";
@@ -161,5 +162,13 @@ public class CafeHubConstants {
      */
 
     public static final String MEMBER_PROFILE_DEFAULT_IMAGE = "DefaultImage";
+
+
+    /**
+     *    [RestClientManager Suffix]
+     *
+     */
+
+    public static final String REST_CLIENT_MANAGER_SUFFIX = "RestClientManager";
 
 }

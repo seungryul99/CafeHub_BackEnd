@@ -4,8 +4,6 @@ import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.member.login.jwt.service.JwtAuthService;
 import com.cafehub.backend.domain.member.login.service.OAuth2LoginService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,40 +19,36 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 @RequiredArgsConstructor
 public class LoginController implements LoginControllerAPI{
 
-    private final JwtAuthService jwtAuthService;
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
+    private final JwtAuthService jwtAuthService;
     private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
-
 
     @GetMapping("/api/member/login/{provider}")
     public ResponseEntity<Void> login(@PathVariable("provider") String provider){
 
-        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + Login_SERVICE_SUFFIX);
-
+        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + LOGIN_SERVICE_SUFFIX);
         log.info("사용자가 {}로 로그인 하기 버튼을 누름", provider);
 
         return ResponseEntity.status(FOUND)
-                .header(LOCATION_HEADER, loginService.getLoginPageUrl(provider))
+                .header(LOCATION_HEADER, loginService.getLoginPageUrl())
                 .build();
     }
-
 
     @GetMapping("/oauth/callback")
     public ResponseEntity<Void> OAuthCallback(@RequestParam ("code") String authorizationCode,
                                               @RequestParam ("state") String provider){
 
-        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + Login_SERVICE_SUFFIX);
+        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + LOGIN_SERVICE_SUFFIX);
 
         log.info("사용자가 카카오에 로그인했고 {}에서 CafeHub에 사용자를 통해서 리다이렉트로 콜백 성공", provider);
 
-        Map<String, String> jwtTokens = loginService.loginWithOAuthAndIssueJwt(authorizationCode);
+        Map<String, String> tokenMap = loginService.loginWithOAuthAndIssueJwt(authorizationCode, provider);
 
-
-        log.info("로그인 콜백 요청 발생 성공");
+        log.info("{} 로그인 콜백 요청 처리완료" , provider);
 
         return ResponseEntity.status(FOUND)
-                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + jwtTokens.get(JWT_ACCESS_TOKEN) + JWT_ACCESS_TOKEN_SETTING)
-                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  jwtTokens.get(JWT_REFRESH_TOKEN) + JWT_REFRESH_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + tokenMap.get(JWT_ACCESS_TOKEN) + JWT_ACCESS_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  tokenMap.get(JWT_REFRESH_TOKEN) + JWT_REFRESH_TOKEN_SETTING)
                 .header(LOCATION_HEADER, FRONT_LOGIN_SUCCESS_URI)
                 .build();
     }
@@ -78,7 +72,7 @@ public class LoginController implements LoginControllerAPI{
     @PostMapping("/api/auth/member/logout")
     public ResponseEntity<ResponseDTO<?>> providerLogout (){
 
-        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(jwtThreadLocalStorage.getOAuthProviderNameFromJwt() + Login_SERVICE_SUFFIX);
+        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(jwtThreadLocalStorage.getOAuthProviderNameFromJwt() + LOGIN_SERVICE_SUFFIX);
 
         return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl(jwtThreadLocalStorage.getMemberIdFromJwt())));
     }
@@ -91,7 +85,7 @@ public class LoginController implements LoginControllerAPI{
         Long memberId = Long.parseLong(state.replaceAll("\\D", ""));
 
 
-        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + Login_SERVICE_SUFFIX);
+        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + LOGIN_SERVICE_SUFFIX);
         loginService.removeRefreshTokenOnLogout(memberId);
 
     

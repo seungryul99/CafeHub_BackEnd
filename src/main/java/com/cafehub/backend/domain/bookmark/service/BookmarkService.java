@@ -13,7 +13,7 @@ import com.cafehub.backend.domain.bookmark.repository.BookmarkRepository;
 import com.cafehub.backend.domain.cafe.exception.CafeNotFoundException;
 import com.cafehub.backend.domain.cafe.repository.CafeRepository;
 import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
-import com.cafehub.backend.domain.member.login.repository.LoginRepository;
+import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
     private final CafeRepository cafeRepository;
-    private final LoginRepository loginRepository;
+    private final MemberRepository memberRepository;
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
 
@@ -42,7 +42,7 @@ public class BookmarkService {
 
         Bookmark bookmark = Bookmark.builder()
                 .cafe(cafeRepository.findById(cafeId).orElseThrow(CafeNotFoundException::new))
-                .member(loginRepository.findById(memberId).orElseThrow(MemberNotFoundException::new))
+                .member(memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new))
                 .build();
 
         bookmarkRepository.save(bookmark);

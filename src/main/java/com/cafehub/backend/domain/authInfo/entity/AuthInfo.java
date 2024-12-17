@@ -1,14 +1,17 @@
 package com.cafehub.backend.domain.authInfo.entity;
 
+import com.cafehub.backend.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.KAKAO_OAUTH_PROVIDER_NAME;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AuthInfo {
+public class AuthInfo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,5 +49,13 @@ public class AuthInfo {
     public void deleteJwtRefreshTokenByLogout(){
         this.jwtRefreshToken = null;
         this.jwtRefreshTokenExpireIn = null;
+    }
+
+    public static AuthInfo from(Long appId, String provider){
+
+        return AuthInfo.builder()
+                .appId(appId)
+                .provider(provider)
+                .build();
     }
 }

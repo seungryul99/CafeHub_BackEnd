@@ -1,25 +1,24 @@
 package com.cafehub.backend.domain.member.login.service;
 
-import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
 import com.cafehub.backend.domain.authInfo.repository.AuthInfoRepository;
 import com.cafehub.backend.domain.member.entity.Member;
-import com.cafehub.backend.domain.member.login.dto.request.KakaoOAuthTokenRequestDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
 import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
+import com.cafehub.backend.domain.member.login.jwt.dto.JwtTokenPayloadCreateDTO;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtProvider;
-import com.cafehub.backend.domain.member.login.jwt.dto.JwtTokenPayloadCreateDTO;
-import com.cafehub.backend.domain.member.login.repository.LoginRepository;
+import com.cafehub.backend.domain.member.login.properties.kakao.KakaoProperties;
+import com.cafehub.backend.domain.member.login.service.httpClient.OAuthHttpClient;
+import com.cafehub.backend.domain.member.login.util.NicknameResolver;
+import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 
 import java.util.Map;
-import java.util.UUID;
 
 import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 
@@ -27,147 +26,77 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class KakaoLoginService implements OAuth2LoginService {
 
-    private final String clientId;
-    private final String redirectUri;
-    private final String clientSecret;
-    private final String loginPageUrl;
-    private final String logoutRedirectUrl;
-
-    private final RestClient restClient;
-    private final LoginRepository loginRepository;
+    private final KakaoProperties properties;
+    private final OAuthHttpClient httpClient;
+    private final MemberRepository memberRepository;
     private final AuthInfoRepository authInfoRepository;
+
     private final JwtProvider jwtProvider;
     private final JwtPayloadReader jwtPayloadReader;
 
 
-    public KakaoLoginService(@Value("${kakao.loginUrl}") String kakaoLoginUrl,
-                             @Value("${kakao.clientId}") String clientId,
-                             @Value("${kakao.redirectUri}") String redirectUri,
-                             @Value("${kakao.clientSecret}") String clientSecret,
-                             @Value("${kakao.logoutRedirectUrl}") String logoutRedirectUrl,
-                             RestClient restClient, LoginRepository loginRepository,
-                             AuthInfoRepository authInfoRepository, JwtProvider jwtProvider, JwtPayloadReader jwtPayloadReader) {
-
-        this.clientId = clientId;
-        this.redirectUri = redirectUri;
-        this.clientSecret = clientSecret;
-        this.logoutRedirectUrl = logoutRedirectUrl;
-        this.restClient = restClient;
-        this.authInfoRepository = authInfoRepository;
-        this.jwtPayloadReader = jwtPayloadReader;
-        this.loginPageUrl = kakaoLoginUrl + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&response_type=code";
-        this.loginRepository = loginRepository;
-        this.jwtProvider = jwtProvider;
-    }
-
 
     @Override
-    public String getLoginPageUrl(String provider) {
-        return loginPageUrl + "&state=" + provider;
+    public String getLoginPageUrl() {
+        return properties.getLoginUrlWithParams();
     }
-
 
     @Override
-    public Map<String, String> loginWithOAuthAndIssueJwt(String authorizationCode) {
+    public Map<String, String> loginWithOAuthAndIssueJwt(String authorizationCode, String provider) {
 
-        KakaoOAuthTokenResponseDTO tokenResponse = getOAuthTokens(authorizationCode);
+        KakaoOAuthTokenResponseDTO oAuthTokens = (KakaoOAuthTokenResponseDTO) httpClient.getOAuthTokens(authorizationCode, provider);
+        log.info("카카오 인증서버에서 Access Token 받아오기 성공 ");
 
-        String accessToken = tokenResponse.getAccessToken();
-        log.info("카카오 인증서버에서 Access Token 받아오기 성공: " + accessToken.substring(0, 3));
+        KakaoUserResourceResponseDTO resources = (KakaoUserResourceResponseDTO) httpClient.getOAuthUserResources(oAuthTokens.getAccessToken(), provider);
+        log.info("사용자 Resource 받아오기 성공");
 
-        KakaoUserResourceResponseDTO userInfo = getKakaoMemberResourceByAccessToken(accessToken);
+        if(!authInfoRepository.existsByAppId(resources.getAppId())){
 
-        createMemberFromUserInfo(userInfo);
-
-        return issueJwtTokens(userInfo.getAppId());
-    }
-
-
-
-    private KakaoOAuthTokenResponseDTO getOAuthTokens(String authorizationCode) {
-
-        log.info("카카오 인증 서버에 code 발송, AccessToken + RefreshToken과 부가 정보들을 받아옴");
-
-        KakaoOAuthTokenRequestDTO tokenRequestDTO = KakaoOAuthTokenRequestDTO.builder()
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .code(authorizationCode)
-                .redirectUri(redirectUri)
-                .build();
-
-
-        return restClient.post()
-                         .uri(KAKAO_OAUTH_TOKEN_REQUEST_URL)
-                         .contentType(KAKAO_OAUTH_TOKEN_CONTENT_TYPE)
-                         .body(tokenRequestDTO.convertAllFieldsToMultiValueMap())
-                         .retrieve()
-                         .body(KakaoOAuthTokenResponseDTO.class);
-    }
-
-    private KakaoUserResourceResponseDTO getKakaoMemberResourceByAccessToken(String accessToken) {
-
-        log.info("OAuth AccessToken을 통해서 사용자의 카카오 상 정보를 받아옴");
-
-        return restClient.get()
-                .uri(KAKAO_USER_INFO_API_URL)
-                .header(AUTHORIZATION_HEADER, BEARER_TOKEN_TYPE + accessToken)
-                .retrieve()
-                .body(KakaoUserResourceResponseDTO.class);
-    }
-
-    private void createMemberFromUserInfo(KakaoUserResourceResponseDTO userInfo) {
-
-        log.info("신규 회원 체크 후 회원가입");
-
-        Long appId = userInfo.getAppId();
-        String nickname = userInfo.getKakaoAccount().getProfile().getNickname();
-        String profileImageUrl = userInfo.getKakaoAccount().getProfile().getProfileImageUrl();
-        String email = userInfo.getKakaoAccount().getEmail();
-
-
-        /**
-         *  AuthInfo의 appId를 통해서 AuthInfo 조회 후 해당 AuthInfo로 MemberExist 확인
-         *  추후 성능 테스트 때 성능 직접 비교 하면서 Join 방식과 비교후 바꿀 생각
-         *  
-         *  일단은 임시로 AuthInfo로만 검증
-         */
-
-        AuthInfo authInfo = authInfoRepository.findByAppId(appId);
-
-        if (authInfo == null) {
-
-            AuthInfo newMemberAuthInfo = AuthInfo.builder()
-                    .appId(appId)
-                    .provider(KAKAO_OAUTH_PROVIDER_NAME)
-                    .build();
-
-
-
-            if (nickname.length() > MEMBER_NICKNAME_MAX_LENGTH) nickname = nickname.substring(0,10);
-
-            // 중복 닉네임 체크
-            while (loginRepository.existsByNickname(nickname)){
-
-                nickname = nickname + UUID.randomUUID().toString().substring(0,3);
-            }
-
-
-            Member newMember = Member.builder()
-                    .email(email)
-                    .nickname(nickname)
-                    .profileImg(profileImageUrl != null ? new Image(profileImageUrl) : new Image(MEMBER_PROFILE_DEFAULT_IMAGE))
-                    .authInfo(newMemberAuthInfo)
-                    .build();
-
-            loginRepository.save(newMember);
-            log.info("회원가입 성공");
-
-            return;
+            signUp(resources);
+            log.info("신규 회원 회원가입 성공");
         }
 
-        log.info("이미 회원가입 한 적 있는 회원입니다.");
+        return issueJwtTokens(resources.getAppId());
+    }
+
+    private void signUp(KakaoUserResourceResponseDTO resources) {
+
+        Long appId = resources.getAppId();
+        String email = resources.getKakaoAccount().getEmail();
+        String nickname = resources.getKakaoAccount().getProfile().getNickname();
+        String profileImgUrl = resources.getKakaoAccount().getProfile().getProfileImageUrl();
+
+
+        nickname = NicknameResolver.adjustNicknameLength(nickname);
+        while (memberRepository.existsByNickname(nickname)) nickname = NicknameResolver.adjustDuplicateNickname(nickname);
+
+        AuthInfo newMemberAuthInfo = AuthInfo.from(appId, KAKAO_OAUTH_PROVIDER_NAME);
+
+        Member newMember = Member.from(newMemberAuthInfo, nickname, email, profileImgUrl);
+
+        memberRepository.save(newMember);
+    }
+
+    @Override
+    public String getLogoutPageUrl(Long memberId) {
+
+        log.info("사용자가 CafeHub만 로그아웃 할지, 카카오와 함께 로그아웃 할지 결정");
+
+        return "https://kauth.kakao.com/oauth/logout?" +
+                "client_id="+ properties.getClientId() + "&" +
+                "logout_redirect_uri=" + properties.getLogoutRedirectUrl() + "&"
+                + "state=kakao" + memberId;
+    }
+
+    @Override
+    public void removeRefreshTokenOnLogout(Long memberId) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        AuthInfo authInfo = member.getAuthInfo();
+        authInfo.deleteJwtRefreshTokenByLogout();
     }
 
 
@@ -185,7 +114,7 @@ public class KakaoLoginService implements OAuth2LoginService {
         AuthInfo authInfo = authInfoRepository.findByAppId(appId);
         log.info("정상 동작 확인 " + authInfo.getAppId().toString());
 
-        Member member = loginRepository.findByAuthInfo(authInfo);
+        Member member = memberRepository.findByAuthInfo(authInfo);
 
         JwtTokenPayloadCreateDTO payload = JwtTokenPayloadCreateDTO.builder()
                 .memberId(member.getId())
@@ -206,27 +135,5 @@ public class KakaoLoginService implements OAuth2LoginService {
                 JWT_REFRESH_TOKEN, jwtRefreshToken
         );
     }
-
-
-
-    @Override
-    public String getLogoutPageUrl(Long memberId) {
-
-        log.info("사용자가 CafeHub만 로그아웃 할지, 카카오와 함께 로그아웃 할지 결정");
-
-        return "https://kauth.kakao.com/oauth/logout?" +
-                "client_id="+ clientId + "&" +
-                "logout_redirect_uri=" + logoutRedirectUrl + "&"
-                + "state=kakao" + memberId;
-    }
-
-    @Override
-    public void removeRefreshTokenOnLogout(Long memberId) {
-
-        Member member = loginRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        AuthInfo authInfo = member.getAuthInfo();
-        authInfo.deleteJwtRefreshTokenByLogout();
-    }
-
 
 }

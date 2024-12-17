@@ -3,9 +3,15 @@ package com.cafehub.backend.domain.member.entity;
 import com.cafehub.backend.common.entity.BaseTimeEntity;
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
+import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
+import com.cafehub.backend.domain.member.login.dto.response.OAuthUserResourceResponseDTO;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import static com.cafehub.backend.common.constants.CafeHubConstants.MEMBER_PROFILE_DEFAULT_IMAGE;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -49,4 +55,13 @@ public class Member extends BaseTimeEntity {
         this.profileImg.updateUrl(key, profileImg);
     }
 
+    public static Member from(AuthInfo authInfo, String nickname, String email, String profileImgUrl){
+
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
+                .profileImg(profileImgUrl != null ? new Image(profileImgUrl) : new Image(MEMBER_PROFILE_DEFAULT_IMAGE))
+                .authInfo(authInfo)
+                .build();
+    }
 }

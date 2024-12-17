@@ -1,5 +1,7 @@
 package com.cafehub.backend.domain.member.login.dto.request;
 
+import com.cafehub.backend.domain.member.login.properties.kakao.KakaoProperties;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,7 +18,7 @@ public class KakaoOAuthTokenRequestDTO {
     private final String code;
     private final String clientSecret;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private KakaoOAuthTokenRequestDTO(String clientId, String redirectUri, String clientSecret, String code){
 
         this.grantType = "authorization_code";
@@ -26,16 +28,13 @@ public class KakaoOAuthTokenRequestDTO {
         this.code = code;
     }
 
-    public MultiValueMap<String, String> convertAllFieldsToMultiValueMap() {
+    public static KakaoOAuthTokenRequestDTO from(String authorizationCode, KakaoProperties properties){
 
-        MultiValueMap<String, String> formDataParameters = new LinkedMultiValueMap<>();
-
-        formDataParameters.put("grant_type", Collections.singletonList(grantType));
-        formDataParameters.put("client_id", Collections.singletonList(clientId));
-        formDataParameters.put("redirect_uri", Collections.singletonList(redirectUri));
-        formDataParameters.put("code", Collections.singletonList(code));
-        formDataParameters.put("client_secret", Collections.singletonList(clientSecret));
-
-        return formDataParameters;
+        return KakaoOAuthTokenRequestDTO.builder()
+                .clientId(properties.getClientId())
+                .clientSecret(properties.getClientSecret())
+                .code(authorizationCode)
+                .redirectUri(properties.getRedirectUri())
+                .build();
     }
 }
