@@ -1,12 +1,9 @@
 package com.cafehub.backend.domain.member.login.util;
 
-import org.springframework.stereotype.Component;
-
 import java.util.UUID;
 
 import static com.cafehub.backend.common.constants.CafeHubConstants.MEMBER_NICKNAME_MAX_LENGTH;
 
-@Component
 public class NicknameResolver {
 
     public static String adjustNicknameLength (String nickname){

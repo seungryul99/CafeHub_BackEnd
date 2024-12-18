@@ -12,12 +12,14 @@ public class KakaoPropertiesLoader {
     private final String clientSecret;
     private final String redirectUri;
     private final String logoutRedirectUrl;
+    private final String logoutUrl;
 
-    public KakaoPropertiesLoader(String loginUrl, String clientId, String clientSecret, String redirectUri, String logoutRedirectUrl) {
+    public KakaoPropertiesLoader(String loginUrl, String clientId, String clientSecret, String redirectUri, String logoutRedirectUrl, String logoutUrl) {
         this.loginUrl = loginUrl;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
         this.logoutRedirectUrl = logoutRedirectUrl;
+        this.logoutUrl = logoutUrl;
     }
 }

@@ -19,7 +19,8 @@ public class KakaoPropertiesConfig {
                 kakaoPropertiesLoader.getClientId(),
                 kakaoPropertiesLoader.getClientSecret(),
                 kakaoPropertiesLoader.getRedirectUri(),
-                kakaoPropertiesLoader.getLogoutRedirectUrl()
+                kakaoPropertiesLoader.getLogoutRedirectUrl(),
+                kakaoPropertiesLoader.getLogoutUrl()
         );
     }
 }

@@ -37,7 +37,6 @@ public class Member extends BaseTimeEntity {
     @JoinColumn (name = "auth_info_id", unique = true)
     private AuthInfo authInfo;
 
-
     @Builder
     private Member(String nickname, String email, Image profileImg, AuthInfo authInfo) {
         this.nickname = nickname;

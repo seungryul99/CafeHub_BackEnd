@@ -5,7 +5,7 @@ import com.cafehub.backend.domain.authInfo.repository.AuthInfoRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.exception.JwtRefreshTokenBlockedException;
 import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
-import com.cafehub.backend.domain.member.login.jwt.dto.JwtTokenPayloadCreateDTO;
+import com.cafehub.backend.domain.member.login.jwt.dto.JwtPayloadCreateDTO;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtProvider;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtValidator;
@@ -13,7 +13,6 @@ import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.cafehub.backend.common.constants.CafeHubConstants.JWT_ACCESS_TOKEN;
@@ -46,10 +45,11 @@ public class JwtAuthService {
 
 
         // 전달 받은 Refresh Token으로 부터 Token 재발급을 위한 정보를 추출함
-        JwtTokenPayloadCreateDTO payload = JwtTokenPayloadCreateDTO.builder()
-                .memberId(jwtPayloadReader.getMemberId(jwtRefreshToken))
-                .provider(jwtPayloadReader.getProvider(jwtRefreshToken))
-                .build();
+        JwtPayloadCreateDTO payload = JwtPayloadCreateDTO.from(jwtPayloadReader.getMemberId(jwtRefreshToken),jwtPayloadReader.getProvider(jwtRefreshToken));
+//        JwtPayloadCreateDTO payload = JwtPayloadCreateDTO.builder()
+//                .memberId(jwtPayloadReader.getMemberId(jwtRefreshToken))
+//                .provider(jwtPayloadReader.getProvider(jwtRefreshToken))
+//                .build();
 
 
         // 토큰 두 개 발급
