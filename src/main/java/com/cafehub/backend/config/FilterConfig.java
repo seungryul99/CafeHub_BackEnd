@@ -1,7 +1,7 @@
 package com.cafehub.backend.config;
 
 
-import com.cafehub.backend.common.filter.CorsFilter;
+import com.cafehub.backend.common.filter.PreflightRequestManageFilter;
 import com.cafehub.backend.common.filter.GlobalFilterExceptionHandleFilter;
 import com.cafehub.backend.common.filter.jwt.JwtCheckFilter;
 import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
@@ -40,7 +40,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<Filter> corsCheckFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new CorsFilter());
+        filterRegistrationBean.setFilter(new PreflightRequestManageFilter());
         filterRegistrationBean.setOrder(1);
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;

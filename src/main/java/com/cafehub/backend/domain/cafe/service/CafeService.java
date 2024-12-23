@@ -33,21 +33,15 @@ import java.util.Map;
 public class CafeService {
 
     private final CafeRepository cafeRepository;
-
     private final MenuRepository menuRepository;
-
     private final ReviewRepository reviewRepository;
-
     private final ReviewPhotoRepository reviewPhotoRepository;
-
     private final BookmarkRepository bookmarkRepository;
-
     private final ReviewLikeRepository reviewLikeRepository;
-
     private final JwtThreadLocalStorage jwtThreadLocalStorage;
 
     // [FeedBack] DB, 네트워크 공부해보면 리팩토링 할 포인트가 보일거임, 특히 예외가 터질때? 성능이 좋아지지 않을까?
-
+    // 스프링에 CS를 적용?
 
     // [Refactor Point] readOnly 옵션은 실제로 성능 비교를 해봐야 알 수 있음.
     // readOnly를 지원하지 않는 DB의 경우 쓸데 없이 네트워크만 한 번 더 타고 가서 나 읽기전용 모드요 라고 알려주는 역효과만 있음
@@ -56,7 +50,6 @@ public class CafeService {
 
         return ResponseDTO.success(CafeListResponseDTO.from(cafeRepository.findCafesBySlice(requestDTO)));
     }
-
 
     /**
      *  [카페 정보 상세 보기 에서는 아래의 4가지 데이터 반환]

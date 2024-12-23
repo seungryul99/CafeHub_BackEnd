@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
-import static com.cafehub.backend.common.constants.CafeHubConstants.*;
+import static com.cafehub.backend.common.constants.CafeHubConstants.KAKAO_OAUTH_PROVIDER_NAME;
 
 
 @Slf4j
@@ -53,6 +53,9 @@ public class KakaoLoginService implements OAuth2LoginService {
         return jwtTokenManager.issueJwtTokens(member,KAKAO_OAUTH_PROVIDER_NAME);
     }
 
+    
+    // [Refactor] OS + GC + JVM 을 조금더 공부해 보면 이걸 어떻게 처리 하는 게 바람직 할지 판단할 수 있음, CS를 녹이는 법
+    // + 꼭 Service만이 Repository를 호출해야 하는 건 아닌것 같다.
     private void signUp(KakaoUserResourceResponseDTO resources) {
 
         String nickname = resources.getKakaoAccount().getProfile().getNickname();
