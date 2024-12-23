@@ -61,13 +61,11 @@ public class LoginController implements LoginControllerAPI{
         String accessToken = reIssueTokens.get(JWT_ACCESS_TOKEN);
         String refreshToken = reIssueTokens.get(JWT_REFRESH_TOKEN);
 
-
         return ResponseEntity.status(200)
                 .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + accessToken + JWT_ACCESS_TOKEN_SETTING)
                 .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  refreshToken + JWT_REFRESH_TOKEN_SETTING)
                 .build();
     }
-
 
     @PostMapping("/api/auth/member/logout")
     public ResponseEntity<ResponseDTO<?>> providerLogout (){
@@ -84,11 +82,9 @@ public class LoginController implements LoginControllerAPI{
         String provider = state.replaceAll("\\d.*", "");
         Long memberId = Long.parseLong(state.replaceAll("\\D", ""));
 
-
         OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + LOGIN_SERVICE_SUFFIX);
         loginService.removeRefreshTokenOnLogout(memberId);
 
-    
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + JWT_REFRESH_TOKEN_LOGOUT_SETTING)
                 .header(LOCATION_HEADER, FRONT_LOGOUT_SUCCESS_URI)
