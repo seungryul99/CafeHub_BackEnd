@@ -2,7 +2,8 @@ package com.cafehub.backend.domain.review.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
+import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
 import com.cafehub.backend.common.util.S3KeyGenerator;
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.cafe.entity.Cafe;
@@ -42,8 +43,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
-import static com.cafehub.backend.domain.reviewLike.entity.QReviewLike.reviewLike;
-
 @Slf4j
 @Service
 @Transactional
@@ -57,7 +56,7 @@ public class ReviewService {
 
     private final S3KeyGenerator s3KeyGenerator;
 
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
+    private final JwtThreadLocalStorageManager threadLocalStorageManager;
 
     private final ReviewRepository reviewRepository;
 
@@ -74,7 +73,7 @@ public class ReviewService {
     public ResponseDTO<ReviewCreateResponseDTO> createReview(Long cafeId, ReviewCreateRequestDTO requestDTO, List<MultipartFile> reviewPhotos) {
 
         Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeNotFoundException::new);
-        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(threadLocalStorageManager.getMemberId()).orElseThrow(MemberNotFoundException::new);
 
 
         Map<String, String> reviewPhotoMap = new HashMap<>();
@@ -144,9 +143,9 @@ public class ReviewService {
         Slice<ReviewDetail> reviewDetails = reviewRepository.findReviewsBySlice(requestDTO);
 
 
-        if (jwtThreadLocalStorage.isLoginMember()){
+        if (threadLocalStorageManager.isLoginMember()){
 
-            Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+            Member loginMember = memberRepository.findById(threadLocalStorageManager.getMemberId()).orElseThrow(MemberNotFoundException::new);
             String loginMemberNickname = loginMember.getNickname();
 
             for (ReviewDetail rd : reviewDetails.getContent()){
@@ -154,7 +153,7 @@ public class ReviewService {
                 if (rd.getAuthor().equals(loginMemberNickname)) rd.updateReviewManagementEnabled();
             }
 
-            updateLikeStatusInReviews(reviewDetails.getContent(), jwtThreadLocalStorage.getMemberIdFromJwt());
+            updateLikeStatusInReviews(reviewDetails.getContent(), threadLocalStorageManager.getMemberId());
         }
         updateReviewPhotoUrls(reviewDetails.getContent());
 
@@ -246,7 +245,7 @@ public class ReviewService {
     public ResponseDTO<Void> reviewLike(ReviewLikeRequestDTO requestDTO) {
 
         Review review = reviewRepository.findById(requestDTO.getReviewId()).orElseThrow(ReviewNotFoundException::new);
-        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(threadLocalStorageManager.getMemberId()).orElseThrow(MemberNotFoundException::new);
 
         if(reviewLikeRepository.existsByReviewIdAndMemberId(review.getId(), member.getId())) throw new ReviewLikeAlreadyExistException();
 
@@ -267,9 +266,9 @@ public class ReviewService {
 
         Review review = reviewRepository.findById(requestDTO.getReviewId()).orElseThrow(ReviewNotFoundException::new);
 
-        if(!reviewLikeRepository.existsByReviewIdAndMemberId(review.getId(), jwtThreadLocalStorage.getMemberIdFromJwt())) throw new ReviewLikeNotFoundException();
+        if(!reviewLikeRepository.existsByReviewIdAndMemberId(review.getId(), threadLocalStorageManager.getMemberId())) throw new ReviewLikeNotFoundException();
 
-        reviewLikeRepository.deleteByReviewIdAndMemberId(requestDTO.getReviewId(), jwtThreadLocalStorage.getMemberIdFromJwt());
+        reviewLikeRepository.deleteByReviewIdAndMemberId(requestDTO.getReviewId(), threadLocalStorageManager.getMemberId());
 
         review.updateLikeCntByDeleteReviewLike();
 

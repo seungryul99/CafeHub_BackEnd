@@ -20,7 +20,7 @@ public class JwtTokenManager {
 
     public Map<String, String> issueJwtTokens(Member member, String provider) {
 
-        JwtPayloadCreateDTO payload = JwtPayloadCreateDTO.from(member.getId(),provider);
+        JwtPayloadCreateDTO payload = JwtPayloadCreateDTO.from(member.getId(),provider,member.getRole());
 
         String jwtAccessToken = jwtProvider.createJwtAccessToken(payload);
         String jwtRefreshToken = jwtProvider.createJwtRefreshToken(payload);

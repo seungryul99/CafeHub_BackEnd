@@ -1,7 +1,8 @@
 package com.cafehub.backend.domain.member.login.controller;
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
+import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.member.login.jwt.service.JwtAuthService;
 import com.cafehub.backend.domain.member.login.service.OAuth2LoginService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 @RequiredArgsConstructor
 public class LoginController implements LoginControllerAPI{
 
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
+    private final JwtThreadLocalStorageManager threadLocalStorageManager;
     private final JwtAuthService jwtAuthService;
     private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
 
@@ -72,9 +73,9 @@ public class LoginController implements LoginControllerAPI{
     @PostMapping("/api/auth/member/logout")
     public ResponseEntity<ResponseDTO<?>> providerLogout (){
 
-        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(jwtThreadLocalStorage.getOAuthProviderNameFromJwt() + LOGIN_SERVICE_SUFFIX);
+        OAuth2LoginService loginService = oAuth2LoginServiceMap.get(threadLocalStorageManager.getProvider() + LOGIN_SERVICE_SUFFIX);
 
-        return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl(jwtThreadLocalStorage.getMemberIdFromJwt())));
+        return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl(threadLocalStorageManager.getMemberId())));
     }
 
 

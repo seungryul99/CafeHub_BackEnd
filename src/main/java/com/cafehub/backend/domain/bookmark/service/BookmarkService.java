@@ -2,7 +2,8 @@ package com.cafehub.backend.domain.bookmark.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
+import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.bookmark.dto.request.BookmarkRequestDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkListResponseDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkResponseDTO;
@@ -30,13 +31,13 @@ public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
     private final CafeRepository cafeRepository;
     private final MemberRepository memberRepository;
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
+    private final JwtThreadLocalStorageManager threadLocalStorageManager;
 
 
     public ResponseDTO<BookmarkResponseDTO> bookmark(BookmarkRequestDTO requestDTO) {
 
         Long cafeId = requestDTO.getCafeId();
-        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
+        Long memberId = threadLocalStorageManager.getMemberId();
 
         if(bookmarkRepository.existsByCafeIdAndMemberId(cafeId, memberId)) throw new BookmarkDuplicateException();
 
@@ -54,7 +55,7 @@ public class BookmarkService {
     public ResponseDTO<BookmarkResponseDTO> deleteBookmark(BookmarkRequestDTO requestDTO) {
 
         Long cafeId = requestDTO.getCafeId();
-        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
+        Long memberId = threadLocalStorageManager.getMemberId();
 
         if(!cafeRepository.existsById(cafeId)) throw new CafeNotFoundException();
         if(!bookmarkRepository.existsByCafeIdAndMemberId(cafeId, memberId)) throw new BookmarkNotFoundException();
@@ -68,7 +69,7 @@ public class BookmarkService {
 
     public ResponseDTO<BookmarkListResponseDTO> getBookmarkList() {
 
-        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
+        Long memberId = threadLocalStorageManager.getMemberId();
 
         // 가져와야 할 모든 정보는 Cafe 테이블에 있음
         // 북마크 테이블에서 사용자의 memberId로 전부 조회후 카페 Id 추출

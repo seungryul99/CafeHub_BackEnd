@@ -3,10 +3,7 @@ package com.cafehub.backend.common.filter;
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.common.exception.dto.ErrorReason;
 import com.cafehub.backend.common.exception.global.CommonErrorCode;
-import com.cafehub.backend.domain.member.login.exception.AuthorizationHeaderNotExistException;
-import com.cafehub.backend.domain.member.login.exception.InvalidAuthorizationTokenTypeException;
-import com.cafehub.backend.domain.member.login.exception.InvalidJwtAccessTokenException;
-import com.cafehub.backend.domain.member.login.exception.JwtAccessTokenExpiredException;
+import com.cafehub.backend.domain.member.login.exception.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
@@ -65,11 +62,20 @@ public class GlobalFilterExceptionHandleFilter implements Filter {
 
             createErrorResponse(httpServletResponse, errorReason);
         }
+
+        catch (AuthorizationException e){
+
+            ErrorReason errorReason = e.getErrorReason();
+            log.info("권한 부족으로 인가 예외 발생 : {}", errorReason.getCode());
+
+            createErrorResponse(httpServletResponse, errorReason);
+        }
         
         catch (Exception e){
 
             ErrorReason errorReason = CommonErrorCode._UNKNOWN_INTERNAL_SERVER_ERROR.getErrorReason();
             log.info("스프링 컨테이너 이전에서 알 수 없는 예외 발생 : {}" , errorReason.getCode());
+            log.info(e.getMessage());
 
             createErrorResponse(httpServletResponse, errorReason);
         }

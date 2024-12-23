@@ -54,7 +54,7 @@ public class KakaoLoginService implements OAuth2LoginService {
     }
 
     
-    // [Refactor] OS + GC + JVM 을 조금더 공부해 보면 이걸 어떻게 처리 하는 게 바람직 할지 판단할 수 있음, CS를 녹이는 법
+    // [Refactor Point] OS + GC + JVM 을 조금더 공부해 보면 이걸 어떻게 처리 하는 게 바람직 할지 판단할 수 있음, 코드에 CS를 녹이는 법
     // + 꼭 Service만이 Repository를 호출해야 하는 건 아닌것 같다.
     private void signUp(KakaoUserResourceResponseDTO resources) {
 

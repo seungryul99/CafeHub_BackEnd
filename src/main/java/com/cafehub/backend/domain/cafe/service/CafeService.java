@@ -2,7 +2,8 @@ package com.cafehub.backend.domain.cafe.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
+import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.bookmark.repository.BookmarkRepository;
 import com.cafehub.backend.domain.cafe.dto.request.CafeListRequestDTO;
 import com.cafehub.backend.domain.cafe.dto.response.CafeInfoResponseDTO;
@@ -38,7 +39,7 @@ public class CafeService {
     private final ReviewPhotoRepository reviewPhotoRepository;
     private final BookmarkRepository bookmarkRepository;
     private final ReviewLikeRepository reviewLikeRepository;
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
+    private final JwtThreadLocalStorageManager threadLocalStorageManager;
 
     // [FeedBack] DB, 네트워크 공부해보면 리팩토링 할 포인트가 보일거임, 특히 예외가 터질때? 성능이 좋아지지 않을까?
     // 스프링에 CS를 적용?
@@ -73,7 +74,7 @@ public class CafeService {
         Long loginMemberId = null;
         Boolean bookmarkChecked = false;
 
-        if (jwtThreadLocalStorage.isLoginMember()) loginMemberId = jwtThreadLocalStorage.getMemberIdFromJwt();
+        if (threadLocalStorageManager.isLoginMember()) loginMemberId = threadLocalStorageManager.getMemberId();
 
         // 로그인 한 회원의 경우 해당 카페를 북마크 한 적이 있는지 여부 & 해당 카페의 Top N개의 리뷰에 대해서 좋아요를 누른적이 있는지 여부 체크
         if(loginMemberId != null){

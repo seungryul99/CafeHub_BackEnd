@@ -30,6 +30,10 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Embedded
     private Image profileImg;
 
@@ -38,9 +42,10 @@ public class Member extends BaseTimeEntity {
     private AuthInfo authInfo;
 
     @Builder
-    private Member(String nickname, String email, Image profileImg, AuthInfo authInfo) {
+    private Member(String nickname, String email, Role role, Image profileImg, AuthInfo authInfo) {
         this.nickname = nickname;
         this.email = email;
+        this.role = role;
         this.profileImg = profileImg;
         this.authInfo = authInfo;
     }
@@ -59,6 +64,7 @@ public class Member extends BaseTimeEntity {
         return Member.builder()
                 .email(email)
                 .nickname(nickname)
+                .role(Role.USER)
                 .profileImg(profileImgUrl != null ? new Image(profileImgUrl) : new Image(MEMBER_PROFILE_DEFAULT_IMAGE))
                 .authInfo(authInfo)
                 .build();

@@ -1,10 +1,7 @@
 package com.cafehub.backend.config;
 
-
-import com.cafehub.backend.common.filter.PreflightRequestManageFilter;
-import com.cafehub.backend.common.filter.GlobalFilterExceptionHandleFilter;
-import com.cafehub.backend.common.filter.jwt.JwtCheckFilter;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import com.cafehub.backend.common.filter.*;
+import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
@@ -13,22 +10,17 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 @RequiredArgsConstructor
 public class FilterConfig {
 
     private final ObjectMapper objectMapper;
     private final JwtValidator jwtValidator;
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
-
-
-    // [FeedBack] 필터를 조금 더 세분화 하면 동시에 많은 요청이 들어올 때 좋지 않나?
-    // [FeedBack] CORS 필터랑 다른 필터 순서 이게 맞나?
-
+    private final JwtPayloadReader jwtPayloadReader;
+    private final JwtThreadLocalStorageManager jwtThreadLocalStorageManager;
 
     @Bean
-    public FilterRegistrationBean<Filter> GlobalFilterExceptionHandleFilter() {
+    public FilterRegistrationBean<Filter> globalFilterExceptionHandleFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new GlobalFilterExceptionHandleFilter(objectMapper));
         filterRegistrationBean.setOrder(0);
@@ -36,9 +28,8 @@ public class FilterConfig {
         return filterRegistrationBean;
     }
 
-
     @Bean
-    public FilterRegistrationBean<Filter> corsCheckFilter() {
+    public FilterRegistrationBean<Filter> preflightRequestFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new PreflightRequestManageFilter());
         filterRegistrationBean.setOrder(1);
@@ -46,15 +37,39 @@ public class FilterConfig {
         return filterRegistrationBean;
     }
 
-
-    // [FeedBack] 이거 필터 두 개 나누는 게 맞다
     @Bean
-    public FilterRegistrationBean<Filter> loginCheckFilter() {
+    public FilterRegistrationBean<Filter> jwtValidationFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new JwtCheckFilter(jwtValidator,jwtThreadLocalStorage));
+        filterRegistrationBean.setFilter(new JwtValidationFilter(jwtValidator));
         filterRegistrationBean.setOrder(2);
-        filterRegistrationBean.addUrlPatterns("/api/auth/*", "/api/optional-auth/*");
+        filterRegistrationBean.addUrlPatterns("/api/auth/*","/api/optional-auth/*","/swagger-ui.html", "/swagger-ui/*");
         return filterRegistrationBean;
     }
 
+    @Bean
+    public FilterRegistrationBean<Filter> authenticationFilter() {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new AuthenticationFilter(jwtPayloadReader,jwtThreadLocalStorageManager));
+        filterRegistrationBean.setOrder(3);
+        filterRegistrationBean.addUrlPatterns("/api/auth/*", "/swagger-ui.html", "/swagger-ui/*");
+        return filterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<Filter> optionalAuthFilter() {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new OptionalAuthFilter(jwtPayloadReader,jwtThreadLocalStorageManager));
+        filterRegistrationBean.setOrder(4);
+        filterRegistrationBean.addUrlPatterns("/api/optional-auth/*");
+        return filterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<Filter> authorizationFilter() {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new AuthorizationFilter(jwtThreadLocalStorageManager));
+        filterRegistrationBean.setOrder(5);
+        filterRegistrationBean.addUrlPatterns("/swagger-ui.html", "/swagger-ui/*");
+        return filterRegistrationBean;
+    }
 }

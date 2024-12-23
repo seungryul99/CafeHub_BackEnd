@@ -3,6 +3,7 @@ package com.cafehub.backend.domain.member.login.jwt.service;
 import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
 import com.cafehub.backend.domain.authInfo.repository.AuthInfoRepository;
 import com.cafehub.backend.domain.member.entity.Member;
+import com.cafehub.backend.domain.member.entity.Role;
 import com.cafehub.backend.domain.member.login.exception.JwtRefreshTokenBlockedException;
 import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
 import com.cafehub.backend.domain.member.login.jwt.dto.JwtPayloadCreateDTO;
@@ -45,7 +46,7 @@ public class JwtAuthService {
 
 
         // 전달 받은 Refresh Token으로 부터 Token 재발급을 위한 정보를 추출함
-        JwtPayloadCreateDTO payload = JwtPayloadCreateDTO.from(jwtPayloadReader.getMemberId(jwtRefreshToken),jwtPayloadReader.getProvider(jwtRefreshToken));
+        JwtPayloadCreateDTO payload = JwtPayloadCreateDTO.from(jwtPayloadReader.getMemberId(jwtRefreshToken),jwtPayloadReader.getProvider(jwtRefreshToken), Role.valueOf(jwtPayloadReader.getMemberRole(jwtRefreshToken)));
 //        JwtPayloadCreateDTO payload = JwtPayloadCreateDTO.builder()
 //                .memberId(jwtPayloadReader.getMemberId(jwtRefreshToken))
 //                .provider(jwtPayloadReader.getProvider(jwtRefreshToken))

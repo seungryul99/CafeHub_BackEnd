@@ -29,7 +29,6 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<MyPageResponseDTO>> getMyPage(){
-
         return ResponseEntity.ok(memberService.getMyPage());
     }
 
