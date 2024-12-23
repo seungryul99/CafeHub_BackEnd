@@ -1,8 +1,7 @@
 package com.cafehub.backend.domain.member.login.controller;
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
-import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.member.login.jwt.service.JwtAuthService;
 import com.cafehub.backend.domain.member.login.service.OAuth2LoginService;
 import lombok.RequiredArgsConstructor;

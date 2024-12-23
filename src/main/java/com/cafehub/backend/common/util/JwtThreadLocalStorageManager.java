@@ -1,4 +1,4 @@
-package com.cafehub.backend.common.filter;
+package com.cafehub.backend.common.util;
 
 import com.cafehub.backend.common.util.MemberAuthentication;
 import com.cafehub.backend.domain.member.entity.Role;

@@ -1,5 +1,6 @@
 package com.cafehub.backend.common.filter;
 
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.member.entity.Role;
 import com.cafehub.backend.domain.member.login.exception.AuthorizationException;
 import jakarta.servlet.*;

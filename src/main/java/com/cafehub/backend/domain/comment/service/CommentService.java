@@ -2,8 +2,7 @@ package com.cafehub.backend.domain.comment.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
-import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.comment.dto.request.AllCommentGetRequestDTO;
 import com.cafehub.backend.domain.comment.dto.request.CommentCreateRequestDTO;
 import com.cafehub.backend.domain.comment.dto.response.AllCommentGetResponseDTO;

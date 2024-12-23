@@ -2,8 +2,7 @@ package com.cafehub.backend.domain.review.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
-import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.common.util.S3KeyGenerator;
 import com.cafehub.backend.common.value.Image;
 import com.cafehub.backend.domain.cafe.entity.Cafe;

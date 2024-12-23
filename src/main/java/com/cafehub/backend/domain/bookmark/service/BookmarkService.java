@@ -2,8 +2,7 @@ package com.cafehub.backend.domain.bookmark.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
-import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.bookmark.dto.request.BookmarkRequestDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkListResponseDTO;
 import com.cafehub.backend.domain.bookmark.dto.response.BookmarkResponseDTO;

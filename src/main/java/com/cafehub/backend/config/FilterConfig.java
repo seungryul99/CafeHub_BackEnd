@@ -1,6 +1,7 @@
 package com.cafehub.backend.config;
 
 import com.cafehub.backend.common.filter.*;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;

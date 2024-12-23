@@ -1,8 +1,7 @@
 package com.cafehub.backend.domain.member.mypage.service;
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.JwtThreadLocalStorageManager;
-import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.common.util.S3KeyGenerator;
 import com.cafehub.backend.domain.comment.entity.Comment;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
