@@ -12,7 +12,7 @@ import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
 import com.cafehub.backend.domain.member.mypage.exception.MemberNicknameDuplicateException;
 import com.cafehub.backend.domain.member.mypage.exception.MemberNicknameTooShortException;
-import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import com.cafehub.backend.domain.member.repository.MemberRepository;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
 import io.awspring.cloud.s3.S3Operations;

@@ -114,14 +114,6 @@ public class CafeHubConstants {
 //    public static final String CORS_ALLOW_ORIGIN = "https://www.cafehub.site";
 
 
-    /**
-     *   [OAuth Login Service Constant]
-     *
-     *   각각의 LoginService 에서 사용할 상수
-     */
-
-    public static final String KAKAO_OAUTH_PROVIDER_NAME = "kakao";
-
 
     /**
      *   [Rest Client Constant]
@@ -141,8 +133,12 @@ public class CafeHubConstants {
      */
 
     // for test , 6시간 => 6초로 변경
-    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 3; // 1초 *60 *60 *12 = 6시간
-    public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
+//    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 3; // 1초 *60 *60 *12 = 6시간
+//    public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
+
+    // test
+    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 3 ; // 3초
+    public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 100; // 60초
 
 
     /**

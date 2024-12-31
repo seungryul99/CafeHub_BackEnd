@@ -23,7 +23,6 @@ public enum AuthExceptionCode implements BaseErrorCode {
     AUTHORIZATION_EXCEPTION(FORBIDDEN, "LOGIN_403_1", "해당 리소스에 접근 할 수 있는 권한이 없습니다.");
 
 
-
     private final Integer status;
     private final String code;
     private final String errorMessage;

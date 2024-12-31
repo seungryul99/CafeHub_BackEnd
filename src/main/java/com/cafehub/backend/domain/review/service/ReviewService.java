@@ -12,7 +12,7 @@ import com.cafehub.backend.domain.comment.entity.Comment;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
-import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import com.cafehub.backend.domain.member.repository.MemberRepository;
 import com.cafehub.backend.domain.review.dto.ReviewDetail;
 import com.cafehub.backend.domain.review.dto.request.AllReviewGetRequestDTO;
 import com.cafehub.backend.domain.review.dto.request.ReviewCreateRequestDTO;

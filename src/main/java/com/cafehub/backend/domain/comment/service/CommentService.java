@@ -11,7 +11,7 @@ import com.cafehub.backend.domain.comment.exception.CommentNotFoundException;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
-import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import com.cafehub.backend.domain.member.repository.MemberRepository;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.exception.ReviewNotFoundException;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;

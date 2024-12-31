@@ -5,7 +5,7 @@ import com.cafehub.backend.domain.member.login.dto.request.KakaoOAuthTokenReques
 import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.OAuthUserResourceResponseDTO;
-import com.cafehub.backend.domain.member.login.properties.kakao.KakaoProperties;
+import com.cafehub.backend.common.properties.kakaoLogin.KakaoLoginProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -17,7 +17,7 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 public class KakaoRestClientManager implements OAuthRestClientProvider{
 
     private final RestClient restClient;
-    private final KakaoProperties properties;
+    private final KakaoLoginProperties properties;
 
     @Override
     public KakaoOAuthTokenResponseDTO getOAuthTokenResponseDTO(String authorizationCode){

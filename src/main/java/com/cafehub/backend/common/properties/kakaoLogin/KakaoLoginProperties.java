@@ -1,10 +1,10 @@
-package com.cafehub.backend.domain.member.login.properties.kakao;
+package com.cafehub.backend.common.properties.kakaoLogin;
 
 
 import lombok.Getter;
 
 @Getter
-public class KakaoProperties {
+public class KakaoLoginProperties {
 
     private final String loginUrl;
     private final String clientId;
@@ -16,9 +16,9 @@ public class KakaoProperties {
     private final String logoutUrlWithParams;
 
 
-    public KakaoProperties(String loginUrl, String clientId,
-                           String clientSecret, String redirectUri,
-                           String logoutRedirectUrl, String logoutUrl) {
+    public KakaoLoginProperties(String loginUrl, String clientId,
+                                String clientSecret, String redirectUri,
+                                String logoutRedirectUrl, String logoutUrl) {
 
         this.loginUrl = loginUrl;
         this.clientId = clientId;

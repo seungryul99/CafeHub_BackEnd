@@ -1,13 +1,9 @@
 package com.cafehub.backend.domain.member.login.dto.request;
 
-import com.cafehub.backend.domain.member.login.properties.kakao.KakaoProperties;
+import com.cafehub.backend.common.properties.kakaoLogin.KakaoLoginProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import java.util.Collections;
 
 @Getter
 public class KakaoOAuthTokenRequestDTO {
@@ -28,7 +24,7 @@ public class KakaoOAuthTokenRequestDTO {
         this.code = code;
     }
 
-    public static KakaoOAuthTokenRequestDTO from(String authorizationCode, KakaoProperties properties){
+    public static KakaoOAuthTokenRequestDTO from(String authorizationCode, KakaoLoginProperties properties){
 
         return KakaoOAuthTokenRequestDTO.builder()
                 .clientId(properties.getClientId())

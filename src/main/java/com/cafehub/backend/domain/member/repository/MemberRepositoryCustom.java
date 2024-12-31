@@ -1,4 +1,4 @@
-package com.cafehub.backend.domain.member.mypage.repository;
+package com.cafehub.backend.domain.member.repository;
 
 import com.cafehub.backend.domain.member.entity.Member;
 
