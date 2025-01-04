@@ -11,6 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+/**
+ *   JWT 시크릿 키를 탈취 당하지 않았다면 JWT 검증 필터를 통과한 JWT로 부터 신뢰할 수 있는 회원 정보를 획득 할 수 있다.
+ *   또한 JWT에 변경 가능성이 있는 회원의 정보는 넣지 않았다. 따라서 따로 MemebrRepository를 이용한 2차 검증은 해주지 않았다.
+ *   다만 이럴 경우 차단된 회원 여부 확인이나 JWT에 없는 정보를 회원 인증정보 저장 객체에 저장 할 수 없다는 단점이 있다.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class AuthenticationFilter implements Filter {
@@ -26,9 +31,10 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        // request에서 사용자의 검증된 실제 Jwt Access Token 추출
+        // request에서 사용자의 검증된 실제 Jwt 추출
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String accessToken = String.valueOf(httpServletRequest.getAttribute("JwtAccessToken"));
+        String accessToken = String.valueOf(httpServletRequest.getAttribute("token"));
+
 
         // 사용자의 실제 토큰으로 부터 사용자의 인증 정보를 추출
         MemberAuthentication authentication = new MemberAuthentication(jwtPayloadReader.getMemberId(accessToken),

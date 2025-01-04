@@ -2,7 +2,7 @@ package com.cafehub.backend.domain.member.login.controller;
 
 import com.cafehub.backend.common.dto.ResponseDTO;
 import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
-import com.cafehub.backend.domain.member.login.jwt.service.JwtAuthService;
+import com.cafehub.backend.domain.member.login.jwt.service.JwtReIssueService;
 import com.cafehub.backend.domain.member.login.service.OAuth2LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 public class LoginController implements LoginControllerAPI{
 
     private final JwtThreadLocalStorageManager threadLocalStorageManager;
-    private final JwtAuthService jwtAuthService;
+    private final JwtReIssueService jwtReIssueService;
     private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
 
     @GetMapping("/api/member/login/{provider}")
@@ -48,7 +48,7 @@ public class LoginController implements LoginControllerAPI{
 
         return ResponseEntity.status(FOUND)
                 .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + tokenMap.get(JWT_ACCESS_TOKEN) + JWT_ACCESS_TOKEN_SETTING)
-                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  tokenMap.get(JWT_REFRESH_TOKEN) + JWT_REFRESH_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + tokenMap.get(JWT_REFRESH_TOKEN) + JWT_REFRESH_TOKEN_SETTING)
                 .header(LOCATION_HEADER, FRONT_LOGIN_SUCCESS_URI)
                 .build();
     }
@@ -56,7 +56,7 @@ public class LoginController implements LoginControllerAPI{
     @PostMapping("/reissue/token")
     public ResponseEntity<ResponseDTO<Void>> reissueJwtTokens(@CookieValue("JwtRefreshToken") String jwtRefreshToken){
 
-        Map<String, String> reIssueTokens = jwtAuthService.reIssueJwt(jwtRefreshToken);
+        Map<String, String> reIssueTokens = jwtReIssueService.reIssueJwt(jwtRefreshToken);
 
         String accessToken = reIssueTokens.get(JWT_ACCESS_TOKEN);
         String refreshToken = reIssueTokens.get(JWT_REFRESH_TOKEN);
@@ -68,7 +68,7 @@ public class LoginController implements LoginControllerAPI{
     }
 
     @PostMapping("/api/auth/member/logout")
-    public ResponseEntity<ResponseDTO<?>> providerLogout (){
+    public ResponseEntity<ResponseDTO<?>> providerLogout(){
 
         OAuth2LoginService loginService = oAuth2LoginServiceMap.get(threadLocalStorageManager.getProvider() + LOGIN_SERVICE_SUFFIX);
 
@@ -90,5 +90,4 @@ public class LoginController implements LoginControllerAPI{
                 .header(LOCATION_HEADER, FRONT_LOGOUT_SUCCESS_URI)
                 .build();
     }
-
 }

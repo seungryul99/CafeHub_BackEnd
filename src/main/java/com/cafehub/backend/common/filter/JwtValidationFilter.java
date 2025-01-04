@@ -21,15 +21,15 @@ public class JwtValidationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("JwtValidationFilter Init");
+        log.info("JwtAccessTokenValidationFilter Init");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        log.info("JWT가 필요한 Request 발생");
+        log.info("JWT가 필요한 요청");
 
-        // Request 헤더에서 "토큰타입 + 토큰" 추출
+        // Request Authorization 헤더에서 "토큰타입 + 토큰" 추출
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
@@ -54,7 +54,7 @@ public class JwtValidationFilter implements Filter {
         jwtValidator.validateJwtAccessToken(accessToken);
 
         // 다음 필터로 넘어감
-        httpServletRequest.setAttribute("JwtAccessToken", accessToken);
+        httpServletRequest.setAttribute("token", accessToken);
         chain.doFilter(request,response);
     }
 }

@@ -137,7 +137,7 @@ public class CafeHubConstants {
 //    public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 
     // test
-    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 3 ; // 3초
+    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 10 ; // 3초
     public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 100; // 60초
 
 

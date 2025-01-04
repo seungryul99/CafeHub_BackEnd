@@ -34,6 +34,7 @@ public class GlobalFilterExceptionHandleFilter implements Filter {
         try{
             chain.doFilter(request, response);
         }
+
         catch (AuthorizationHeaderNotExistException e){
 
             ErrorReason errorReason = e.getErrorReason();
@@ -41,6 +42,7 @@ public class GlobalFilterExceptionHandleFilter implements Filter {
 
             createErrorResponse(httpServletResponse, errorReason);
         }
+
         catch (InvalidAuthorizationTokenTypeException e){
 
             ErrorReason errorReason = e.getErrorReason();
@@ -48,6 +50,7 @@ public class GlobalFilterExceptionHandleFilter implements Filter {
 
             createErrorResponse(httpServletResponse, errorReason);
         }
+
         catch(JwtAccessTokenExpiredException e){
 
             ErrorReason errorReason = e.getErrorReason();
@@ -55,6 +58,7 @@ public class GlobalFilterExceptionHandleFilter implements Filter {
 
             createErrorResponse(httpServletResponse, errorReason);
         }
+
         catch (InvalidJwtAccessTokenException e){
 
             ErrorReason errorReason = e.getErrorReason();
@@ -70,7 +74,31 @@ public class GlobalFilterExceptionHandleFilter implements Filter {
 
             createErrorResponse(httpServletResponse, errorReason);
         }
+
+        catch (JwtRefreshTokenNotExistException e) {
+
+            ErrorReason errorReason = e.getErrorReason();
+            log.info("Jwt 리프레시 토큰이 존재하지 않는 예외 발생 : {}", errorReason.getCode());
+
+            createErrorResponse(httpServletResponse, errorReason);
+        }
         
+        catch (JwtRefreshTokenExpiredException e){
+
+            ErrorReason errorReason = e.getErrorReason();
+            log.info("Jwt 리프레시 토큰이 만료된 예외 발생 : {}", errorReason.getCode());
+
+            createErrorResponse(httpServletResponse, errorReason);
+        }
+
+        catch (InvalidJwtRefreshTokenException e){
+
+            ErrorReason errorReason = e.getErrorReason();
+            log.info("Jwt 리프레시 토큰이 유효하지 않은 예외 발생 : {}", errorReason.getCode());
+
+            createErrorResponse(httpServletResponse, errorReason);
+        }
+
         catch (Exception e){
 
             ErrorReason errorReason = CommonErrorCode._UNKNOWN_INTERNAL_SERVER_ERROR.getErrorReason();
