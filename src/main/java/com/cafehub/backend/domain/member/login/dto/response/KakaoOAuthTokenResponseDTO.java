@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class KakaoOAuthTokenResponseDTO {
+public class KakaoOAuthTokenResponseDTO extends OAuthTokenResponseDTO {
 
     @JsonProperty("token_type")
     private String tokenType;

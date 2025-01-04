@@ -27,10 +27,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
     @GetMapping
     public ResponseEntity<ResponseDTO<MyPageResponseDTO>> getMyPage(){
-
         return ResponseEntity.ok(memberService.getMyPage());
     }
 

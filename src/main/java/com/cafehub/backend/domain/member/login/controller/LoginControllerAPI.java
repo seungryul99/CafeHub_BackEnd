@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Tag(name = "1. [로그인]", description = "Login API")
 public interface LoginControllerAPI {
 
-
     @Operation(
             summary = "OOO으로 로그인하기 버튼 클릭",
             description = "사용자가 선택한 소셜 로그인을 처리합니다.",
@@ -24,8 +23,6 @@ public interface LoginControllerAPI {
             })
     @GetMapping("/api/member/login/{provider}")
     ResponseEntity<Void> login(@Pattern(regexp = "^(kakao)$", message = "OAuth 로그인 provider가 잘못 입력 되었습니다") String provider);
-
-
 
 
     @Operation(

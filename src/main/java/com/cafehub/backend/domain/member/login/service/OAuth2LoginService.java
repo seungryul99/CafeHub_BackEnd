@@ -4,9 +4,10 @@ package com.cafehub.backend.domain.member.login.service;
 import java.util.Map;
 
 public interface OAuth2LoginService {
-    String getLoginPageUrl(String provider);
-    Map<String, String> loginWithOAuthAndIssueJwt(String authorizationCode);
-    String getLogoutPageUrl(Long memberId);
+    String getLoginPageUrl();
+    Map<String, String> loginWithOAuthAndIssueJwt(String authorizationCode, String provider);
 
-    void removeRefreshTokenOnLogout(Long memberId);
+    String getLogoutPageUrl(Long memberId, String jwtRefreshToken);
+
+    void removeJwtRefreshToken(Long memberId, String jwtRefreshToken);
 }

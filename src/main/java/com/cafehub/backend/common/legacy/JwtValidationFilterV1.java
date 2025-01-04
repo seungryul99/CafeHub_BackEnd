@@ -1,5 +1,6 @@
-package com.cafehub.backend.common.filter.jwt;
+package com.cafehub.backend.common.legacy;
 
+import com.cafehub.backend.common.legacy.JwtThreadLocalStorage;
 import com.cafehub.backend.domain.member.login.exception.AuthorizationHeaderNotExistException;
 import com.cafehub.backend.domain.member.login.exception.InvalidAuthorizationTokenTypeException;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtValidator;
@@ -16,7 +17,7 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.BEARER_TOKEN
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtCheckFilter implements Filter {
+public class JwtValidationFilterV1 implements Filter {
 
     private static final String OPTIONAL_AUTH_PATH = "/api/optional-auth";
 
@@ -25,7 +26,7 @@ public class JwtCheckFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("JWT CHECK FILTER Init");
+        log.info("JwtValidationFilter Init");
     }
 
     @Override
@@ -59,22 +60,22 @@ public class JwtCheckFilter implements Filter {
         // Reqeust 헤더의 "토큰타입 + 토큰" 에서 토큰 추출
         String jwtAccessToken = extractTokenFromAuthorizationHeader(authorizationHeaderValue);
 
-        // 추출한 jwt AccessToken JWT Validator로 검증
-        if (jwtValidator.validateJwtAccessToken(jwtAccessToken)) {
-
-            // 정상적인 JWT AccessToken임이 확인 되었으면 ThreadLocal 저장소에 해당 토큰 저장 후 다음 필터로 통과 시켜줌
-            try {
-                jwtThreadLocalStorage.initJwtAccessTokenHolder(jwtAccessToken);
-                log.info("ThreadLocal을 사용하는 요청, 반드시 리소스 정리 필요");
-                chain.doFilter(request, response);
-            }
-            
-            // JWTCheckFilter 이후 어떤 곳에서 예외가 발생 했더라도 반드시 돌아와서 ThreadLocal 저장소를 비움
-            finally {
-                jwtThreadLocalStorage.clearJwtAccessTokenHolder();
-                log.info("ThreadLocal 리소스 정리 완료");
-            }
-        }
+////        // 추출한 jwt AccessToken JWT Validator로 검증
+////        if (jwtValidator.validateJwtAccessToken(jwtAccessToken)) {
+////
+////            // 정상적인 JWT AccessToken임이 확인 되었으면 ThreadLocal 저장소에 해당 토큰 저장 후 다음 필터로 통과 시켜줌
+////            try {
+////                jwtThreadLocalStorage.initJwtAccessTokenHolder(jwtAccessToken);
+////                log.info("ThreadLocal을 사용하는 요청, 반드시 리소스 정리 필요");
+////                chain.doFilter(request, response);
+////            }
+////
+////            // JWTCheckFilter 이후 어떤 곳에서 예외가 발생 했더라도 반드시 돌아와서 ThreadLocal 저장소를 비움
+////            finally {
+////                jwtThreadLocalStorage.clearJwtAccessTokenHolder();
+////                log.info("ThreadLocal 리소스 정리 완료");
+////            }
+//        }
     }
 
 
