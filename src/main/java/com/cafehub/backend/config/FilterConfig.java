@@ -52,7 +52,7 @@ public class FilterConfig {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new JwtRefreshTokenValidationFilter(jwtValidator));
         filterRegistrationBean.setOrder(3);
-        filterRegistrationBean.addUrlPatterns("/reissue/token");
+        filterRegistrationBean.addUrlPatterns("/reissue/token", "/api/member/logout");
         return filterRegistrationBean;
     }
 
@@ -61,7 +61,7 @@ public class FilterConfig {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new AuthenticationFilter(jwtPayloadReader,jwtThreadLocalStorageManager));
         filterRegistrationBean.setOrder(4);
-        filterRegistrationBean.addUrlPatterns("/api/auth/*", "/swagger-ui.html", "/swagger-ui/*","/reissue/token");
+        filterRegistrationBean.addUrlPatterns("/api/auth/*", "/swagger-ui.html", "/swagger-ui/*","/reissue/token", "/api/member/logout");
         return filterRegistrationBean;
     }
 

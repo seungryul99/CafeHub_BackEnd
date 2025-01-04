@@ -7,7 +7,7 @@ public interface OAuth2LoginService {
     String getLoginPageUrl();
     Map<String, String> loginWithOAuthAndIssueJwt(String authorizationCode, String provider);
 
-    String getLogoutPageUrl(Long memberId);
+    String getLogoutPageUrl(Long memberId, String jwtRefreshToken);
 
-    void removeRefreshTokenOnLogout(Long memberId);
+    void removeJwtRefreshToken(Long memberId, String jwtRefreshToken);
 }

@@ -23,7 +23,6 @@ public enum AuthExceptionCode implements BaseErrorCode {
     INVALID_JWT_REFRESH_TOKEN(UNAUTHORIZED,"LOGIN_401_4","유효하지 않은 JWT Refresh Token 입니다."),
     BLOCKED_JWT_REFRESH_TOKEN(UNAUTHORIZED, "LOGIN_401_5", "차단된 JWT Refresh Token 입니다."),
 
-
     AUTHORIZATION_EXCEPTION(FORBIDDEN, "LOGIN_403_1", "해당 리소스에 접근 할 수 있는 권한이 없습니다.");
 
 

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 
@@ -67,23 +68,23 @@ public class LoginController implements LoginControllerAPI{
                 .build();
     }
 
-    @PostMapping("/api/auth/member/logout")
-    public ResponseEntity<ResponseDTO<?>> providerLogout(){
+    @PostMapping("/api/member/logout")
+    public ResponseEntity<ResponseDTO<?>> providerLogout(@CookieValue("JwtRefreshToken") String jwtRefreshToken){
 
         OAuth2LoginService loginService = oAuth2LoginServiceMap.get(threadLocalStorageManager.getProvider() + LOGIN_SERVICE_SUFFIX);
 
-        return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl(threadLocalStorageManager.getMemberId())));
+        return ResponseEntity.ok(ResponseDTO.success(loginService.getLogoutPageUrl(threadLocalStorageManager.getMemberId(),jwtRefreshToken)));
     }
 
-
     @GetMapping("/serviceLogout")
-    public ResponseEntity<ResponseDTO<Void>> serviceLogout(@RequestParam("state") String state){
+    public ResponseEntity<ResponseDTO<Void>> serviceLogout(@RequestParam("state") StringTokenizer state){
 
-        String provider = state.replaceAll("\\d.*", "");
-        Long memberId = Long.parseLong(state.replaceAll("\\D", ""));
+        String provider = state.nextToken();
+        Long memberId = Long.valueOf(state.nextToken());
+        String jwtRefreshToken = state.nextToken();
 
         OAuth2LoginService loginService = oAuth2LoginServiceMap.get(provider + LOGIN_SERVICE_SUFFIX);
-        loginService.removeRefreshTokenOnLogout(memberId);
+        loginService.removeJwtRefreshToken(memberId,jwtRefreshToken);
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + JWT_REFRESH_TOKEN_LOGOUT_SETTING)

@@ -6,11 +6,13 @@ import com.cafehub.backend.domain.authInfo.repository.AuthInfoRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
-import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
+import com.cafehub.backend.domain.member.login.exception.JwtRefreshTokenBlockedException;
+import com.cafehub.backend.domain.member.login.exception.JwtRefreshTokenNotExistException;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtTokenManager;
 import com.cafehub.backend.domain.member.login.service.httpClient.OAuthHttpClient;
 import com.cafehub.backend.domain.member.login.util.NicknameResolver;
 import com.cafehub.backend.domain.member.repository.MemberRepository;
+import com.cafehub.backend.domain.member.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class KakaoLoginService implements OAuth2LoginService {
     private final JwtTokenManager jwtTokenManager;
     private final MemberRepository memberRepository;
     private final AuthInfoRepository authInfoRepository;
+    private final RedisRepository redisRepository;
 
     @Override
     public String getLoginPageUrl() {
@@ -70,15 +73,17 @@ public class KakaoLoginService implements OAuth2LoginService {
     }
 
     @Override
-    public String getLogoutPageUrl(Long memberId) {
-        return properties.getLogoutUrlWithParams() + memberId;
+    public String getLogoutPageUrl(Long memberId, String jwtRefreshToken) {
+        
+        // 쿼리스트링에서 '+'는 공백을 의미함
+        return properties.getLogoutUrlWithParams() + "+" + memberId + "+" + jwtRefreshToken;
     }
 
     @Override
-    public void removeRefreshTokenOnLogout(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-//        member.getAuthInfo().deleteJwtRefreshTokenByLogout();
+    public void removeJwtRefreshToken(Long memberId, String jwtRefreshToken) {
 
+        // 사용자가 보내온 리프레시 토큰의 화이트리스트 ttl이 이미 만료되어서 삭제해줄 필요가 없는 경우 레디스 저장소에서 별도의 삭제가 필요 없음
+        String whiteListTokenKey = redisRepository.findWhiteListTokenKey(memberId, jwtRefreshToken);
+        if(whiteListTokenKey!=null) redisRepository.delete(whiteListTokenKey);
     }
-
 }
