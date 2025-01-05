@@ -31,7 +31,7 @@ public class OptionalAuthFilter implements Filter {
         
         // request에서 사용자의 검증된 실제 Jwt Access Token 추출
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String accessToken = String.valueOf(httpServletRequest.getAttribute("JwtAccessToken"));
+        String accessToken = String.valueOf(httpServletRequest.getAttribute("token"));
 
         // 토큰이 없으면 비 로그인 회원의 Optional-auth요청으로 식별
         if (accessToken.equals("null")) {

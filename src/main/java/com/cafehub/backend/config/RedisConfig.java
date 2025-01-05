@@ -1,6 +1,6 @@
 package com.cafehub.backend.config;
 
-import com.cafehub.backend.common.properties.redis.RedisProperties;
+import com.cafehub.backend.common.env.redis.RedisProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

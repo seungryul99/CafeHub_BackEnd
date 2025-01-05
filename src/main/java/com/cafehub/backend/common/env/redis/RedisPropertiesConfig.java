@@ -1,4 +1,4 @@
-package com.cafehub.backend.common.properties.redis;
+package com.cafehub.backend.common.env.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

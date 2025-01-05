@@ -1,4 +1,4 @@
-package com.cafehub.backend.common.properties.kakaoLogin;
+package com.cafehub.backend.common.env.kakao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
