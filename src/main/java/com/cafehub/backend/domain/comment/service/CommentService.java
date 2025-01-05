@@ -2,7 +2,7 @@ package com.cafehub.backend.domain.comment.service;
 
 
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.comment.dto.request.AllCommentGetRequestDTO;
 import com.cafehub.backend.domain.comment.dto.request.CommentCreateRequestDTO;
 import com.cafehub.backend.domain.comment.dto.response.AllCommentGetResponseDTO;
@@ -11,7 +11,7 @@ import com.cafehub.backend.domain.comment.exception.CommentNotFoundException;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.exception.MemberNotFoundException;
-import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import com.cafehub.backend.domain.member.repository.MemberRepository;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.exception.ReviewNotFoundException;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -30,18 +29,15 @@ import java.util.Objects;
 @Transactional
 public class CommentService {
 
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
-
+    private final JwtThreadLocalStorageManager threadLocalStorageManager;
     private final ReviewRepository reviewRepository;
-
     private final CommentRepository commentRepository;
-
     private final MemberRepository memberRepository;
 
 
     public ResponseDTO<Void> writeComment(Long reviewId, CommentCreateRequestDTO requestDTO) {
 
-        Member loginMember = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+        Member loginMember = memberRepository.findById(threadLocalStorageManager.getMemberId()).orElseThrow(MemberNotFoundException::new);
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
 
         Comment comment = Comment.builder()
@@ -66,8 +62,8 @@ public class CommentService {
 
         Slice<AllCommentGetResponseDTO.CommentDetail> commentDetails = commentRepository.findCommentsBySlice(requestDTO);
 
-        if(jwtThreadLocalStorage.isLoginMember()){
-            Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+        if(threadLocalStorageManager.isLoginMember()){
+            Member member = memberRepository.findById(threadLocalStorageManager.getMemberId()).orElseThrow(MemberNotFoundException::new);
             updateCommentManagement(commentDetails.getContent(), member.getNickname());
         }
 

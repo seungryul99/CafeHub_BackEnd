@@ -1,0 +1,70 @@
+spring:
+
+  # RDB Config
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 10
+
+  # JPA
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  # S3
+  cloud:
+    aws:
+      credentials:
+        access-key: ${S3_ACCESS_KEY}
+        secret-key: ${S3_SECRET_KEY}
+      region:
+        static: ${S3_REGION}
+
+      s3:
+        bucket: ${S3_BUCKET}
+        path:
+          reviewPhoto: ${REVIEW_PHOTO_PATH}
+          memberProfileImg: ${MEMBER_PROFILE_IMG_PATH}
+          cafe: ${CAFE_PATH}
+
+  #Jwt
+  jwt:
+    secret: ${JWT_SECRET_KEY}
+    access_token_expiration_ms: ${ACCESS_TOKEN_EXPIRATION_MS}
+    refresh_token_expiration_ms: ${REFRESH_TOKEN_EXPIRATION_MS}
+
+  cors:
+    allow_origin: ${ALLOW_ORIGINS}
+    allow_methods: ${ALLOW_METHODS}
+    allow_headers: ${ALLOW_HEADERS}
+    allow_credentials : ${ALLOW_CREDENTIALS}
+    preflight_cache_age: ${PREFLIGHT_CACHE_AGE}
+
+
+# Kakao Social Login
+kakao:
+  loginUrl : ${KAKAO_LOGIN_URL}
+  logoutRedirectUrl : ${KAKAO_LOGOUT_REDIRECT_URL}
+  clientId : ${KAKAO_CLIENT}
+  clientSecret: ${KAKAO_CLIENT_SECRET}
+  redirectUri : ${KAKAO_REDIRECT_URI}
+  logoutUrl: ${KAKAO_LOGOUT_URL}
+
+# Login Env
+login:
+  setting:
+    jwt_access_cookie_setting: ${JWT_ACCESS_COOKIE_SETTING}
+    jwt_refresh_cookie_setting: ${JWT_REFRESH_COOKIE_SETTING}
+    jwt_refresh_cookie_del_setting: ${JWT_REFRESH_COOKIE_DEL_SETTING}
+    front_login_success_uri: ${FRONT_LOGIN_SUCCESS_URI}
+    front_logout_success_uri: ${FRONT_LOGOUT_SUCCESS_URI}

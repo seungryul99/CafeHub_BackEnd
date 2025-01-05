@@ -26,17 +26,16 @@ public class JwtValidator {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public boolean validateJwtAccessToken(String token) {
+    public void validateJwtAccessToken(String token) {
         try {
             Jwts.parser()
                     .verifyWith(secretKey)   // 시크릿 키 세팅
                     .build()
-                    .parseSignedClaims(token); // 토큰 검증, 여기서 문제가 생기면 return true 로 가지 못함
+                    .parseSignedClaims(token); // 토큰 검증
 
-            // jwt Access Token을 넣은 것인지 검증
+            // tokenType이 access인지 검증
             isAccessToken(token);
 
-            return true;
         } catch (ExpiredJwtException e){   // ExpiredJwtException -> ClaimJwtException -> JwtException
             throw new JwtAccessTokenExpiredException();
         } catch (JwtException | IllegalArgumentException e) {

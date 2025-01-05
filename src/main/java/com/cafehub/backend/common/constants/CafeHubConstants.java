@@ -1,5 +1,6 @@
 package com.cafehub.backend.common.constants;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 
 public class CafeHubConstants {
@@ -70,7 +71,7 @@ public class CafeHubConstants {
      *  메서드에서 처리하게 되는데, 이때 Provider에 따라서 KakaoLoginService, NaverLoginService 등으로 
      *  Service를 선택함. 이 때 필요한 Login Service 접미사.
      */
-    public static final String Login_SERVICE_SUFFIX = "LoginService";
+    public static final String LOGIN_SERVICE_SUFFIX = "LoginService";
 
 
     /**
@@ -82,41 +83,8 @@ public class CafeHubConstants {
     public static final String LOCATION_HEADER = "Location";
     public static final String SET_COOKIE_HEADER = "Set-Cookie";
     public static final String JWT_ACCESS_TOKEN = "JwtAccessToken";
-
-    // local
-//    public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Max-Age=10800; SameSite=None; Secure;"; // 3시간
-//    public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Max-Age=86400; SameSite=None; HttpOnly; Secure;"; // 24시간
-//    public static final String JWT_REFRESH_TOKEN_LOGOUT_SETTING = "; Path=/; Max-Age=0; SameSite=Lax; HttpOnly; Secure";
-//    public static final String FRONT_LOGIN_SUCCESS_URI = "http://localhost:3000/OAuthCallback";
-//    public static final String FRONT_LOGOUT_SUCCESS_URI = "http://localhost:3000/Logout";
-
-
-    public static final String JWT_ACCESS_TOKEN_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=10800; SameSite=None; Secure;"; // 3시간
-    public static final String JWT_REFRESH_TOKEN_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=86400; SameSite=None; HttpOnly; Secure;"; // 24시간
     public static final String JWT_REFRESH_TOKEN = "JwtRefreshToken";
-    public static final String JWT_REFRESH_TOKEN_LOGOUT_SETTING = "; Path=/; Domain=.cafehub.site; Max-Age=0; SameSite=Lax; HttpOnly; Secure";
-    public static final String FRONT_LOGIN_SUCCESS_URI = "https://www.cafehub.site/OAuthCallback";
-    public static final String FRONT_LOGOUT_SUCCESS_URI = "https://www.cafehub.site/Logout";
 
-
-    /**
-     *   [Cors Filter Constant]
-     *
-     *   CORS 필터에서 사용할 상수
-     */
-
-    // local
-//    public static final String CORS_ALLOW_ORIGIN = "http://localhost:3000";
-    public static final String CORS_ALLOW_ORIGIN = "https://www.cafehub.site";
-
-
-    /**
-     *   [OAuth Login Service Constant]
-     *
-     *   각각의 LoginService 에서 사용할 상수
-     */
-
-    public static final String KAKAO_OAUTH_PROVIDER_NAME = "kakao";
 
 
     /**
@@ -128,17 +96,6 @@ public class CafeHubConstants {
     public static final String KAKAO_OAUTH_TOKEN_REQUEST_URL = "https://kauth.kakao.com/oauth/token";
     public static final MediaType KAKAO_OAUTH_TOKEN_CONTENT_TYPE = MediaType.valueOf("application/x-www-form-urlencoded;charset=utf-8");
     public static final String KAKAO_USER_INFO_API_URL = "https://kapi.kakao.com/v2/user/me";
-
-
-    /**
-     *   [JWT 유효 시간]
-     *
-     *   JWT Access Token, Refresh Token 유효시간 관리 상수
-     */
-
-
-    public static final long ACCESS_TOKEN_EXPIRATION_MS = 1000 * 3; // for test
-    public static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 60 * 60 * 24; // 24시간
 
 
     /**
@@ -158,5 +115,13 @@ public class CafeHubConstants {
      */
 
     public static final String MEMBER_PROFILE_DEFAULT_IMAGE = "DefaultImage";
+
+
+    /**
+     *    [RestClientManager Suffix]
+     *
+     */
+
+    public static final String REST_CLIENT_MANAGER_SUFFIX = "RestClientManager";
 
 }

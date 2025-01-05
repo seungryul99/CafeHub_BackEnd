@@ -1,8 +1,7 @@
 package com.cafehub.backend.domain.member.mypage.service;
 
-import com.cafehub.backend.common.constants.CafeHubConstants;
 import com.cafehub.backend.common.dto.ResponseDTO;
-import com.cafehub.backend.common.filter.jwt.JwtThreadLocalStorage;
+import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.common.util.S3KeyGenerator;
 import com.cafehub.backend.domain.comment.entity.Comment;
 import com.cafehub.backend.domain.comment.repository.CommentRepository;
@@ -13,7 +12,7 @@ import com.cafehub.backend.domain.member.mypage.dto.response.MyPageResponseDTO;
 import com.cafehub.backend.domain.member.mypage.dto.response.MyPageUpdateResponseDTO;
 import com.cafehub.backend.domain.member.mypage.exception.MemberNicknameDuplicateException;
 import com.cafehub.backend.domain.member.mypage.exception.MemberNicknameTooShortException;
-import com.cafehub.backend.domain.member.mypage.repository.MemberRepository;
+import com.cafehub.backend.domain.member.repository.MemberRepository;
 import com.cafehub.backend.domain.review.entity.Review;
 import com.cafehub.backend.domain.review.repository.ReviewRepository;
 import io.awspring.cloud.s3.S3Operations;
@@ -40,7 +39,7 @@ public class MemberService {
     private final S3Operations s3Operations;
     private final S3KeyGenerator s3KeyGenerator;
 
-    private final JwtThreadLocalStorage jwtThreadLocalStorage;
+    private final JwtThreadLocalStorageManager threadLocalStorageManager;
 
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
@@ -49,7 +48,7 @@ public class MemberService {
 
     public ResponseDTO<MyPageResponseDTO> getMyPage() {
 
-        Member member = memberRepository.findById(jwtThreadLocalStorage.getMemberIdFromJwt()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(threadLocalStorageManager.getMemberId()).orElseThrow(MemberNotFoundException::new);
 
         return ResponseDTO.success(MyPageResponseDTO.convertMemberToMyPageResponseDTO(member));
     }
@@ -57,10 +56,9 @@ public class MemberService {
     public ResponseDTO<MyPageUpdateResponseDTO> updateNickname(MemberNicknameUpdateRequestDTO requestDTO) {
 
         String updateNickname = requestDTO.getNickname().trim();
-
         if(updateNickname.length() < MEMBER_NICKNAME_MIN_LENGTH) throw new MemberNicknameTooShortException();
 
-        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
+        Long memberId = threadLocalStorageManager.getMemberId();
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         if(memberRepository.existsByNickname(updateNickname)) throw new MemberNicknameDuplicateException();
 
@@ -78,7 +76,7 @@ public class MemberService {
 
     public ResponseDTO<MyPageUpdateResponseDTO> updateProfileImg(MultipartFile profileImg) {
 
-        Long memberId = jwtThreadLocalStorage.getMemberIdFromJwt();
+        Long memberId = threadLocalStorageManager.getMemberId();
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         String newProfileImgUrl = null;

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 
 @Getter
-public class KakaoUserResourceResponseDTO {
+public class KakaoUserResourceResponseDTO extends OAuthUserResourceResponseDTO{
 
     @JsonProperty("id")
     private Long appId;

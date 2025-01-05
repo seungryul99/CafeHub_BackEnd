@@ -18,6 +18,9 @@ import java.util.List;
 import static com.cafehub.backend.domain.comment.entity.QComment.comment;
 import static com.cafehub.backend.domain.member.entity.QMember.member;
 
+
+// QueryDsl 도입 이유를 조금더 확실하게 대보자
+
 @Repository
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
 
