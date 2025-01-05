@@ -1,10 +1,10 @@
-package com.cafehub.backend.common.properties.redis;
+package com.cafehub.backend.common.env.redis;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RedisProperties {
 
     private final String host;

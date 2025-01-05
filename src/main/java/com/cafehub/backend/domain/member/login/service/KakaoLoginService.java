@@ -1,13 +1,11 @@
 package com.cafehub.backend.domain.member.login.service;
 
-import com.cafehub.backend.common.properties.kakaoLogin.KakaoLoginProperties;
+import com.cafehub.backend.common.env.kakao.KakaoLoginProperties;
 import com.cafehub.backend.domain.authInfo.entity.AuthInfo;
 import com.cafehub.backend.domain.authInfo.repository.AuthInfoRepository;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
-import com.cafehub.backend.domain.member.login.exception.JwtRefreshTokenBlockedException;
-import com.cafehub.backend.domain.member.login.exception.JwtRefreshTokenNotExistException;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtTokenManager;
 import com.cafehub.backend.domain.member.login.service.httpClient.OAuthHttpClient;
 import com.cafehub.backend.domain.member.login.util.NicknameResolver;

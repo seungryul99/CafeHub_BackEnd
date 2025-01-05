@@ -1,6 +1,7 @@
 package com.cafehub.backend.config;
 
 import com.cafehub.backend.common.filter.*;
+import com.cafehub.backend.common.env.cors.CorsProperties;
 import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtPayloadReader;
 import com.cafehub.backend.domain.member.login.jwt.util.JwtValidator;
@@ -19,11 +20,12 @@ public class FilterConfig {
     private final JwtValidator jwtValidator;
     private final JwtPayloadReader jwtPayloadReader;
     private final JwtThreadLocalStorageManager jwtThreadLocalStorageManager;
+    private final CorsProperties corsProperties;
 
     @Bean
     public FilterRegistrationBean<Filter> corsFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new CorsFilter());
+        filterRegistrationBean.setFilter(new CorsFilter(corsProperties));
         filterRegistrationBean.setOrder(0);
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;

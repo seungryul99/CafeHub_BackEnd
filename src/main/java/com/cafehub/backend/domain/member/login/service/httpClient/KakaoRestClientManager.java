@@ -5,7 +5,7 @@ import com.cafehub.backend.domain.member.login.dto.request.KakaoOAuthTokenReques
 import com.cafehub.backend.domain.member.login.dto.response.KakaoOAuthTokenResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.KakaoUserResourceResponseDTO;
 import com.cafehub.backend.domain.member.login.dto.response.OAuthUserResourceResponseDTO;
-import com.cafehub.backend.common.properties.kakaoLogin.KakaoLoginProperties;
+import com.cafehub.backend.common.env.kakao.KakaoLoginProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;

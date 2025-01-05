@@ -1,17 +1,19 @@
 package com.cafehub.backend.common.filter;
 
+import com.cafehub.backend.common.env.cors.CorsProperties;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-import static com.cafehub.backend.common.constants.CafeHubConstants.CORS_ALLOW_ORIGIN;
-
-
 @Slf4j
+@RequiredArgsConstructor
 public class CorsFilter implements Filter {
+
+    private final CorsProperties corsProperties;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -37,10 +39,10 @@ public class CorsFilter implements Filter {
 
     private void corsConfig(HttpServletResponse response) {
 
-        response.setHeader("Access-Control-Allow-Origin", CORS_ALLOW_ORIGIN);
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Max-Age", "10800");
+        response.setHeader("Access-Control-Allow-Origin", corsProperties.getAllowOrigin());
+        response.setHeader("Access-Control-Allow-Methods", corsProperties.getAllowMethods());
+        response.setHeader("Access-Control-Allow-Headers", corsProperties.getAllowHeaders());
+        response.setHeader("Access-Control-Allow-Credentials", corsProperties.getAllowCredentials());
+        response.setHeader("Access-Control-Max-Age", corsProperties.getPreflightCacheAge());
     }
 }

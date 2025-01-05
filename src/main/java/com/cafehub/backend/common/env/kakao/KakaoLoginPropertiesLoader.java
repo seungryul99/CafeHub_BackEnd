@@ -1,4 +1,4 @@
-package com.cafehub.backend.common.properties.kakaoLogin;
+package com.cafehub.backend.common.env.kakao;
 
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

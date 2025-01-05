@@ -1,6 +1,7 @@
 package com.cafehub.backend.domain.member.login.controller;
 
 import com.cafehub.backend.common.dto.ResponseDTO;
+import com.cafehub.backend.common.env.login.LoginEnv;
 import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.member.login.jwt.service.JwtReIssueService;
 import com.cafehub.backend.domain.member.login.service.OAuth2LoginService;
@@ -20,9 +21,11 @@ import static com.cafehub.backend.common.constants.CafeHubConstants.*;
 @RequiredArgsConstructor
 public class LoginController implements LoginControllerAPI{
 
+    private final LoginEnv env;
     private final JwtThreadLocalStorageManager threadLocalStorageManager;
     private final JwtReIssueService jwtReIssueService;
     private final Map<String, OAuth2LoginService> oAuth2LoginServiceMap;
+
 
     @GetMapping("/api/member/login/{provider}")
     public ResponseEntity<Void> login(@PathVariable("provider") String provider){
@@ -48,9 +51,9 @@ public class LoginController implements LoginControllerAPI{
         log.info("{} 로그인 콜백 요청 처리완료" , provider);
 
         return ResponseEntity.status(FOUND)
-                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + tokenMap.get(JWT_ACCESS_TOKEN) + JWT_ACCESS_TOKEN_SETTING)
-                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + tokenMap.get(JWT_REFRESH_TOKEN) + JWT_REFRESH_TOKEN_SETTING)
-                .header(LOCATION_HEADER, FRONT_LOGIN_SUCCESS_URI)
+                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + tokenMap.get(JWT_ACCESS_TOKEN) + env.getJwtAccessCookieSetting())
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + tokenMap.get(JWT_REFRESH_TOKEN) + env.getJwtRefreshCookieSetting())
+                .header(LOCATION_HEADER, env.getFrontLoginSuccessUri())
                 .build();
     }
 
@@ -63,13 +66,13 @@ public class LoginController implements LoginControllerAPI{
         String refreshToken = reIssueTokens.get(JWT_REFRESH_TOKEN);
 
         return ResponseEntity.status(200)
-                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + accessToken + JWT_ACCESS_TOKEN_SETTING)
-                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  refreshToken + JWT_REFRESH_TOKEN_SETTING)
+                .header(SET_COOKIE_HEADER, JWT_ACCESS_TOKEN + "=" + accessToken + env.getJwtAccessCookieSetting())
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" +  refreshToken + env.getJwtRefreshCookieSetting())
                 .build();
     }
 
     @PostMapping("/api/member/logout")
-    public ResponseEntity<ResponseDTO<?>> providerLogout(@CookieValue("JwtRefreshToken") String jwtRefreshToken){
+    public ResponseEntity<ResponseDTO<?>> providerLogout(@CookieValue(JWT_REFRESH_TOKEN) String jwtRefreshToken){
 
         OAuth2LoginService loginService = oAuth2LoginServiceMap.get(threadLocalStorageManager.getProvider() + LOGIN_SERVICE_SUFFIX);
 
@@ -87,8 +90,8 @@ public class LoginController implements LoginControllerAPI{
         loginService.removeJwtRefreshToken(memberId,jwtRefreshToken);
 
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + JWT_REFRESH_TOKEN_LOGOUT_SETTING)
-                .header(LOCATION_HEADER, FRONT_LOGOUT_SUCCESS_URI)
+                .header(SET_COOKIE_HEADER, JWT_REFRESH_TOKEN + "=" + env.getJwtRefreshCookieDelSetting())
+                .header(LOCATION_HEADER, env.getFrontLogoutSuccessUri())
                 .build();
     }
 }

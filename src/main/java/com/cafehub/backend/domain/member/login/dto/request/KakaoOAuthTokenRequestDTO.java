@@ -1,6 +1,6 @@
 package com.cafehub.backend.domain.member.login.dto.request;
 
-import com.cafehub.backend.common.properties.kakaoLogin.KakaoLoginProperties;
+import com.cafehub.backend.common.env.kakao.KakaoLoginProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,0 +1,36 @@
+spring:
+
+  # ObjectMapper
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true  # Request Body에 불필요한 JSON 데이터가 함께 오는 경우 필터링
+
+  # MultiPartFile
+  servlet:
+    multipart:
+      enabled: true # 멀티파트 업로드 지원여부
+      max-file-size: 5MB # 한개 파일 최대 사이즈
+      max-request-size: 25MB # 한개 요청 최대 사이즈
+
+# Swagger
+springdoc:
+  packages-to-scan: com.cafehub.backend
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: swagger-ui.html         # Swagger UI 경로
+    tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+  cache:
+    disabled: true                # 캐시기능 비활성화 -> 변경사항 즉시 반영
+
+# P6spy
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+# Log
+logging:
+  level:
+    root: info

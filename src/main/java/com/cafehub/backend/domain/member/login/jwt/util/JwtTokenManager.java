@@ -1,5 +1,6 @@
 package com.cafehub.backend.domain.member.login.jwt.util;
 
+import com.cafehub.backend.common.env.jwt.JwtProperties;
 import com.cafehub.backend.common.util.JwtThreadLocalStorageManager;
 import com.cafehub.backend.domain.member.entity.Member;
 import com.cafehub.backend.domain.member.login.jwt.dto.JwtPayloadCreateDTO;
@@ -7,7 +8,6 @@ import com.cafehub.backend.domain.member.repository.RedisRepository;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -72,9 +72,11 @@ public class JwtTokenManager {
     static class JwtFactory {
 
         private final SecretKey secretKey;
+        private final JwtProperties jwtProperties;
 
-        public JwtFactory(@Value("${spring.jwt.secret}") String secret) {
-            secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        public JwtFactory(JwtProperties jwtProperties) {
+            this.jwtProperties = jwtProperties;
+            secretKey = new SecretKeySpec(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
         }
 
         public String createJwtAccessToken(JwtPayloadCreateDTO payload) {
@@ -84,7 +86,7 @@ public class JwtTokenManager {
                     .claim("OAuthProvider", payload.getProvider())
                     .claim("role", payload.getRole())
                     .issuedAt(new Date(System.currentTimeMillis()))
-                    .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_MS))
+                    .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpirationMs()))
                     .signWith(secretKey)
                     .compact();
         }
@@ -96,7 +98,7 @@ public class JwtTokenManager {
                     .claim("OAuthProvider", payload.getProvider())
                     .claim("role", payload.getRole())
                     .issuedAt(new Date(System.currentTimeMillis()))
-                    .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_MS))
+                    .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshTokenExpirationMs()))
                     .signWith(secretKey)
                     .compact();
         }
